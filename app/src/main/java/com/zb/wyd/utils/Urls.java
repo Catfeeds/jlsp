@@ -306,7 +306,6 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/paypal?auth=" + ConfigManager.instance().getUniqueCode() + "&amount=" + amount + "&product=" + product + "&mobile_id=" + mobile_id + "&device=and";
     }
 
-
     //判断gift是否可以赠送
     public static String getFortuneGiftUrl()
     {
