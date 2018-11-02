@@ -242,7 +242,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dm_15"
                     android:layout_toRightOf="@+id/iv_extension"
-                    android:text="兑换取现"
+                    android:text="积分取现"
                     android:textStyle="bold"
                     android:textColor="@color/blackE"
                     android:textSize="@dimen/t14" />
@@ -264,6 +264,7 @@
                     android:src="@drawable/ic_arrow_right_48" />
             </RelativeLayout>
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/rl_task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

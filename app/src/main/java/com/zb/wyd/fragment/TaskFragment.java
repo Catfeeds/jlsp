@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -26,6 +27,7 @@ import com.zb.wyd.activity.UserDetailActivity;
 import com.zb.wyd.activity.WealthListActivity;
 import com.zb.wyd.activity.WebViewActivity;
 import com.zb.wyd.adapter.TaskAdapter;
+import com.zb.wyd.entity.FortuneInfo;
 import com.zb.wyd.entity.LocationInfo;
 import com.zb.wyd.entity.PhotoInfo;
 import com.zb.wyd.entity.PicInfo;
@@ -65,6 +67,11 @@ import butterknife.Unbinder;
 public class TaskFragment extends BaseFragment implements IRequestListener, View.OnClickListener
 {
 
+
+    private View rootView = null;
+    private Unbinder unbinder;
+
+
     @BindView(R.id.iv_detail)
     ImageView       ivDetail;
     @BindView(R.id.iv_user_pic)
@@ -75,11 +82,16 @@ public class TaskFragment extends BaseFragment implements IRequestListener, View
     TextView        tvSignIn;
     @BindView(R.id.rv_task_incomplete)
     MaxRecyclerView rvTaskIncomplete;
+    @BindView(R.id.ll_task1)
+    LinearLayout    llTask1;
     @BindView(R.id.rv_task_complete)
     MaxRecyclerView rvTaskComplete;
-    private View rootView = null;
-    private Unbinder unbinder;
 
+    @BindView(R.id.tv_take_cash)
+    TextView tvTakeCash;
+
+    @BindView(R.id.tv_balance)
+    TextView tvBalance;
 
     private List<TaskInfo> mIncompleteList = new ArrayList<>();
     private List<TaskInfo> mCompleteList   = new ArrayList<>();
@@ -113,8 +125,15 @@ public class TaskFragment extends BaseFragment implements IRequestListener, View
 
                     if (null != userInfo)
                     {
-                        ImageLoader.getInstance().displayImage(userInfo.getUface(), ivUserPic);
+                        //  ImageLoader.getInstance().displayImage(userInfo.getUface(), ivUserPic);
                         tvUserFortune.setText(userInfo.getTotal_score());
+
+                        FortuneInfo fortuneInfo = userInfo.getFortuneInfo();
+
+                        if (null != fortuneInfo)
+                        {
+                            tvBalance.setText(fortuneInfo.getGift());
+                        }
                     }
                     break;
 
@@ -147,12 +166,12 @@ public class TaskFragment extends BaseFragment implements IRequestListener, View
 
                     TaskInfo mTaskInfo = mTaskInfoListHandler.getTaskInfo();
 
-                    if ("1".equals(mTaskInfo.getHas_finish()))
-                    {
-                        tvSignIn.setText("已签到");
-                        tvSignIn.setEnabled(false);
-
-                    }
+                    //                    if ("1".equals(mTaskInfo.getHas_finish()))
+                    //                    {
+                    //                        tvSignIn.setText("已签到");
+                    //                        tvSignIn.setEnabled(false);
+                    //
+                    //                    }
 
                     mIncompleteList.clear();
                     mCompleteList.clear();
@@ -172,7 +191,6 @@ public class TaskFragment extends BaseFragment implements IRequestListener, View
             }
         }
     };
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -238,6 +256,7 @@ public class TaskFragment extends BaseFragment implements IRequestListener, View
     {
         tvSignIn.setOnClickListener(this);
         ivDetail.setOnClickListener(this);
+        tvTakeCash.setOnClickListener(this);
     }
 
     @Override
@@ -333,6 +352,11 @@ public class TaskFragment extends BaseFragment implements IRequestListener, View
         else if (v == ivDetail)
         {
             startActivity(new Intent(getActivity(), RankingActivity.class));
+        }
+        else if (v == tvTakeCash)
+        {
+            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "积分取现").putExtra(WebViewActivity
+                    .IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getWithdrawUrl()));
         }
     }
 

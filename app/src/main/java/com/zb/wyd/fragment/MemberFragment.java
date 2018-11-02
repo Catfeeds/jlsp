@@ -521,7 +521,7 @@ public class MemberFragment extends BaseFragment implements IRequestListener, Vi
             //            }
 
             //
-            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "兑换取现").putExtra(WebViewActivity
+            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "积分取现").putExtra(WebViewActivity
                     .IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getWithdrawUrl()));
         }
         else if (v == rlTask)

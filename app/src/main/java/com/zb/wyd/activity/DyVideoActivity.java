@@ -212,9 +212,9 @@ public class DyVideoActivity extends BaseActivity implements IRequestListener, P
                                 }
                                 else//去做任务
                                 {
-                                    //sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                                    startActivity(new Intent(DyVideoActivity.this, TaskActivity
-                                            .class));
+                                    sendBroadcast(new Intent(MainActivity.TAB_TASK));
+//                                    startActivity(new Intent(DyVideoActivity.this, TaskActivity
+//                                            .class));
                                     finish();
                                 }
                             }
@@ -278,8 +278,8 @@ public class DyVideoActivity extends BaseActivity implements IRequestListener, P
                         @Override
                         public void onClick(View v)
                         {
-                            //sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                            startActivity(new Intent(DyVideoActivity.this, TaskActivity.class));
+                            sendBroadcast(new Intent(MainActivity.TAB_TASK));
+                          //  startActivity(new Intent(DyVideoActivity.this, TaskActivity.class));
                             finish();
                         }
                     }, new View.OnClickListener()

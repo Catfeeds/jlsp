@@ -113,8 +113,8 @@ public class VideoPlayActivity1 extends BaseActivity implements IRequestListener
                                 }
                                 else//去做任务
                                 {
-                                    //sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                                    startActivity(new Intent(VideoPlayActivity1.this, TaskActivity.class));
+                                    sendBroadcast(new Intent(MainActivity.TAB_TASK));
+//                                    startActivity(new Intent(VideoPlayActivity1.this, TaskActivity.class));
                                     finish();
                                 }
                             }

@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dm_5"
             android:gravity="center_horizontal"
-            android:text="佳梨视频"
+            android:text="四虎影库"
             android:textColor="@color/white"
             android:textSize="@dimen/t14"/>
 

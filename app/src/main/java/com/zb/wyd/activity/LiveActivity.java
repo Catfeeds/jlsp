@@ -256,9 +256,9 @@ public class LiveActivity extends BaseActivity implements IRequestListener
                                 else//去做任务
                                 {
 
-                                    // sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                                    startActivity(new Intent(LiveActivity.this, TaskActivity
-                                            .class));
+                                     sendBroadcast(new Intent(MainActivity.TAB_TASK));
+                                   // startActivity(new Intent(LiveActivity.this, TaskActivity
+                                           // .class));
                                     finish();
                                 }
                             }
@@ -392,7 +392,9 @@ public class LiveActivity extends BaseActivity implements IRequestListener
                             @Override
                             public void onClick(View view)
                             {
-                                startActivity(new Intent(LiveActivity.this, TaskActivity.class));
+                                sendBroadcast(new Intent(MainActivity.TAB_TASK));
+                                //startActivity(new Intent(LiveActivity.this, TaskActivity.class));
+                                finish();
                             }
                         });
                     }
