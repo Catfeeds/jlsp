@@ -63,6 +63,35 @@ public class StatusBarUtil
             tintManager.setStatusBarTintDrawable(MyDrawable);*/
         }
     }
+    /**
+     * 修改状态栏颜色，支持4.4以上版本,保持沉浸式状态
+     *
+     * @param activity
+     * @param res
+     */
+    public static void setStatusBarBackground(Activity activity, int res)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            //使用SystemBarTint库使4.4版本状态栏变色，需要先将状态栏设置为透明
+            transparencyBar(activity);
+            ViewGroup contentFrameLayout = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+            View parentView = contentFrameLayout.getChildAt(0);
+            if (parentView != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            {
+                parentView.setFitsSystemWindows(true);
+            }
+            tintManager = new SystemBarTintManager(activity);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(res);
+            /*// set a custom tint color for all system bars
+            tintManager.setTintColor(Color.parseColor("#99000FF"));
+            // set a custom navigation bar resource
+            tintManager.setNavigationBarTintResource(R.drawable.my_tint);
+            // set a custom status bar drawable
+            tintManager.setStatusBarTintDrawable(MyDrawable);*/
+        }
+    }
 
     /**
      * 设置WindowManager.LayoutParams.FLAG_FULLSCREEN时，由于使用了fitSystemWindows()方法,导致的问题

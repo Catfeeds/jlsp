@@ -63,7 +63,7 @@ public class MainActivity extends BaseActivity
     protected void initViews(Bundle savedInstanceState)
     {
         setContentView(R.layout.activity_main);
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
+        StatusBarUtil.setStatusBarBackground(this,R.drawable.statusbar_bg);
         StatusBarUtil.StatusBarLightMode(MainActivity.this, false);
     }
 
