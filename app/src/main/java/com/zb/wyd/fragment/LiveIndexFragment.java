@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -53,6 +56,8 @@ import com.zb.wyd.widget.FullyGridLayoutManager;
 import com.zb.wyd.widget.MarqueeTextView;
 import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
+import com.zb.wyd.widget.list.refresh.PullToRefreshBase;
+import com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,57 +74,44 @@ import cc.ibooker.ztextviewlib.AutoVerticalScrollTextViewUtil;
 /**
  * 描述：一句话简单描述
  */
-public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, IRequestListener, View.OnClickListener
+public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, IRequestListener, View.OnClickListener,
+        PullToRefreshBase.OnRefreshListener<RecyclerView>
 {
 
 
-    @BindView(R.id.tv_notice)
-    MarqueeTextView tvNotice;
-
     @BindView(R.id.banner)
-    CustomBanner               mBanner;
-    @BindView(R.id.rl_all_recommend)
-    RelativeLayout             rlAllRecommend;
-    @BindView(R.id.rv_recommend)
-    MaxRecyclerView            rvRecommend;
-    @BindView(R.id.rl_all_new)
-    RelativeLayout             rlAllHotLayout;
-    @BindView(R.id.rv_new)
-    MaxRecyclerView            rvHot;
+    CustomBanner mBanner;
+
+
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
+
+    @BindView(R.id.refreshRecyclerView)
+    PullToRefreshRecyclerView mPullToRefreshRecyclerView;
+    private RecyclerView mRecyclerView;
+    private int pn = 1;
+    private int mRefreshStatus;
     private View rootView = null;
     private Unbinder unbinder;
 
 
-    private List<String>   picList      = new ArrayList<>();
-    private List<LiveInfo> freeLiveList = new ArrayList<>();
-    private List<LiveInfo> newLiveList  = new ArrayList<>();
-    private List<AdInfo>   adInfoList   = new ArrayList<>();
+    private List<String> picList = new ArrayList<>();
+    private List<LiveInfo> recommendLiveList = new ArrayList<>();
+    private List<AdInfo> adInfoList = new ArrayList<>();
     private RecommendAdapter mRecommendAdapter;
-    private NewAdapter       mHotAdapter;
-    private int              getFreeCount, getHotCount;
+    private int getFreeCount;
 
 
-    private static final String GET_NOTICE            = "get_notice";
-    private static final String GET_LOCATION          = "get_location";
-    private static final String GET_FREE_LIVE         = "get_free_live";
-    private static final String GET_HOT_LIVE          = "get_hot_live";
-    private static final String GET_AD_LIST           = "get_ad_list";
-    private static final int    GET_FREE_LIVE_SUCCESS = 0x01;
-    private static final int    REQUEST_FAIL          = 0x02;
-    private static final int    GET_HOT_LIVE_SUCCESS  = 0x03;
+    private static final String GET_RECOMMEND_LIVE = "get_recommend_live";
+    private static final String GET_AD_LIST = "get_ad_list";
+    private static final int GET_RECOMMEND_LIVE_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
 
-    private static final int GET_AD_LIST_CODE     = 0X10;
-    private static final int GET_FREE_LIVE_CODE   = 0X11;
-    private static final int GET_HOT_LIVE_CODE    = 0X12;
-    private static final int GET_NOTICE_LIST_CODE = 0X15;
+    private static final int GET_AD_LIST_CODE = 0X10;
+    private static final int GET_RECOMMEND_LIVE_CODE = 0X11;
 
-    private static final int GET_FREE_LIVE_FAIL  = 0X13;
-    private static final int GET_HOT_LIVE_FAIL   = 0X14;
+    private static final int GET_RECOMMEND_LIVE_FAIL = 0X13;
     private static final int GET_AD_LIST_SUCCESS = 0x04;
-
-    private static final int GET_NOTICE_LIST_SUCCESS = 0x06;
 
 
     @SuppressLint("HandlerLeak")
@@ -131,42 +123,27 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
             super.handleMessage(msg);
             switch (msg.what)
             {
-                case GET_FREE_LIVE_SUCCESS:
+                case GET_RECOMMEND_LIVE_SUCCESS:
 
                     LiveInfoListHandler mLiveInfoListHandler = (LiveInfoListHandler) msg.obj;
-                    freeLiveList.clear();
-                    freeLiveList.addAll(mLiveInfoListHandler.getUserInfoList());
+
+                    if (pn == 1)
+                    {
+                        recommendLiveList.clear();
+                    }
+                    recommendLiveList.addAll(mLiveInfoListHandler.getLiveInfoList());
                     mRecommendAdapter.notifyDataSetChanged();
 
-                    if (freeLiveList.isEmpty())
-                    {
-                        rlAllRecommend.setVisibility(View.GONE);
-                    }
-                    else
-                    {
-
-                        rlAllRecommend.setVisibility(View.VISIBLE);
-                    }
                     break;
 
-
-                case GET_HOT_LIVE_SUCCESS:
-                    LiveInfoListHandler mLiveInfoListHandler1 = (LiveInfoListHandler) msg.obj;
-                    newLiveList.clear();
-                    newLiveList.addAll(mLiveInfoListHandler1.getUserInfoList());
-                    mHotAdapter.notifyDataSetChanged();
-                    break;
 
                 case REQUEST_FAIL:
                     break;
 
-                case GET_FREE_LIVE_CODE:
-                    getFreeLive();
+                case GET_RECOMMEND_LIVE_CODE:
+                    getRecommendLive();
                     break;
 
-                case GET_HOT_LIVE_CODE:
-                    getHotLive();
-                    break;
 
                 case GET_AD_LIST_SUCCESS:
                     AdInfoListHandler mAdInfoListHandler = (AdInfoListHandler) msg.obj;
@@ -191,52 +168,13 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
                     break;
 
 
-                case GET_FREE_LIVE_FAIL:
+                case GET_RECOMMEND_LIVE_FAIL:
                     getFreeCount++;
                     if (getFreeCount <= 30)
                     {
-                        mHandler.sendEmptyMessage(GET_FREE_LIVE_CODE);
+                        mHandler.sendEmptyMessage(GET_RECOMMEND_LIVE_CODE);
                     }
 
-                    break;
-                case GET_HOT_LIVE_FAIL:
-                    getHotCount++;
-                    if (getHotCount <= 30)
-                    {
-                        mHandler.sendEmptyMessage(GET_HOT_LIVE_CODE);
-                    }
-                    break;
-
-                case GET_NOTICE_LIST_CODE:
-                    getNoticeList();
-                    break;
-
-                case GET_NOTICE_LIST_SUCCESS:
-                    NoticeListHandler mNoticeListHandler = (NoticeListHandler) msg.obj;
-                    List<NoticeInfo> noticeInfoList = mNoticeListHandler.getNoticeInfoList();
-                    MyApplication.getInstance().setNoticeList(noticeInfoList);
-                    StringBuffer sb = new StringBuffer();
-                    if (noticeInfoList.size() < 3)
-                    {
-                        for (int i = 0; i < 3; i++)
-                        {
-                            for (int j = 0; j < noticeInfoList.size(); j++)
-                            {
-                                sb.append(noticeInfoList.get(j).getFrontContent());
-                                sb.append("                 ");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 0; j < noticeInfoList.size(); j++)
-                        {
-                            sb.append(noticeInfoList.get(j).getFrontContent());
-                            sb.append("                 ");
-                        }
-                    }
-
-                    tvNotice.setText(sb.toString());
                     break;
 
             }
@@ -265,17 +203,6 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
         return rootView;
     }
 
-    private static LiveIndexFragment instance = null;
-
-    public static LiveIndexFragment newInstance()
-    {
-        if (instance == null)
-        {
-            instance = new LiveIndexFragment();
-        }
-        return instance;
-    }
-
 
     @Override
     protected void initData()
@@ -292,22 +219,26 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
     protected void initEvent()
     {
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        rlAllHotLayout.setOnClickListener(this);
     }
 
     @Override
     protected void initViewData()
     {
-        mRecommendAdapter = new RecommendAdapter(freeLiveList, getContext(), new MyItemClickListener()
+        mPullToRefreshRecyclerView.setPullLoadEnabled(true);
+        mRecyclerView = mPullToRefreshRecyclerView.getRefreshableView();
+        mPullToRefreshRecyclerView.setOnRefreshListener(this);
+        mPullToRefreshRecyclerView.setPullRefreshEnabled(true);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
+
+        mRecommendAdapter = new RecommendAdapter(recommendLiveList, getContext(), new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
             {
                 if (MyApplication.getInstance().isLogin())
                 {
-                    LiveInfo mLiveInfo = freeLiveList.get(position);
-                    //                    Bundle b = new Bundle();
-                    //                    b.putSerializable("LiveInfo", mLiveInfo);
+                    LiveInfo mLiveInfo = recommendLiveList.get(position);
                     startActivity(new Intent(getActivity(), LiveActivity.class).putExtra("biz_id", mLiveInfo.getId()));
 
                 }
@@ -318,63 +249,31 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
             }
         });
 
-        rvRecommend.setLayoutManager(new FullyGridLayoutManager(getActivity(), 3));
-        rvRecommend.setAdapter(mRecommendAdapter);
-
-
-        mHotAdapter = new NewAdapter(newLiveList, getActivity(), new MyItemClickListener()
+        //解决swipelayout与Recyclerview的冲突
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
             @Override
-            public void onItemClick(View view, int position)
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                if (MyApplication.getInstance().isLogin())
-                {
-                    LiveInfo mLiveInfo = newLiveList.get(position);
+                int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+            }
 
-                    //                    Bundle b = new Bundle();
-                    //                    b.putSerializable("LiveInfo", mLiveInfo);
-                    //                    startActivity(new Intent(getActivity(), LiveActivity.class).putExtras(b));
-                    startActivity(new Intent(getActivity(), LiveActivity.class).putExtra("biz_id", mLiveInfo.getId()).putExtra("location", mLiveInfo
-                            .getLocation()));
-
-                }
-                else
-                {
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                }
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+            {
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
-        rvHot.setLayoutManager(new FullyGridLayoutManager(getActivity(), 2));
-        rvHot.setAdapter(mHotAdapter);
-
-
+        mRecyclerView.setAdapter(mRecommendAdapter);
+        loadData();
+        mHandler.sendEmptyMessage(GET_AD_LIST_CODE);
     }
 
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        tvNotice.requestFocus();
-    }
-
-    public void setUserVisibleHint(boolean isVisibleToUser)
-    {
-
-        if (isVisibleToUser)
-        {
-            mHandler.sendEmptyMessage(GET_AD_LIST_CODE);
-            loadData();
-        }
-        super.setUserVisibleHint(isVisibleToUser);
-    }
 
     private void loadData()
     {
-        mHandler.sendEmptyMessage(GET_FREE_LIVE_CODE);
-        mHandler.sendEmptyMessage(GET_HOT_LIVE_CODE);
-        mHandler.sendEmptyMessage(GET_NOTICE_LIST_CODE);
-
+        mHandler.sendEmptyMessage(GET_RECOMMEND_LIVE_CODE);
     }
 
     private void getAdList()
@@ -384,27 +283,19 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
         DataRequest.instance().request(getActivity(), Urls.getAdListUrl(), this, HttpRequest.GET, GET_AD_LIST, valuePairs, new AdInfoListHandler());
     }
 
-    private void getNoticeList()
-    {
-        Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(getActivity(), Urls.getNoticeUrl(), this, HttpRequest.GET, GET_NOTICE, valuePairs, new NoticeListHandler());
-    }
 
-    private void getFreeLive()
+    private void getRecommendLive()
     {
-        Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(getActivity(), Urls.getFreeLive(), this, HttpRequest.GET, GET_FREE_LIVE, valuePairs, new LiveInfoListHandler());
-    }
 
-    private void getHotLive()
-    {
         Map<String, String> valuePairs = new HashMap<>();
-        valuePairs.put("pn", "1");
+        valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
         valuePairs.put("location", MyApplication.getInstance().getLocation());
         valuePairs.put("sort", "hot");
-        DataRequest.instance().request(getActivity(), Urls.getNewLive(), this, HttpRequest.GET, GET_HOT_LIVE, valuePairs, new LiveInfoListHandler());
+        DataRequest.instance().request(getActivity(), Urls.getNewLive(), this, HttpRequest.GET, GET_RECOMMEND_LIVE, valuePairs, new
+                LiveInfoListHandler());
     }
+
 
     private void initAd()
     {
@@ -509,8 +400,8 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
             }
             else if (link.startsWith("http"))
             {
-                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "详情")
-                        .putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, link));
+                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "详情").putExtra(WebViewActivity
+                        .IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, link));
             }
         }
     }
@@ -520,6 +411,7 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
     {
         if (mSwipeRefreshLayout != null)
         {
+            pn = 1;
             loadData();
             mSwipeRefreshLayout.post(new Runnable()
             {
@@ -536,28 +428,26 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public void notify(String action, String resultCode, String resultMsg, Object obj)
     {
-        if (GET_FREE_LIVE.equals(action))
+        if (mRefreshStatus == 1)
+        {
+            mPullToRefreshRecyclerView.onPullUpRefreshComplete();
+        }
+        else
+        {
+            mPullToRefreshRecyclerView.onPullDownRefreshComplete();
+        }
+        if (GET_RECOMMEND_LIVE.equals(action))
         {
             if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
             {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_FREE_LIVE_SUCCESS, obj));
+                mHandler.sendMessage(mHandler.obtainMessage(GET_RECOMMEND_LIVE_SUCCESS, obj));
             }
             else
             {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_FREE_LIVE_CODE, resultMsg));
+                mHandler.sendMessage(mHandler.obtainMessage(GET_RECOMMEND_LIVE_CODE, resultMsg));
             }
         }
-        else if (GET_HOT_LIVE.equals(action))
-        {
-            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_HOT_LIVE_SUCCESS, obj));
-            }
-            else
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_HOT_LIVE_FAIL, resultMsg));
-            }
-        }
+
         else if (GET_AD_LIST.equals(action))
         {
             if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
@@ -569,23 +459,13 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
                 mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
             }
         }
-        else if (GET_NOTICE.equals(action))
-        {
-            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_NOTICE_LIST_SUCCESS, obj));
-            }
-        }
+
 
     }
 
     @Override
     public void onClick(View v)
     {
-        if (v == rlAllHotLayout)
-        {
-            ((LiveFragment) getParentFragment()).setTabIndex(1);
-        }
     }
 
     @Override
@@ -600,4 +480,32 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
 
         mHandler.removeCallbacksAndMessages(null);
     }
+
+    @Override
+    public void onPullDownToRefresh(PullToRefreshBase<RecyclerView> refreshView)
+    {
+        pn = 1;
+        mRefreshStatus = 0;
+        loadData();
+    }
+
+    @Override
+    public void onPullUpToRefresh(PullToRefreshBase<RecyclerView> refreshView)
+    {
+        pn = pn + 1;
+        mRefreshStatus = 1;
+        loadData();
+    }
+
+    private int getMaxElem(int[] arr)
+    {
+        int size = arr.length;
+        int maxVal = Integer.MIN_VALUE;
+        for (int i = 0; i < size; i++)
+        {
+            if (arr[i] > maxVal) maxVal = arr[i];
+        }
+        return maxVal;
+    }
+
 }

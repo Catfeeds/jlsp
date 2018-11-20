@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 描述：一句话简单描述
@@ -217,7 +216,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
     {
 
         setContentView(R.layout.activity_add_photo);
-        StatusBarUtil.setStatusBarBackground(this,R.drawable.statusbar_bg);
+        StatusBarUtil.setStatusBarBackground(this,R.drawable.status_bar_bg);
         StatusBarUtil.StatusBarLightMode(AddPhotoActivity.this, false);
     }
 

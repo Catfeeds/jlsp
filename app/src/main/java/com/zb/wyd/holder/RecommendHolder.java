@@ -44,9 +44,9 @@ public class RecommendHolder extends RecyclerView.ViewHolder
 
     public void setLiveInfo(LiveInfo mLiveInfo, final int p)
     {
-        int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 4;
-        int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 3;
-        mItemLayout.setLayoutParams(new LinearLayout.LayoutParams(width, width));
+        int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 3;
+        int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 2;
+        mItemLayout.setLayoutParams(new LinearLayout.LayoutParams(width, (int)(width*0.78)));
         ImageLoader.getInstance().displayImage(mLiveInfo.getFace(), mImgIv);
         mFollowTv.setText(mLiveInfo.getFavour_count());
         mPopularityTv.setText(mLiveInfo.getOnline());

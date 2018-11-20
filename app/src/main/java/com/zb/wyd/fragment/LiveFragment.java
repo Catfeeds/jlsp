@@ -97,7 +97,7 @@ public class LiveFragment extends BaseFragment
     protected void initViewData()
     {
         MyViewPagerAdapter viewPagerAdapter = new MyViewPagerAdapter(getChildFragmentManager());
-        viewPagerAdapter.addFragment(LiveIndexFragment.newInstance(), "直播首页");//添加Fragment
+//        viewPagerAdapter.addFragment(LiveIndexFragment.newInstance(), "直播首页");//添加Fragment
         viewPagerAdapter.addFragment(AnchorListFragment.newInstance(), "主播列表");
         viewPagerAdapter.addFragment(DouyinFragment.newInstance(), "成人抖音");
         mViewPager.setAdapter(viewPagerAdapter);//设置适配器

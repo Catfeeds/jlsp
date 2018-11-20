@@ -72,7 +72,7 @@ public class AnchorSearchFragment extends BaseFragment implements PullToRefreshB
                     LiveInfoListHandler mOrderListHandler = (LiveInfoListHandler) msg.obj;
 
 
-                    liveInfoList.addAll(mOrderListHandler.getUserInfoList());
+                    liveInfoList.addAll(mOrderListHandler.getLiveInfoList());
                     mAnchorAdapter.notifyDataSetChanged();
 
 

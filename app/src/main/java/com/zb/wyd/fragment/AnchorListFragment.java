@@ -93,7 +93,7 @@ public class AnchorListFragment extends BaseFragment implements PullToRefreshBas
                         liveInfoList.clear();
                     }
 
-                    liveInfoList.addAll(mOrderListHandler.getUserInfoList());
+                    liveInfoList.addAll(mOrderListHandler.getLiveInfoList());
                     mAnchorAdapter.notifyDataSetChanged();
                     break;
 

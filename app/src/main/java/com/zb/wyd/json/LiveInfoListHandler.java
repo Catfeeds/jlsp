@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class LiveInfoListHandler extends JsonHandler
 {
-    private List<LiveInfo> userInfoList = new ArrayList<>();
+    private List<LiveInfo> liveInfoList = new ArrayList<>();
 
-    public List<LiveInfo> getUserInfoList()
+    public List<LiveInfo> getLiveInfoList()
     {
-        return userInfoList;
+        return liveInfoList;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class LiveInfoListHandler extends JsonHandler
             {
                 for (int i = 0; i < arr.length(); i++)
                 {
-                    LiveInfo mBillInfo = new LiveInfo(arr.optJSONObject(i));
-                    userInfoList.add(mBillInfo);
+                    LiveInfo mLiveInfo = new LiveInfo(arr.optJSONObject(i));
+                    liveInfoList.add(mLiveInfo);
                 }
             }
 

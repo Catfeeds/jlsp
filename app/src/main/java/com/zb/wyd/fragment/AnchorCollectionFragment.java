@@ -85,7 +85,7 @@ public class AnchorCollectionFragment extends BaseFragment implements PullToRefr
                     {
                         liveInfoList.clear();
                     }
-                    liveInfoList.addAll(mOrderListHandler.getUserInfoList());
+                    liveInfoList.addAll(mOrderListHandler.getLiveInfoList());
                     mAnchorAdapter.notifyDataSetChanged();
 
 
