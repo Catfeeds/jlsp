@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zb.wyd.R;
-import com.zb.wyd.entity.CataInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.listener.MyItemClickListener;
 
 
@@ -27,7 +27,7 @@ public class CataFilterHolder extends RecyclerView.ViewHolder
     }
 
 
-    public void setCataInfo(CataInfo mCataInfo, final int p)
+    public void setCataInfo(CategoryInfo mCataInfo, final int p)
     {
         mNameTv.setText(mCataInfo.getName());
         mNameTv.setSelected(mCataInfo.isSelected());

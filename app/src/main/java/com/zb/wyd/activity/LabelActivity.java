@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.LabelAdapter;
 import com.zb.wyd.adapter.LabelChooseAdapter;
-import com.zb.wyd.entity.CataInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
@@ -54,8 +53,8 @@ public class LabelActivity extends BaseActivity implements IRequestListener
     RecyclerView    mLabelRecyclerView;
 
 
-    private List<CataInfo> labelList       = new ArrayList<>();
-    private List<CataInfo> labelChooseList = new ArrayList<>();
+    private List<CategoryInfo> labelList       = new ArrayList<>();
+    private List<CategoryInfo> labelChooseList = new ArrayList<>();
 
     private LabelAdapter       mLabelAdapter;
     private LabelChooseAdapter mLabelChooseAdapter;

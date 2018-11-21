@@ -7,8 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zb.wyd.R;
-import com.zb.wyd.entity.CataInfo;
-import com.zb.wyd.holder.CataHolder;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.holder.LabelHolder;
 import com.zb.wyd.listener.MyItemClickListener;
 
@@ -20,10 +19,10 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelHolder>
 {
 
     private MyItemClickListener listener;
-    private List<CataInfo>      list;
+    private List<CategoryInfo>      list;
     private Context             mContext;
 
-    public LabelAdapter(List<CataInfo> list, Context mContext, MyItemClickListener listener)
+    public LabelAdapter(List<CategoryInfo> list, Context mContext, MyItemClickListener listener)
     {
         this.list = list;
         this.mContext = mContext;
@@ -42,7 +41,7 @@ public class LabelAdapter extends RecyclerView.Adapter<LabelHolder>
     @Override
     public void onBindViewHolder(LabelHolder holder, int position)
     {
-        CataInfo mCataInfo = list.get(position);
+        CategoryInfo mCataInfo = list.get(position);
         holder.setCataInfo(mCataInfo,position);
     }
 

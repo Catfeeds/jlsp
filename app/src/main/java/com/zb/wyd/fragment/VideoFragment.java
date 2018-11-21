@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,14 +27,11 @@ import com.zb.wyd.activity.LiveActivity;
 import com.zb.wyd.activity.LoginActivity;
 import com.zb.wyd.activity.PhotoDetailActivity;
 import com.zb.wyd.activity.VideoPlayActivity;
-import com.zb.wyd.activity.VidoeListActivity;
 import com.zb.wyd.activity.WebViewActivity;
-import com.zb.wyd.adapter.CataAdapter;
-import com.zb.wyd.adapter.IntegerAreaAdapter;
+import com.zb.wyd.adapter.CategoryAdapter;
 import com.zb.wyd.adapter.VideoAdapter;
 import com.zb.wyd.entity.AdInfo;
-import com.zb.wyd.entity.CataInfo;
-import com.zb.wyd.entity.NoticeInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
@@ -48,8 +44,7 @@ import com.zb.wyd.utils.APPUtils;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
-import com.zb.wyd.widget.CataPopupWindow;
-import com.zb.wyd.widget.MarqueeTextView;
+import com.zb.wyd.widget.CategoryPopupWindow;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
 import com.zb.wyd.widget.list.refresh.PullToRefreshBase;
 import com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView;
@@ -62,8 +57,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cc.ibooker.ztextviewlib.AutoVerticalScrollTextView;
-import cc.ibooker.ztextviewlib.AutoVerticalScrollTextViewUtil;
 
 /**
  * 描述：一句话简单描述
@@ -71,8 +64,6 @@ import cc.ibooker.ztextviewlib.AutoVerticalScrollTextViewUtil;
 public class VideoFragment extends BaseFragment implements IRequestListener, View.OnClickListener, PullToRefreshBase.OnRefreshListener<RecyclerView>,
         SwipeRefreshLayout.OnRefreshListener
 {
-    @BindView(R.id.tv_notice)
-    MarqueeTextView        tvNotice;
     @BindView(R.id.banner)
     CustomBanner              mBanner;
     @BindView(R.id.iv_show)
@@ -90,8 +81,8 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
 
-    private List<CataInfo> cataInfoList = new ArrayList<>();
-    private CataAdapter mCataAdapter;
+    private List<CategoryInfo> categoryInfoList = new ArrayList<>();
+    private CategoryAdapter mCategoryAdapter;
     private View rootView = null;
     private Unbinder unbinder;
 
@@ -143,19 +134,19 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                     break;
                 case GET_CATA_LIST_SUCCESS:
                     CataInfoListHandler mCataInfoListHandler = (CataInfoListHandler) msg.obj;
-                    cataInfoList.clear();
-                    cataInfoList.addAll(mCataInfoListHandler.getCataInfoList());
+                    categoryInfoList.clear();
+                    categoryInfoList.addAll(mCataInfoListHandler.getCataInfoList());
 
-                    CataInfo mCataInfo = new CataInfo();
+                    CategoryInfo mCataInfo = new CategoryInfo();
                     mCataInfo.setSelected(true);
                     mCataInfo.setId("0");
                     mCataInfo.setName("全部");
-                    cataInfoList.add(0, mCataInfo);
-                    mCataAdapter.notifyDataSetChanged();
+                    categoryInfoList.add(0, mCataInfo);
+                    mCategoryAdapter.notifyDataSetChanged();
 
-                    if (!cataInfoList.isEmpty())
+                    if (!categoryInfoList.isEmpty())
                     {
-                        cta_id = cataInfoList.get(0).getId();
+                        cta_id = categoryInfoList.get(0).getId();
                     }
 
                     break;
@@ -195,31 +186,6 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                     {
                         initAd();
                     }
-                    List<NoticeInfo> noticeInfoList = MyApplication.getInstance().getNoticeList();
-
-                    StringBuffer sb = new StringBuffer();
-                    if (noticeInfoList.size() < 3)
-                    {
-                        for (int i = 0; i < 3; i++)
-                        {
-                            for (int j = 0; j < noticeInfoList.size(); j++)
-                            {
-                                sb.append(noticeInfoList.get(j).getFrontContent());
-                                sb.append("                 ");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 0; j < noticeInfoList.size(); j++)
-                        {
-                            sb.append(noticeInfoList.get(j).getFrontContent());
-                            sb.append("                 ");
-                        }
-                    }
-
-                    tvNotice.setText(sb.toString());
-
 
                     break;
                 case GET_AD_lIST_CODE:
@@ -315,32 +281,32 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvCata.setLayoutManager(linearLayoutManager);
 
-        mCataAdapter = new CataAdapter(cataInfoList, getActivity(), new MyItemClickListener()
+        mCategoryAdapter = new CategoryAdapter(categoryInfoList, getActivity(), new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
             {
-                for (int i = 0; i < cataInfoList.size(); i++)
+                for (int i = 0; i < categoryInfoList.size(); i++)
                 {
                     if (i == position)
                     {
-                        cataInfoList.get(position).setSelected(true);
+                        categoryInfoList.get(position).setSelected(true);
                     }
                     else
                     {
-                        cataInfoList.get(i).setSelected(false);
+                        categoryInfoList.get(i).setSelected(false);
                     }
                 }
-                mCataAdapter.notifyDataSetChanged();
+                mCategoryAdapter.notifyDataSetChanged();
 
-                cta_id = cataInfoList.get(position).getId();
+                cta_id = categoryInfoList.get(position).getId();
                 pn = 1;
                 mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
 
 
             }
         });
-        rvCata.setAdapter(mCataAdapter);
+        rvCata.setAdapter(mCategoryAdapter);
 
 
         mRecyclerView = mPullToRefreshRecyclerView.getRefreshableView();
@@ -543,7 +509,6 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
     public void onResume()
     {
         super.onResume();
-        tvNotice.requestFocus();
     }
 
     @Override
@@ -601,7 +566,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
         }
     }
 
-    private CataPopupWindow mCataPopupWindow;
+    private CategoryPopupWindow mCataPopupWindow;
 
     @Override
     public void onClick(View v)
@@ -609,30 +574,30 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
         if (v == ivMore)
         {
 
-            mCataPopupWindow = new CataPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
+            mCataPopupWindow = new CategoryPopupWindow(getActivity(), categoryInfoList, new MyItemClickListener()
             {
                 @Override
                 public void onItemClick(View view, int position)
                 {
-                    for (int i = 0; i < cataInfoList.size(); i++)
+                    for (int i = 0; i < categoryInfoList.size(); i++)
                     {
                         if (i == position)
                         {
-                            cataInfoList.get(position).setSelected(true);
+                            categoryInfoList.get(position).setSelected(true);
                         }
                         else
                         {
-                            cataInfoList.get(i).setSelected(false);
+                            categoryInfoList.get(i).setSelected(false);
                         }
                     }
-                    mCataAdapter.notifyDataSetChanged();
-                    cta_id = cataInfoList.get(position).getId();
+                    mCategoryAdapter.notifyDataSetChanged();
+                    cta_id = categoryInfoList.get(position).getId();
                     mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
                 }
             });
 
 
-            if (!cataInfoList.isEmpty())
+            if (!categoryInfoList.isEmpty())
             {
                 mCataPopupWindow.showAsDropDown(topView);
             }

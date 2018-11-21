@@ -7,9 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zb.wyd.R;
-import com.zb.wyd.entity.CataInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.holder.CataFilterHolder;
-import com.zb.wyd.holder.CataHolder;
 import com.zb.wyd.listener.MyItemClickListener;
 
 import java.util.List;
@@ -20,10 +19,10 @@ public class CataFilterAdapter extends RecyclerView.Adapter<CataFilterHolder>
 {
 
     private MyItemClickListener listener;
-    private List<CataInfo>      list;
+    private List<CategoryInfo>      list;
     private Context             mContext;
 
-    public CataFilterAdapter(List<CataInfo> list, Context mContext, MyItemClickListener listener)
+    public CataFilterAdapter(List<CategoryInfo> list, Context mContext, MyItemClickListener listener)
     {
         this.list = list;
         this.mContext = mContext;
@@ -42,7 +41,7 @@ public class CataFilterAdapter extends RecyclerView.Adapter<CataFilterHolder>
     @Override
     public void onBindViewHolder(CataFilterHolder holder, int position)
     {
-        CataInfo mCataInfo = list.get(position);
+        CategoryInfo mCataInfo = list.get(position);
         holder.setCataInfo(mCataInfo,position);
     }
 

@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.AddPhotoAdapter;
 import com.zb.wyd.adapter.LabelChooseAdapter;
-import com.zb.wyd.entity.CataInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.entity.LocationInfo;
 import com.zb.wyd.entity.PhotoInfo;
 import com.zb.wyd.entity.PicInfo;
@@ -108,7 +108,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
     private String  location;
     private List<PicInfo>  freePicList     = new ArrayList<>();
     private List<PicInfo>  chargePicList   = new ArrayList<>();
-    private List<CataInfo> labelChooseList = new ArrayList<>();
+    private List<CategoryInfo> labelChooseList = new ArrayList<>();
 
     private AddPhotoAdapter    freeAdapter;
     private AddPhotoAdapter    chargeAdapter;
@@ -216,7 +216,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
     {
 
         setContentView(R.layout.activity_add_photo);
-        StatusBarUtil.setStatusBarBackground(this,R.drawable.status_bar_bg);
+        StatusBarUtil.setStatusBarBackground(this,R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(AddPhotoActivity.this, false);
     }
 
@@ -635,7 +635,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
 
                 case GET_LABEL_CODE:
                     labelChooseList.clear();
-                    labelChooseList.addAll((List<CataInfo>) data.getSerializableExtra("LABEL_LIST"));
+                    labelChooseList.addAll((List<CategoryInfo>) data.getSerializableExtra("LABEL_LIST"));
                     mLabelChooseAdapter.notifyDataSetChanged();
                     break;
 

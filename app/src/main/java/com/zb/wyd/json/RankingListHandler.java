@@ -1,7 +1,6 @@
 package com.zb.wyd.json;
 
 
-import com.zb.wyd.entity.CataInfo;
 import com.zb.wyd.entity.RankingInfo;
 
 import org.json.JSONArray;

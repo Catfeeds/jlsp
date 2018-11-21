@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zb.wyd.R;
-import com.zb.wyd.entity.CataInfo;
-import com.zb.wyd.holder.CataHolder;
 import com.zb.wyd.holder.PhotoHolder;
 import com.zb.wyd.listener.MyItemClickListener;
 

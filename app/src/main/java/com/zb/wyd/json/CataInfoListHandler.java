@@ -1,8 +1,7 @@
 package com.zb.wyd.json;
 
 
-import com.zb.wyd.entity.CataInfo;
-import com.zb.wyd.entity.LiveInfo;
+import com.zb.wyd.entity.CategoryInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,9 +13,9 @@ import java.util.List;
  */
 public class CataInfoListHandler extends JsonHandler
 {
-    private List<CataInfo> cataInfoList = new ArrayList<>();
+    private List<CategoryInfo> cataInfoList = new ArrayList<>();
 
-    public List<CataInfo> getCataInfoList()
+    public List<CategoryInfo> getCataInfoList()
     {
         return cataInfoList;
     }
@@ -33,7 +32,7 @@ public class CataInfoListHandler extends JsonHandler
             {
                 for (int i = 0; i < arr.length(); i++)
                 {
-                    CataInfo mCataInfo = new CataInfo(arr.optJSONObject(i));
+                    CategoryInfo mCataInfo = new CategoryInfo(arr.optJSONObject(i));
                     cataInfoList.add(mCataInfo);
                 }
             }

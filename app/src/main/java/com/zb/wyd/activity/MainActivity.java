@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
-import com.zb.wyd.fragment.LiveFragment;
+import com.zb.wyd.fragment.DouyinFragment;
 import com.zb.wyd.fragment.LiveIndexFragment;
 import com.zb.wyd.fragment.MemberFragment;
 import com.zb.wyd.fragment.SelfieFragment;
@@ -41,13 +41,12 @@ public class MainActivity extends BaseActivity
     public static final String TAB_LIVE = "tab_live";
     public static final String TAB_VIDEO = "tab_video";
 
-    private String texts[]       = {"直播", "视频", "自拍", "会员"};
-    private int    imageButton[] = {
-            R.drawable.ic_live_selector, R.drawable.ic_video_selector,
-            R.drawable.ic_photo_selector,  R.drawable.ic_member_selector};
+    private String texts[] = {"直播","抖音", "视频", "自拍", "宝盒"};
+    private int imageButton[] = {R.drawable.ic_live_selector, R.drawable.ic_dy_selector, R.drawable.ic_video_selector, R.drawable
+            .ic_photo_selector, R.drawable.ic_member_selector};
 
 
-    private Class fragmentArray[] = {LiveIndexFragment.class, VideoFragment.class, SelfieFragment.class,  MemberFragment.class};
+    private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class, MemberFragment.class};
 
     @Override
     protected void initData()
@@ -63,7 +62,7 @@ public class MainActivity extends BaseActivity
     protected void initViews(Bundle savedInstanceState)
     {
         setContentView(R.layout.activity_main);
-        StatusBarUtil.setStatusBarBackground(this,R.drawable.status_bar_bg);
+        StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(MainActivity.this, false);
     }
 
@@ -97,19 +96,18 @@ public class MainActivity extends BaseActivity
     @Override
     protected void initViewData()
     {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager
+                        .PERMISSION_GRANTED && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED)
         {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_PHONE_STATE))
             {
                 ToastUtil.show(MainActivity.this, "您已经拒绝过一次");
             }
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
-                            Manifest.permission.READ_PHONE_STATE, Manifest.permission
-                            .READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    READ_PHONE_STATE_PERMISSIONS_REQUEST_CODE);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission
+                    .READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, READ_PHONE_STATE_PERMISSIONS_REQUEST_CODE);
         }
         else
         {
@@ -126,11 +124,8 @@ public class MainActivity extends BaseActivity
         switch (requestCode)
         {
             case READ_PHONE_STATE_PERMISSIONS_REQUEST_CODE:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED
-                        )
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager
+                        .PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED)
                 {
                     initMain();
                 }
@@ -143,8 +138,7 @@ public class MainActivity extends BaseActivity
 
     private void initMain()
     {
-        fragmentTabHost.setup(this, getSupportFragmentManager(),
-                R.id.main_layout);
+        fragmentTabHost.setup(this, getSupportFragmentManager(), R.id.main_layout);
 
         for (int i = 0; i < texts.length; i++)
         {
@@ -153,7 +147,8 @@ public class MainActivity extends BaseActivity
             fragmentTabHost.addTab(spec, fragmentArray[i], null);
 
             //设置背景(必须在addTab之后，由于需要子节点（底部菜单按钮）否则会出现空指针异常)
-            // fragmentTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.main_tab_selector);
+            // fragmentTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable
+            // .main_tab_selector);
         }
         fragmentTabHost.getTabWidget().setDividerDrawable(R.color.transparent);
         new VersionManager(this).init();
@@ -202,7 +197,8 @@ public class MainActivity extends BaseActivity
                             {
                                 Thread.sleep(500);
                                 System.exit(0);
-                            } catch (InterruptedException e)
+                            }
+                            catch (InterruptedException e)
                             {
                                 e.printStackTrace();
                             }
@@ -243,7 +239,7 @@ public class MainActivity extends BaseActivity
                 }, 100);
 
             }
-            else  if (TAB_VIDEO.contentEquals(intent.getAction()))
+            else if (TAB_VIDEO.contentEquals(intent.getAction()))
             {
                 fragmentTabHost.postDelayed(new Runnable()
                 {

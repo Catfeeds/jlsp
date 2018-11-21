@@ -27,24 +27,23 @@ import com.zb.wyd.activity.LoginActivity;
 import com.zb.wyd.activity.PhotoDetailActivity;
 import com.zb.wyd.activity.VideoPlayActivity;
 import com.zb.wyd.activity.VidoeListActivity;
-import com.zb.wyd.adapter.CataAdapter;
+import com.zb.wyd.adapter.CategoryAdapter;
 import com.zb.wyd.adapter.IntegerAreaAdapter;
 import com.zb.wyd.entity.AdInfo;
-import com.zb.wyd.entity.CataInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.AdInfoListHandler;
 import com.zb.wyd.json.CataInfoListHandler;
-import com.zb.wyd.json.LiveInfoListHandler;
 import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.APPUtils;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
-import com.zb.wyd.widget.CataPopupWindow;
+import com.zb.wyd.widget.CategoryPopupWindow;
 import com.zb.wyd.widget.FullyGridLayoutManager;
 import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
@@ -83,8 +82,8 @@ public class VideoFragment1 extends BaseFragment implements IRequestListener, Vi
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
 
-    private List<CataInfo> cataInfoList = new ArrayList<>();
-    private CataAdapter mCataAdapter;
+    private List<CategoryInfo> cataInfoList = new ArrayList<>();
+    private CategoryAdapter mCataAdapter;
     private View rootView = null;
     private Unbinder unbinder;
 
@@ -137,7 +136,7 @@ public class VideoFragment1 extends BaseFragment implements IRequestListener, Vi
                     cataInfoList.clear();
                     cataInfoList.addAll(mCataInfoListHandler.getCataInfoList());
 
-                    CataInfo mCataInfo = new CataInfo();
+                    CategoryInfo mCataInfo = new CategoryInfo();
                     mCataInfo.setSelected(true);
                     mCataInfo.setId("0");
                     mCataInfo.setName("全部");
@@ -257,7 +256,7 @@ public class VideoFragment1 extends BaseFragment implements IRequestListener, Vi
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvCata.setLayoutManager(linearLayoutManager);
 
-        mCataAdapter = new CataAdapter(cataInfoList, getActivity(), new MyItemClickListener()
+        mCataAdapter = new CategoryAdapter(cataInfoList, getActivity(), new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
@@ -526,7 +525,7 @@ public class VideoFragment1 extends BaseFragment implements IRequestListener, Vi
         }
     }
 
-    private CataPopupWindow mCataPopupWindow;
+    private CategoryPopupWindow mCataPopupWindow;
 
     @Override
     public void onClick(View v)
@@ -535,7 +534,7 @@ public class VideoFragment1 extends BaseFragment implements IRequestListener, Vi
         {
             if (null == mCataPopupWindow)
             {
-                mCataPopupWindow = new CataPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
+                mCataPopupWindow = new CategoryPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
                 {
                     @Override
                     public void onItemClick(View view, int position)

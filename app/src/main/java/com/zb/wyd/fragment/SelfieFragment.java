@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +29,10 @@ import com.zb.wyd.activity.LoginActivity;
 import com.zb.wyd.activity.PhotoDetailActivity;
 import com.zb.wyd.activity.VideoPlayActivity;
 import com.zb.wyd.activity.WebViewActivity;
-import com.zb.wyd.adapter.CataAdapter;
+import com.zb.wyd.adapter.CategoryAdapter;
 import com.zb.wyd.adapter.SelfieAdapter;
 import com.zb.wyd.entity.AdInfo;
-import com.zb.wyd.entity.CataInfo;
-import com.zb.wyd.entity.LiveInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.entity.NoticeInfo;
 import com.zb.wyd.entity.SelfieInfo;
 import com.zb.wyd.entity.VideoInfo;
@@ -43,19 +41,15 @@ import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.AdInfoListHandler;
 import com.zb.wyd.json.CataInfoListHandler;
-import com.zb.wyd.json.LiveInfoListHandler;
-import com.zb.wyd.json.ResultHandler;
 import com.zb.wyd.json.SelfieInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.APPUtils;
 import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
-import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
-import com.zb.wyd.widget.CataPopupWindow;
+import com.zb.wyd.widget.CategoryPopupWindow;
 import com.zb.wyd.widget.MarqueeTextView;
-import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
 
 import java.util.ArrayList;
@@ -66,7 +60,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cc.ibooker.ztextviewlib.AutoVerticalScrollTextView;
 import cc.ibooker.ztextviewlib.AutoVerticalScrollTextViewUtil;
 
 /**
@@ -74,57 +67,54 @@ import cc.ibooker.ztextviewlib.AutoVerticalScrollTextViewUtil;
  */
 public class SelfieFragment extends BaseFragment implements IRequestListener, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener
 {
-    @BindView(R.id.tv_notice)
-    MarqueeTextView tvNotice;
 
     @BindView(R.id.banner)
-    CustomBanner               mBanner;
+    CustomBanner mBanner;
     @BindView(R.id.rv_photo)
-    RecyclerView               rvPhoto;
+    RecyclerView rvPhoto;
     @BindView(R.id.iv_show)
-    ImageView                  ivMore;
+    ImageView ivMore;
     @BindView(R.id.rv_cata)
-    RecyclerView               rvCata;
+    RecyclerView rvCata;
     @BindView(R.id.tv_new)
-    TextView                   tvNew;
+    TextView tvNew;
     @BindView(R.id.tv_fav)
-    TextView                   tvFav;
-    @BindView(R.id.tv_add)
-    TextView                   tvAdd;
+    TextView tvFav;
+    @BindView(R.id.iv_add)
+    ImageView ivAdd;
     @BindView(R.id.topView)
-    View                       topView;
+    View topView;
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
-    private List<CataInfo> cataInfoList = new ArrayList<>();
-    private CataAdapter mCataAdapter;
-    private AutoVerticalScrollTextViewUtil aUtil;
+    private List<CategoryInfo> cataInfoList = new ArrayList<>();
+    private CategoryAdapter mCataAdapter;
 
     private int getPhotoCount;
     private List<SelfieInfo> selfieInfoList = new ArrayList<>();
     private SelfieAdapter mSelfieAdapter;
 
-    private List<String> picList    = new ArrayList<>();
+    private List<String> picList = new ArrayList<>();
     private List<AdInfo> adInfoList = new ArrayList<>();
 
     private View rootView = null;
     private Unbinder unbinder;
     private int pn = 1;
 
-    private              String photoTag              = "0";
-    private              String sort                  = "new";
-    private static final String GET_AD_LIST           = "get_ad_list";
-    private static final String GET_CATA_LIST         = "get_cata_list";
-    private static final String GET_PHPTO_LIST        = "get_phpto_list";
-    private static final int    REQUEST_SUCCESS       = 0x01;
-    private static final int    REQUEST_FAIL          = 0x02;
-    private static final int    GET_CATA_LIST_SUCCESS = 0x04;
-    private static final int    GET_AD_LIST_SUCCESS   = 0x03;
+    private String photoTag = "0";
+    private String sort = "new";
+    private static final String GET_AD_LIST = "get_ad_list";
+    private static final String GET_CATA_LIST = "get_cata_list";
+    private static final String GET_PHPTO_LIST = "get_phpto_list";
+    private static final int REQUEST_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
+    private static final int GET_CATA_LIST_SUCCESS = 0x04;
+    private static final int GET_AD_LIST_SUCCESS = 0x03;
 
-    private static final int         GET_CATA_LIST_CODE  = 0x10;
-    private static final int         GET_PHOTO_LIST_CODE = 0x11;
-    private static final int         GET_AD_LIST_CODE    = 0X12;
+    private static final int GET_CATA_LIST_CODE = 0x10;
+    private static final int GET_PHOTO_LIST_CODE = 0x11;
+    private static final int GET_AD_LIST_CODE = 0X12;
     @SuppressLint("HandlerLeak")
-    private              BaseHandler mHandler            = new BaseHandler(getActivity())
+    private BaseHandler mHandler = new BaseHandler(getActivity())
     {
         @Override
         public void handleMessage(Message msg)
@@ -166,7 +156,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                     cataInfoList.addAll(mCataInfoListHandler.getCataInfoList());
 
 
-                    CataInfo mCataInfo = new CataInfo();
+                    CategoryInfo mCataInfo = new CategoryInfo();
                     mCataInfo.setSelected(true);
                     mCataInfo.setId("0");
                     mCataInfo.setName("全部");
@@ -204,30 +194,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                     {
                         initAd();
                     }
-                    List<NoticeInfo> noticeInfoList = MyApplication.getInstance().getNoticeList();
 
-                    StringBuffer sb = new StringBuffer();
-                    if (noticeInfoList.size() < 3)
-                    {
-                        for (int i = 0; i < 3; i++)
-                        {
-                            for (int j = 0; j < noticeInfoList.size(); j++)
-                            {
-                                sb.append(noticeInfoList.get(j).getFrontContent());
-                                sb.append("                 ");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 0; j < noticeInfoList.size(); j++)
-                        {
-                            sb.append(noticeInfoList.get(j).getFrontContent());
-                            sb.append("                 ");
-                        }
-                    }
-
-                    tvNotice.setText(sb.toString());
                     break;
 
                 case GET_AD_LIST_CODE:
@@ -236,11 +203,11 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             }
         }
     };
+
     @Override
     public void onResume()
     {
         super.onResume();
-        tvNotice.requestFocus();
     }
 
     private void adClick(String link)
@@ -269,11 +236,12 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             }
             else if (link.startsWith("http"))
             {
-                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "详情")
-                        .putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, link));
+                startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "详情").putExtra(WebViewActivity
+                        .IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, link));
             }
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -313,7 +281,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         ivMore.setOnClickListener(this);
         tvNew.setOnClickListener(this);
         tvFav.setOnClickListener(this);
-        tvAdd.setOnClickListener(this);
+        ivAdd.setOnClickListener(this);
 
         rvPhoto.setOnScrollListener(new RecyclerView.OnScrollListener()
         {
@@ -374,8 +342,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         int maxVal = Integer.MIN_VALUE;
         for (int i = 0; i < size; i++)
         {
-            if (arr[i] > maxVal)
-                maxVal = arr[i];
+            if (arr[i] > maxVal) maxVal = arr[i];
         }
         return maxVal;
     }
@@ -390,7 +357,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvCata.setLayoutManager(linearLayoutManager);
 
-        mCataAdapter = new CataAdapter(cataInfoList, getActivity(), new MyItemClickListener()
+        mCataAdapter = new CategoryAdapter(cataInfoList, getActivity(), new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
@@ -424,8 +391,8 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             {
                 if (MyApplication.getInstance().isLogin())
                 {
-                    if(null !=selfieInfoList&&position<selfieInfoList.size())
-                    startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", selfieInfoList.get(position).getId()));
+                    if (null != selfieInfoList && position < selfieInfoList.size())
+                        startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", selfieInfoList.get(position).getId()));
 
                 }
                 else
@@ -444,8 +411,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                int topRowVerticalPosition =
-                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
             }
 
@@ -467,8 +433,8 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("pn", "1");
         valuePairs.put("num", "15");
-        DataRequest.instance().request(getActivity(), Urls.getPhotoCataUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs,
-                new CataInfoListHandler());
+        DataRequest.instance().request(getActivity(), Urls.getPhotoCataUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs, new
+                CataInfoListHandler());
     }
 
 
@@ -479,8 +445,8 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         valuePairs.put("tag", photoTag);
         valuePairs.put("sort", sort);
         valuePairs.put("num", "20");
-        DataRequest.instance().request(getActivity(), Urls.getPhotoListUrl(), this, HttpRequest.GET, GET_PHPTO_LIST, valuePairs,
-                new SelfieInfoListHandler());
+        DataRequest.instance().request(getActivity(), Urls.getPhotoListUrl(), this, HttpRequest.GET, GET_PHPTO_LIST, valuePairs, new
+                SelfieInfoListHandler());
     }
 
 
@@ -488,8 +454,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     {
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("pos_id", "3");
-        DataRequest.instance().request(getActivity(), Urls.getAdListUrl(), this, HttpRequest.GET, GET_AD_LIST, valuePairs,
-                new AdInfoListHandler());
+        DataRequest.instance().request(getActivity(), Urls.getAdListUrl(), this, HttpRequest.GET, GET_AD_LIST, valuePairs, new AdInfoListHandler());
     }
 
     private void initAd()
@@ -559,37 +524,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                 //str 轮播图当前项对应的数据
                 AdInfo mAdInfo = adInfoList.get(position);
                 adClick(mAdInfo.getLink());
-//                if (!TextUtils.isEmpty(mAdInfo.getLink()))
-//                {
-//                    if (mAdInfo.getLink().startsWith("video://"))
-//                    {
-//                        String id = mAdInfo.getLink().replace("video://", "");
-//                        VideoInfo mVideoInfo = new VideoInfo();
-//                        mVideoInfo.setId(id);
-//                        mVideoInfo.setV_name("点播");
-//                        Bundle b = new Bundle();
-//                        b.putSerializable("VideoInfo", mVideoInfo);
-//                        startActivity(new Intent(getActivity(), VideoPlayActivity.class).putExtras(b));
-//                    }
-//                    else if (mAdInfo.getLink().startsWith("live://"))
-//                    {
-//                        String id = mAdInfo.getLink().replace("live://", "");
-//                        startActivity(new Intent(getActivity(), LiveActivity.class).putExtra("biz_id", id));
-//                    }
-//                    else if (mAdInfo.getLink().startsWith("photo://"))
-//                    {
-//                        String id = mAdInfo.getLink().replace("photo://", "");
-//                        startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", id));
-//                    }
-//                    else if (mAdInfo.getLink().startsWith("http"))
-//                    {
-//                        startActivity(new Intent(getActivity(), WebViewActivity.class)
-//                                .putExtra(WebViewActivity.EXTRA_TITLE, mAdInfo.getAname())
-//                                .putExtra(WebViewActivity.IS_SETTITLE, true)
-//                                .putExtra(WebViewActivity.EXTRA_URL, mAdInfo.getLink())
-//                        );
-//                    }
-//                }
+
             }
         });
 
@@ -603,10 +538,6 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         {
             unbinder.unbind();
             unbinder = null;
-        }
-        if (null != aUtil)
-        {
-            aUtil.stop();
         }
         mHandler.removeCallbacksAndMessages(null);
     }
@@ -651,7 +582,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         }
     }
 
-    private CataPopupWindow mCataPopupWindow;
+    private CategoryPopupWindow mCataPopupWindow;
 
     @Override
     public void onClick(View v)
@@ -659,7 +590,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         if (v == ivMore)
         {
 
-            mCataPopupWindow = new CataPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
+            mCataPopupWindow = new CategoryPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
             {
                 @Override
                 public void onItemClick(View view, int position)
@@ -707,7 +638,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             tvFav.setSelected(true);
             mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
         }
-        else if (v == tvAdd)
+        else if (v == ivAdd)
         {
             if (MyApplication.getInstance().isLogin())
             {
@@ -722,11 +653,8 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                         @Override
                         public void onClick(View v)
                         {
-                            startActivity(new Intent(getActivity(), WebViewActivity.class)
-                                    .putExtra(WebViewActivity.EXTRA_TITLE, "申请认证")
-                                    .putExtra(WebViewActivity.IS_SETTITLE, true)
-                                    .putExtra(WebViewActivity.EXTRA_URL, Urls.getCooperationUrl())
-                            );
+                            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "申请认证").putExtra
+                                    (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getCooperationUrl()));
                         }
                     }, new View.OnClickListener()
                     {

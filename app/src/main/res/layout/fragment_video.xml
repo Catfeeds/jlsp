@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <View
         android:id="@+id/topView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dm_1"
-        android:background="@color/yellow"/>
+        android:background="@drawable/main_bg" />
+
     <com.zb.wyd.widget.VerticalSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/yellow">
+                android:background="@color/white">
 
                 <ImageView
                     android:id="@+id/iv_show"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dm_10"
                     android:layout_marginRight="@dimen/dm_10"
                     android:layout_marginTop="@dimen/dm_5"
-                    android:background="@drawable/ic_more"/>
+                    android:background="@drawable/ic_more" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_cata"
@@ -42,9 +47,8 @@
                 </android.support.v7.widget.RecyclerView>
             </RelativeLayout>
 
-            <com.donkingliang.banner.CustomBanner
+            <com.donkingliang.banner.CustomBanner xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/banner"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dm_5"
@@ -53,77 +57,49 @@
                 app:indicatorInterval="5dp"
                 app:indicatorSelectRes="@drawable/shape_point_unselect"
                 app:indicatorStyle="ORDINARY"
-                app:indicatorUnSelectRes="@drawable/shape_point_select"
-                />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                >
+                app:indicatorUnSelectRes="@drawable/shape_point_select" />
 
-                <ImageView
-                    android:id="@+id/iv_notice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_notice" />
-                <com.zb.wyd.widget.MarqueeTextView
-                    android:id="@+id/tv_notice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/iv_notice"
-                    android:ellipsize="marquee"
-                    android:focusable="true"
-                    android:textSize="@dimen/t16"
-                    android:textColor="@color/black"
-                    android:focusableInTouchMode="true"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:singleLine="true"
-
-                    />
-
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dm_10"
-                android:background="@color/grayE" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="@dimen/dm_10">
+
                 <TextView
                     android:id="@+id/tv_new"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dm_5"
-                    android:layout_weight="1"
-                    android:background="@drawable/anchor_tab_selector"
+                    android:background="@drawable/video_tab_selector"
                     android:gravity="center"
-                    android:padding="@dimen/dm_8"
+                    android:paddingBottom="@dimen/dm_10"
+                    android:paddingLeft="@dimen/dm_30"
+                    android:paddingRight="@dimen/dm_30"
+                    android:paddingTop="@dimen/dm_10"
                     android:text="最近更新"
-                    android:textColor="@drawable/anchor_tab_font_selector"
-                    android:textSize="@dimen/t14"/>
+                    android:textColor="@drawable/video_tab_font_selector"
+                    android:textSize="@dimen/t14" />
 
                 <TextView
                     android:id="@+id/tv_collection"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/dm_10"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dm_5"
-                    android:layout_weight="1"
-                    android:background="@drawable/anchor_tab_selector"
+                    android:background="@drawable/video_tab_selector"
                     android:gravity="center"
-                    android:padding="@dimen/dm_8"
+                    android:paddingBottom="@dimen/dm_10"
+                    android:paddingLeft="@dimen/dm_30"
+                    android:paddingRight="@dimen/dm_30"
+                    android:paddingTop="@dimen/dm_10"
                     android:text="最多收藏"
-                    android:textColor="@drawable/anchor_tab_font_selector"
-                    android:textSize="@dimen/t14"/>
+                    android:textColor="@drawable/video_tab_font_selector"
+                    android:textSize="@dimen/t14" />
 
             </LinearLayout>
+
             <com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView
                 android:id="@+id/pullToRefreshRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
     </com.zb.wyd.widget.VerticalSwipeRefreshLayout>
 </LinearLayout>

@@ -2,15 +2,11 @@ package com.zb.wyd.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.R;
-import com.zb.wyd.entity.CataInfo;
 import com.zb.wyd.entity.RankingInfo;
-import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.widget.CircleImageView;
 
 

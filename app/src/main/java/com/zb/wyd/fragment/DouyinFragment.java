@@ -17,16 +17,11 @@ import com.zb.wyd.R;
 import com.zb.wyd.activity.BaseHandler;
 import com.zb.wyd.activity.DyVideoActivity;
 import com.zb.wyd.activity.LoginActivity;
-import com.zb.wyd.activity.VideoPlayActivity;
 import com.zb.wyd.adapter.DyVideoAdapter;
-import com.zb.wyd.adapter.VideoAdapter;
-import com.zb.wyd.entity.CataInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
-import com.zb.wyd.json.AdInfoListHandler;
-import com.zb.wyd.json.CataInfoListHandler;
 import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.ConstantUtil;
@@ -55,7 +50,7 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.pullToRefreshRecyclerView)
-    PullToRefreshRecyclerView  mPullToRefreshRecyclerView;
+    PullToRefreshRecyclerView mPullToRefreshRecyclerView;
     private View rootView = null;
     private Unbinder unbinder;
     private RecyclerView mRecyclerView; //

@@ -16,8 +16,6 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="11111"
-        android:textColor="@drawable/main_tab_font_selector"
         android:textSize="@dimen/t16"
         android:textStyle="bold"/>
 
@@ -26,5 +24,5 @@
         android:layout_width="30dp"
         android:layout_height="3dp"
         android:layout_marginTop="@dimen/dm_5"
-        android:background="@color/blackC"/>
+        android:background="@color/text_violet"/>
 </LinearLayout>

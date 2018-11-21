@@ -2,23 +2,17 @@ package com.zb.wyd.widget;
 
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.CataFilterAdapter;
-import com.zb.wyd.entity.CataInfo;
+import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.listener.MyItemClickListener;
 
 import java.util.ArrayList;
@@ -27,7 +21,7 @@ import java.util.List;
 /**
  * 条件筛选
  */
-public class CataPopupWindow extends PopupWindow implements PopupWindow.OnDismissListener
+public class CategoryPopupWindow extends PopupWindow implements PopupWindow.OnDismissListener
 {
     View rootView;
     private MaxRecyclerView     mCataRv;
@@ -35,9 +29,9 @@ public class CataPopupWindow extends PopupWindow implements PopupWindow.OnDismis
     private CataFilterAdapter   mAdapter;
     private TextView            mClosedTv;
     private MyItemClickListener listener;
-    List<CataInfo> mFilterList = new ArrayList<>();
+    List<CategoryInfo> mFilterList = new ArrayList<>();
 
-    public CataPopupWindow(Activity context, List<CataInfo> mFilterList, MyItemClickListener listener)
+    public CategoryPopupWindow(Activity context, List<CategoryInfo> mFilterList, MyItemClickListener listener)
     {
         super(context);
         this.mContext = context;

@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 描述：一句话简单描述
  */
-public class CataInfo implements Serializable
+public class CategoryInfo implements Serializable
 {
     private String id;
 
@@ -16,9 +16,9 @@ public class CataInfo implements Serializable
     private boolean isSelected;
 
 
-    public  CataInfo(){}
+    public CategoryInfo(){}
 
-    public  CataInfo(JSONObject obj)
+    public CategoryInfo(JSONObject obj)
     {
         this.id = obj.optString("pid");
         this.name = obj.optString("name");

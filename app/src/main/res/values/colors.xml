@@ -50,5 +50,6 @@
 
     <color name="text_white">#E9DFED</color>
     <color name="text_violet">#4D3556</color>
+    <color name="text_violet_normal">#FF947F9B</color>
 
 </resources>
