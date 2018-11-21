@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,40 +39,25 @@ import butterknife.ButterKnife;
 public class LoginActivity extends BaseActivity implements IRequestListener
 {
     @BindView(R.id.iv_back)
-    ImageView      ivBack;
-    @BindView(R.id.iv_account)
-    ImageView      ivAccount;
+    ImageView ivBack;
     @BindView(R.id.et_account)
-    EditText       etAccount;
-    @BindView(R.id.iv_pwd)
-    ImageView      ivPwd;
+    EditText etAccount;
     @BindView(R.id.et_pwd)
-    EditText       etPwd;
+    EditText etPwd;
     @BindView(R.id.btn_login)
-    Button         btnLogin;
-    @BindView(R.id.btn_register)
-    Button         btnRegister;
-    @BindView(R.id.tv_recovery_pwd_email)
-    TextView       tvRecoveryPwd;
-
+    Button btnLogin;
+    @BindView(R.id.ll_register)
+    LinearLayout mRegisterLayout;
     @BindView(R.id.tv_recovery_pwd_phone)
-    TextView       tvRecoveryPwdPhone;
-    @BindView(R.id.tv_email)
-    TextView       tvEmail;
-    @BindView(R.id.rl_main)
-    RelativeLayout rlMain;
-    @BindView(R.id.iv_bg)
-    ImageView      ivBg;
-    @BindView(R.id.tv_rest_uname)
-    TextView       tvRestUname;
+    TextView tvRecoveryPwdPhone;
 
     private String account;
     private String pwd;
-    private static final String      USER_LOGIN      = "user_login";
-    private static final int         REQUEST_SUCCESS = 0x01;
-    private static final int         REQUEST_FAIL    = 0x02;
+    private static final String USER_LOGIN = "user_login";
+    private static final int REQUEST_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
     @SuppressLint("HandlerLeak")
-    private              BaseHandler mHandler        = new BaseHandler(LoginActivity.this)
+    private BaseHandler mHandler = new BaseHandler(LoginActivity.this)
     {
         @Override
         public void handleMessage(Message msg)
@@ -112,36 +98,20 @@ public class LoginActivity extends BaseActivity implements IRequestListener
     @Override
     protected void initEvent()
     {
-        etAccount.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                ivAccount.setSelected(hasFocus);
-            }
-        });
-        etPwd.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                ivPwd.setSelected(hasFocus);
-            }
-        });
 
         btnLogin.setOnClickListener(this);
-        btnRegister.setOnClickListener(this);
-        tvRecoveryPwd.setOnClickListener(this);
+        mRegisterLayout.setOnClickListener(this);
         ivBack.setOnClickListener(this);
-        tvRestUname.setOnClickListener(this);
         tvRecoveryPwdPhone.setOnClickListener(this);
     }
 
     @Override
     protected void initViewData()
     {
-        ImageLoader.getInstance().displayImage(ConfigManager.instance().getBgLogin(), ivBg);
-        tvEmail.setText("防丢邮箱,发邮件到" + ConfigManager.instance().getSystemEmail() + "获取最新地址");
+        //        ImageLoader.getInstance().displayImage(ConfigManager.instance().getBgLogin(),
+        // ivBg);
+        //        tvEmail.setText("防丢邮箱,发邮件到" + ConfigManager.instance().getSystemEmail() +
+        // "获取最新地址");
     }
 
     @Override
@@ -159,8 +129,8 @@ public class LoginActivity extends BaseActivity implements IRequestListener
 
         if (v == btnLogin)
         {
-            InputMethodManager imm = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context
+                    .INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
             account = etAccount.getText().toString();
@@ -189,15 +159,15 @@ public class LoginActivity extends BaseActivity implements IRequestListener
             Map<String, String> valuePairs = new HashMap<>();
             valuePairs.put("user_name", account);
             valuePairs.put("password", pwd);
-            DataRequest.instance().request(LoginActivity.this, Urls.getLoginUrl(), this, HttpRequest.POST, USER_LOGIN, valuePairs,
-                    new LoginHandler());
+            DataRequest.instance().request(LoginActivity.this, Urls.getLoginUrl(), this,
+                    HttpRequest.POST, USER_LOGIN, valuePairs, new LoginHandler());
 
 
         }
-        else if (v == btnRegister)
+        else if (v == mRegisterLayout)
         {
-            //startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            startActivity(new Intent(LoginActivity.this, PhoneRegisterActivity.class));
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            //startActivity(new Intent(LoginActivity.this, PhoneRegisterActivity.class));
 
         }
 
@@ -205,23 +175,9 @@ public class LoginActivity extends BaseActivity implements IRequestListener
         {
             finish();
         }
-        else if (v == tvRecoveryPwd)
-        {
-           startActivity(new Intent(LoginActivity.this, RecoveryPwdActivity.class));
-            //startActivity(new Intent(LoginActivity.this, FindPwdActivity.class));
-
-        }
-        else  if(v == tvRecoveryPwdPhone)
+        else if (v == tvRecoveryPwdPhone)
         {
             startActivity(new Intent(LoginActivity.this, FindPwdActivity.class));
-        }
-        else if(v == tvRestUname)
-        {
-            startActivity(new Intent(LoginActivity.this,WebViewActivity.class)
-                    .putExtra(WebViewActivity.EXTRA_TITLE, "用戶名找回")
-                    .putExtra(WebViewActivity.IS_SETTITLE, true)
-                    .putExtra(WebViewActivity.EXTRA_URL,Urls.getResetunameUrl())
-            );
         }
     }
 
@@ -241,7 +197,6 @@ public class LoginActivity extends BaseActivity implements IRequestListener
             }
         }
     }
-
 
 
 }

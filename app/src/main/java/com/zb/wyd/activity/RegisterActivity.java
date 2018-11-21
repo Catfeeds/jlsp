@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,34 +38,25 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
 {
     @BindView(R.id.iv_back)
     ImageView ivBack;
-    @BindView(R.id.iv_account)
-    ImageView ivAccount;
     @BindView(R.id.et_account)
-    EditText  etAccount;
-    @BindView(R.id.iv_pwd)
-    ImageView ivPwd;
+    EditText etAccount;
     @BindView(R.id.et_pwd)
-    EditText  etPwd;
-    @BindView(R.id.iv_invitation)
-    ImageView ivInvitation;
-    @BindView(R.id.et_invitation)
-    EditText  etInvitation;
+    EditText etPwd;
+    @BindView(R.id.et_pwd1)
+    EditText etPwd1;
+
     @BindView(R.id.btn_register)
-    Button    btnRegister;
-    @BindView(R.id.tv_login)
-    TextView  tvLogin;
-    @BindView(R.id.tv_email)
-    TextView  tvEmail;
-    @BindView(R.id.iv_bg)
-    ImageView ivBg;
+    Button btnRegister;
+    @BindView(R.id.ll_login)
+    LinearLayout mLoginLayout;
 
     private String account;
     private String pwd;
-    private static final String      USER_REGISTER   = "user_register";
-    private static final int         REQUEST_SUCCESS = 0x01;
-    private static final int         REQUEST_FAIL    = 0x02;
+    private static final String USER_REGISTER = "user_register";
+    private static final int REQUEST_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
     @SuppressLint("HandlerLeak")
-    private              BaseHandler mHandler        = new BaseHandler(RegisterActivity.this)
+    private BaseHandler mHandler = new BaseHandler(RegisterActivity.this)
     {
         @Override
         public void handleMessage(Message msg)
@@ -106,33 +98,8 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
     @Override
     protected void initEvent()
     {
-        etAccount.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                ivAccount.setSelected(hasFocus);
-            }
-        });
-        etPwd.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                ivPwd.setSelected(hasFocus);
-            }
-        });
-
-        etInvitation.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                ivInvitation.setSelected(hasFocus);
-            }
-        });
         btnRegister.setOnClickListener(this);
-        tvLogin.setOnClickListener(this);
+        mLoginLayout.setOnClickListener(this);
         ivBack.setOnClickListener(this);
     }
 
@@ -140,17 +107,6 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
     protected void initViewData()
     {
 
-        tvEmail.setText("防丢邮箱,发邮件到"+ConfigManager.instance().getSystemEmail()+"获取最新地址");
-        ImageLoader.getInstance().displayImage(ConfigManager.instance().getBgLogin(), ivBg);
-        boolean reg_closed = ConfigManager.instance().getRegClosed();
-        if (reg_closed)
-        {
-            etInvitation.setHint("邀请码(必填)");
-        }
-        else
-        {
-            etInvitation.setHint("邀请码(选填)");
-        }
     }
 
 
@@ -162,7 +118,7 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
         {
             finish();
         }
-        else if (v == tvLogin)
+        else if (v == mLoginLayout)
         {
             finish();
         }
@@ -171,18 +127,18 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
             account = etAccount.getText().toString();
             pwd = etPwd.getText().toString();
 
-
+            String pwd1 = etPwd1.getText().toString();
             if (TextUtils.isEmpty(account) || account.length() < 5)
             {
                 ToastUtil.show(RegisterActivity.this, "请输入5-16位账号");
                 return;
             }
-//            String str = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
-//            if (!str.contains(String.valueOf(account.charAt(0))))
-//            {
-//                ToastUtil.show(RegisterActivity.this, "账号必须以字母开头");
-//                return;
-//            }
+            //            String str = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+            //            if (!str.contains(String.valueOf(account.charAt(0))))
+            //            {
+            //                ToastUtil.show(RegisterActivity.this, "账号必须以字母开头");
+            //                return;
+            //            }
 
 
             if (TextUtils.isEmpty(pwd) || pwd.length() < 6)
@@ -191,25 +147,16 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
                 return;
             }
 
-            String invite = etInvitation.getText().toString();
-            boolean reg_closed = ConfigManager.instance().getRegClosed();
-
-            if (reg_closed)
+            if (!etPwd.equals(pwd1))
             {
-                if (TextUtils.isEmpty(invite))
-                {
-                    ToastUtil.show(RegisterActivity.this, "请输入邀请码");
-                    return;
-                }
+                ToastUtil.show(this, "两次密码输入不一致");
             }
-
             Map<String, String> valuePairs = new HashMap<>();
             valuePairs.put("user_name", account);
             valuePairs.put("password", pwd);
             valuePairs.put("repassword", pwd);
-            valuePairs.put("invite", invite);
-            DataRequest.instance().request(RegisterActivity.this, Urls.getRegisterUrl(), this, HttpRequest.POST, USER_REGISTER, valuePairs,
-                    new ResultHandler());
+            DataRequest.instance().request(RegisterActivity.this, Urls.getRegisterUrl(), this,
+                    HttpRequest.POST, USER_REGISTER, valuePairs, new ResultHandler());
         }
 
 
