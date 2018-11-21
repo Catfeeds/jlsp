@@ -19,14 +19,13 @@ import com.zb.wyd.widget.RoundAngleImageView;
  */
 public class RecommendHolder extends RecyclerView.ViewHolder
 {
-    private TextView            mFollowTv;
-    private TextView            mPopularityTv;
-    private TextView            mNameTv;
-    private TextView            mStatusTv;
+    private TextView mFollowTv;
+    private TextView mPopularityTv;
+    private TextView mNameTv;
     private RoundAngleImageView mImgIv;
-    private RelativeLayout      mItemLayout;
+    private RelativeLayout mItemLayout;
     private MyItemClickListener listener;
-    private Context             context;
+    private Context context;
 
     public RecommendHolder(View rootView, Context context, MyItemClickListener listener)
     {
@@ -38,7 +37,6 @@ public class RecommendHolder extends RecyclerView.ViewHolder
         mNameTv = (TextView) rootView.findViewById(R.id.tv_name);
         mImgIv = (RoundAngleImageView) rootView.findViewById(R.id.iv_user_pic);
         mItemLayout = (RelativeLayout) rootView.findViewById(R.id.rl_item);
-        mStatusTv = (TextView) rootView.findViewById(R.id.tv_status);
     }
 
 
@@ -46,20 +44,12 @@ public class RecommendHolder extends RecyclerView.ViewHolder
     {
         int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 3;
         int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 2;
-        mItemLayout.setLayoutParams(new LinearLayout.LayoutParams(width, (int)(width*0.78)));
+        mItemLayout.setLayoutParams(new LinearLayout.LayoutParams(width, (int) (width * 0.78)));
         ImageLoader.getInstance().displayImage(mLiveInfo.getFace(), mImgIv);
         mFollowTv.setText(mLiveInfo.getFavour_count());
         mPopularityTv.setText(mLiveInfo.getOnline());
         mNameTv.setText(mLiveInfo.getNick());
 
-        if("1".equals(mLiveInfo.getIs_live()))
-        {
-            mStatusTv.setBackgroundResource(R.drawable.common_orange_3dp);
-        }
-        else
-        {
-            mStatusTv.setBackgroundResource(R.drawable.common_gray_3dp);
-        }
         mItemLayout.setOnClickListener(new View.OnClickListener()
         {
             @Override

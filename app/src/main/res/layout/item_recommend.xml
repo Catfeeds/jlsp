@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dm_5"
     android:orientation="vertical">
@@ -11,30 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true">
+
         <com.zb.wyd.widget.RoundAngleImageView
             android:id="@+id/iv_user_pic"
-            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@color/text_blue1"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_user_head" />
 
         <TextView
-            android:id="@+id/tv_status"
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_above="@+id/rl_bottom"
             android:layout_margin="@dimen/dm_5"
-            android:background="@drawable/common_orange_3dp"
-            android:paddingBottom="@dimen/dm_3"
-            android:paddingLeft="@dimen/dm_8"
-            android:paddingRight="@dimen/dm_8"
-            android:paddingTop="@dimen/dm_3"
-            android:text="LIVE"
-            android:textColor="@color/blackC"
-            android:textSize="@dimen/t10"/>
-
+            android:maxLines="1"
+            android:text="宝宝"
+            android:textColor="@color/white"
+            android:textSize="@dimen/t14" />
 
         <RelativeLayout
+            android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -46,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_follow"/>
+                android:src="@drawable/ic_follow" />
 
 
             <TextView
@@ -58,35 +54,30 @@
                 android:layout_toRightOf="@+id/iv_follow"
                 android:text="1111"
                 android:textColor="@color/white"
-                android:textSize="@dimen/t10"/>
+                android:textSize="@dimen/t10" />
 
             <TextView
                 android:id="@+id/tv_popularity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dm_5"
+                android:layout_toRightOf="@+id/iv_popularity"
                 android:text="1111"
                 android:textColor="@color/white"
-                android:textSize="@dimen/t10"/>
+                android:textSize="@dimen/t10" />
 
             <ImageView
+                android:id="@+id/iv_popularity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/tv_popularity"
-                android:src="@drawable/ic_popularity"/>
+                android:layout_marginLeft="@dimen/dm_20"
+                android:layout_toRightOf="@+id/tv_follow"
+                android:src="@drawable/ic_popularity" />
 
         </RelativeLayout>
     </RelativeLayout>
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dm_5"
-        android:maxLines="1"
-        android:text="宝宝"
-        android:textColor="@color/blackB"
-        android:textSize="@dimen/t14"/>
+
+
 </LinearLayout>
