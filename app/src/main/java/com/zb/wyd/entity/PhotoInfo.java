@@ -35,6 +35,9 @@ public class PhotoInfo
     private List<String> freePic   = new ArrayList<>();
     private List<String> chargePic = new ArrayList<>();
 
+
+    private String picUrl;
+    public PhotoInfo(){}
     public PhotoInfo(JSONObject obj)
     {
         this.savename = obj.optString("savename");
@@ -273,5 +276,15 @@ public class PhotoInfo
     public void setHas_favorite(String has_favorite)
     {
         this.has_favorite = has_favorite;
+    }
+
+    public String getPicUrl()
+    {
+        return picUrl;
+    }
+
+    public void setPicUrl(String picUrl)
+    {
+        this.picUrl = picUrl;
     }
 }

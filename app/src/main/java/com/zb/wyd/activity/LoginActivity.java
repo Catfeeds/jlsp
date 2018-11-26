@@ -166,8 +166,8 @@ public class LoginActivity extends BaseActivity implements IRequestListener
         }
         else if (v == mRegisterLayout)
         {
-            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            //startActivity(new Intent(LoginActivity.this, PhoneRegisterActivity.class));
+            //startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            startActivity(new Intent(LoginActivity.this, AuthorPhotoListActivity.class));
 
         }
 

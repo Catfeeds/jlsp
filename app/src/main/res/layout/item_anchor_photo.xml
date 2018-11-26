@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dm_10"
+    android:layout_marginRight="@dimen/dm_10"
+    android:layout_marginTop="@dimen/dm_15"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.zb.wyd.widget.CircleImageView
+            android:id="@+id/iv_user_pic"
+            android:layout_width="@dimen/dm_50"
+            android:layout_height="@dimen/dm_50"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_user_head" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dm_10"
+            android:layout_toRightOf="@+id/iv_user_pic"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="桃子就是你"
+                    android:textColor="#FF492455"
+                    android:textSize="@dimen/t16" />
+
+                <ImageView
+                    android:id="@+id/iv_user_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dm_5"
+                    android:layout_toRightOf="@+id/tv_user_name"
+                    android:src="@drawable/ic_woman" />
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6天前 9700次浏览"
+                android:textColor="@color/text_violet_normal"
+                android:textSize="@dimen/t14" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dm_10"
+        android:text="新买了一个玩具，从未如此猛烈的感觉很刺激，爽的一笔"
+        android:textColor="#FF5A4462 "
+        android:textSize="@dimen/t14" />
+
+
+    <com.zb.wyd.widget.MaxRecyclerView
+        android:id="@+id/rv_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </com.zb.wyd.widget.MaxRecyclerView>
+</LinearLayout>

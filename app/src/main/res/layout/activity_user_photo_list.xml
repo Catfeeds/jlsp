@@ -21,6 +21,16 @@
             android:padding="@dimen/dm_8"
             android:src="@drawable/ic_white_back" />
 
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="@dimen/t16"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_back"
+            android:layout_toLeftOf="@+id/iv_share"
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <ImageView
             android:id="@+id/iv_share"
