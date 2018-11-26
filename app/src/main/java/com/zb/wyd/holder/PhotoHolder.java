@@ -30,7 +30,11 @@ public class PhotoHolder extends RecyclerView.ViewHolder
         super(rootView);
         this.mContext = mContext;
         mImgIv = (ImageView) rootView.findViewById(R.id.iv_photo);
-
+        int spacingInPixels = mContext.getResources().getDimensionPixelSize(R.dimen.dm_10) * 5;
+        int width = (APPUtils.getScreenWidth(mContext) - spacingInPixels) / 3;
+        RelativeLayout.LayoutParams imgLayoutParams = new RelativeLayout.LayoutParams(width, width );
+        mImgIv.setLayoutParams(imgLayoutParams);
+        mImgIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
 

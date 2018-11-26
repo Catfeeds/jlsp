@@ -44,6 +44,7 @@ import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
 import com.zb.wyd.widget.CircleImageView;
 import com.zb.wyd.widget.DividerDecoration;
+import com.zb.wyd.widget.FullyGridLayoutManager;
 import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
 
@@ -65,16 +66,10 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     ImageView       ivBack;
     @BindView(R.id.tv_title)
     TextView        tvTitle;
-    @BindView(R.id.tv_name)
-    TextView        tvName;
-    @BindView(R.id.tv_add_time)
+    @BindView(R.id.tv_update_time)
     TextView        tvAddTime;
     @BindView(R.id.rv_photo)
     MaxRecyclerView rvPhoto;
-    @BindView(R.id.btn_buy)
-    Button          btnBuy;
-    @BindView(R.id.iv_collection)
-    ImageView       ivCollection;
     @BindView(R.id.rv_comment)
     MaxRecyclerView rvComment;
     @BindView(R.id.tv_send)
@@ -88,14 +83,6 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     EditText        etContent;
     @BindView(R.id.iv_share)
     ImageView       ivShare;
-    @BindView(R.id.tv_contact)
-    TextView        tvContact;
-    @BindView(R.id.tv_location)
-    TextView        tvLocation;
-    @BindView(R.id.rl_head)
-    RelativeLayout  rlHead;
-    @BindView(R.id.ll_label)
-    LinearLayout    llLabel;
     @BindView(R.id.iv_user_pic)
     CircleImageView ivUserPic;
     @BindView(R.id.tv_user_name)
@@ -160,19 +147,19 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                     if (null != photoInfo)
                     {
                         priceInfo = photoInfo.getPriceInfo();
-                        tvName.setText(photoInfo.getPname());
+                     //   tvName.setText(photoInfo.getPname());
                         tvAddTime.setText(photoInfo.getAdd_time());
                         tvDesc.setText(photoInfo.getDesc());
 
                         has_favorite = photoInfo.getHas_favorite();
-                        if ("1".equals(photoInfo.getHas_favorite()))
-                        {
-                            ivCollection.setEnabled(false);
-                        }
-                        else
-                        {
-                            ivCollection.setEnabled(true);
-                        }
+//                        if ("1".equals(photoInfo.getHas_favorite()))
+//                        {
+//                            ivCollection.setEnabled(false);
+//                        }
+//                        else
+//                        {
+//                            ivCollection.setEnabled(true);
+//                        }
 
 
                         if (!TextUtils.isEmpty(photoInfo.getTags()))
@@ -192,7 +179,7 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                                 tvLabel.setTextColor(ContextCompat.getColor(PhotoDetailActivity.this, R.color.white));
                                 tvLabel.setBackgroundResource(labelBgArr[i]);
                                 tvLabel.setLayoutParams(params);
-                                llLabel.addView(tvLabel);
+                             //   llLabel.addView(tvLabel);
 
                             }
                         }
@@ -213,38 +200,38 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                         chargePic.addAll(photoInfo.getChargePic());
 
 
-                        if (null != priceInfo)
-                        {
-                            btnBuy.setVisibility(View.VISIBLE);
-                        }
-                        else
-                        {
-                            btnBuy.setVisibility(View.GONE);
-
-
-                        }
-
-                        contact = photoInfo.getContact();
-                        if (TextUtils.isEmpty(contact))
-                        {
-                            tvContact.setVisibility(View.GONE);
-                        }
-                        else
-                        {
-                            tvContact.setVisibility(View.VISIBLE);
-                            tvContact.setText("联系作者");
-                        }
-
-                        if (TextUtils.isEmpty(photoInfo.getLocation()))
-                        {
-                            tvLocation.setVisibility(View.GONE);
-                        }
-                        else
-                        {
-                            tvLocation.setVisibility(View.VISIBLE);
-                            tvLocation.setText(photoInfo.getLocation());
-
-                        }
+//                        if (null != priceInfo)
+//                        {
+//                            btnBuy.setVisibility(View.VISIBLE);
+//                        }
+//                        else
+//                        {
+//                            btnBuy.setVisibility(View.GONE);
+//
+//
+//                        }
+//
+//                        contact = photoInfo.getContact();
+//                        if (TextUtils.isEmpty(contact))
+//                        {
+//                            tvContact.setVisibility(View.GONE);
+//                        }
+//                        else
+//                        {
+//                            tvContact.setVisibility(View.VISIBLE);
+//                            tvContact.setText("联系作者");
+//                        }
+//
+//                        if (TextUtils.isEmpty(photoInfo.getLocation()))
+//                        {
+//                            tvLocation.setVisibility(View.GONE);
+//                        }
+//                        else
+//                        {
+//                            tvLocation.setVisibility(View.VISIBLE);
+//                            tvLocation.setText(photoInfo.getLocation());
+//
+//                        }
 
                         if(chargePic.isEmpty())
                         {
@@ -296,12 +283,12 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                 case FAVORITE_LIKE_SUCCESS:
                     has_favorite = "1";
                     ToastUtil.show(PhotoDetailActivity.this, "收藏成功");
-                    ivCollection.setSelected(true);
+                   // ivCollection.setSelected(true);
                     break;
                 case UN_FAVORITE_LIKE_SUCCESS:
                     has_favorite = "0";
                     ToastUtil.show(PhotoDetailActivity.this, "取消收藏成功");
-                    ivCollection.setSelected(false);
+                   // ivCollection.setSelected(false);
                     break;
                 case SEND_COMMENT_SUCCESS:
                     etContent.setText("");
@@ -366,19 +353,19 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     protected void initEvent()
     {
         ivBack.setOnClickListener(this);
-        btnBuy.setOnClickListener(this);
-        ivCollection.setOnClickListener(this);
+//        btnBuy.setOnClickListener(this);
+      //  ivCollection.setOnClickListener(this);
         tvSend.setOnClickListener(this);
         ivShare.setOnClickListener(this);
         tvMore.setOnClickListener(this);
-        tvContact.setOnClickListener(this);
+//        tvContact.setOnClickListener(this);
     }
 
     @Override
     protected void initViewData()
     {
         tvTitle.setText("照片详情");
-        rvPhoto.setLayoutManager(new LinearLayoutManager(PhotoDetailActivity.this, LinearLayoutManager.VERTICAL, false));
+        rvPhoto.setLayoutManager(new FullyGridLayoutManager(PhotoDetailActivity.this,3));
         rvPhoto.setNestedScrollingEnabled(false);
 
         mPhotoAdapter = new PhotoAdapter(allPic, new MyItemClickListener()
@@ -463,22 +450,22 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         {
             finish();
         }
-        else if (v == btnBuy)
-        {
-            showBuyDialog();
-        }
-        else if (v == ivCollection)
-        {
-            if("1".equals(has_favorite))
-            {
-                unFavoriteLike();
-            }
-            else
-            {
-                favoriteLike();
-            }
-
-        }
+//        else if (v == btnBuy)
+//        {
+//            showBuyDialog();
+//        }
+//        else if (v == ivCollection)
+//        {
+//            if("1".equals(has_favorite))
+//            {
+//                unFavoriteLike();
+//            }
+//            else
+//            {
+//                favoriteLike();
+//            }
+//
+//        }
         else if (v == tvSend)
         {
             sendComment();
@@ -493,17 +480,17 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
             pn += 1;
             getCommentList();
         }
-        else if (v == tvContact)
-        {
-            if ("fee".equals(contact))
-            {
-                showBuyDialog();
-            }
-            else
-            {
-                tvContact.setText(contact);
-            }
-        }
+//        else if (v == tvContact)
+//        {
+//            if ("fee".equals(contact))
+//            {
+//                showBuyDialog();
+//            }
+//            else
+//            {
+//                tvContact.setText(contact);
+//            }
+//        }
     }
 
 
