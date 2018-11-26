@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_bg"
+        android:paddingTop="@dimen/dm_7"
+        android:paddingBottom="@dimen/dm_7">
+
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_white_back" />
+
+
+        <RelativeLayout
+            android:id="@+id/rl_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dm_10"
+            android:layout_marginRight="@dimen/dm_20"
+            android:layout_toRightOf="@id/iv_back"
+            android:background="@drawable/main_top_search_bg">
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dm_7"
+                android:src="@drawable/ic_white_search" />
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dm_30"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dm_10"
+                android:layout_toRightOf="@+id/iv_search"
+                android:background="@color/transparent"
+                android:hint="输入你想看的视频 主播 小说"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:textColor="@color/text_white"
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/t14" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/dm_15"
+        android:text="搜索结果："
+        android:textColor="@color/text_violet_normal"
+        android:textSize="@dimen/t16" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dm_10"
+        android:background="@color/line" />
+
+    <com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView
+        android:id="@+id/pullToRefreshRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

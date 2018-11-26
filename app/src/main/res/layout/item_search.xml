@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dm_15">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_search_live" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dm_10"
+                android:layout_toRightOf="@+id/iv_type"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="1111111111111"
+                android:textColor="@color/text_violet"
+                android:textSize="@dimen/t16" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dm_10"
+                android:text="2018-03-02 18:43:30"
+                android:textColor="@color/text_gray"
+                android:textSize="@dimen/t14" />
+
+
+            <TextView
+                android:id="@+id/tv_views"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dm_20"
+                android:layout_marginTop="@dimen/dm_10"
+                android:text="9999浏览"
+                android:textColor="@color/text_gray"
+                android:textSize="@dimen/t14" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+<View
+    android:background="@color/line"
+    android:layout_marginLeft="@dimen/dm_15"
+    android:layout_marginRight="@dimen/dm_15"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dm_1"/>
+</LinearLayout>

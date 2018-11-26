@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -27,10 +28,11 @@ import com.zb.wyd.fragment.VideoFragment;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.VersionManager;
+import com.zb.wyd.widget.CircleImageView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
 
-
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class MainActivity extends BaseActivity
@@ -40,10 +42,16 @@ public class MainActivity extends BaseActivity
     FragmentTabHost fragmentTabHost;
     public static final String TAB_LIVE = "tab_live";
     public static final String TAB_VIDEO = "tab_video";
+    @BindView(R.id.iv_user_pic)
+    CircleImageView ivUserPic;
+    @BindView(R.id.tv_sign_in)
+    TextView tvSignIn;
+    @BindView(R.id.rl_search)
+    RelativeLayout rlSearch;
 
-    private String texts[] = {"直播","抖音", "视频", "自拍", "宝盒"};
+    private String texts[] = {"直播", "抖音", "视频", "自拍", "宝盒"};
     private int imageButton[] = {R.drawable.ic_live_selector, R.drawable.ic_dy_selector, R.drawable.ic_video_selector, R.drawable
-            .ic_photo_selector, R.drawable.ic_member_selector};
+            .ic_photo_selector, R.drawable.ic_box_selector};
 
 
     private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class, MemberFragment.class};
@@ -66,6 +74,7 @@ public class MainActivity extends BaseActivity
         StatusBarUtil.StatusBarLightMode(MainActivity.this, false);
     }
 
+
     @Override
     protected void initEvent()
     {
@@ -84,6 +93,9 @@ public class MainActivity extends BaseActivity
                 }
             }
         });
+
+        tvSignIn.setOnClickListener(this);
+        rlSearch.setOnClickListener(this);
     }
 
     public void setTab(int p)
@@ -219,6 +231,7 @@ public class MainActivity extends BaseActivity
 
     private MyBroadCastReceiver mMyBroadCastReceiver;
 
+
     class MyBroadCastReceiver extends BroadcastReceiver
     {
 
@@ -268,4 +281,18 @@ public class MainActivity extends BaseActivity
     }
 
 
+    @Override
+    public void onClick(View v)
+    {
+        super.onClick(v);
+        if (v == tvSignIn)
+        {
+            startActivity(new Intent(MainActivity.this, AuthorPhotoListActivity.class));
+        }
+        else if (v == rlSearch)
+        {
+            startActivity(new Intent(MainActivity.this, SearchListActivity.class));
+
+        }
+    }
 }

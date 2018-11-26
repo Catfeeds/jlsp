@@ -60,7 +60,7 @@ public class MyApplication extends Application
 
     public boolean isLogin()
     {
-        if (StringUtils.stringIsEmpty(ConfigManager.instance().getUserID()))
+        if (StringUtils.stringIsEmpty(ConfigManager.instance().getUniqueCode()))
         {
             return false;
         }

@@ -167,7 +167,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
 
 
                 case GET_VIDEO_LIST_CODE:
-                    getNewLive();
+                    getVideoIndex();
                     break;
 
                 case GET_AD_LIST_SUCCESS:
@@ -371,7 +371,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                 new CataInfoListHandler());
     }
 
-    private void getNewLive()
+    private void getVideoIndex()
     {
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("sort", sort);

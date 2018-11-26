@@ -50,6 +50,9 @@ public class LoginActivity extends BaseActivity implements IRequestListener
     LinearLayout mRegisterLayout;
     @BindView(R.id.tv_recovery_pwd_phone)
     TextView tvRecoveryPwdPhone;
+    @BindView(R.id.btn_guest_login)
+    Button btnGuestLogin;
+
 
     private String account;
     private String pwd;
@@ -103,6 +106,7 @@ public class LoginActivity extends BaseActivity implements IRequestListener
         mRegisterLayout.setOnClickListener(this);
         ivBack.setOnClickListener(this);
         tvRecoveryPwdPhone.setOnClickListener(this);
+        btnGuestLogin.setOnClickListener(this);
     }
 
     @Override
@@ -166,8 +170,8 @@ public class LoginActivity extends BaseActivity implements IRequestListener
         }
         else if (v == mRegisterLayout)
         {
-            //startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            startActivity(new Intent(LoginActivity.this, AuthorPhotoListActivity.class));
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            //startActivity(new Intent(LoginActivity.this, AuthorPhotoListActivity.class));
 
         }
 
@@ -178,6 +182,12 @@ public class LoginActivity extends BaseActivity implements IRequestListener
         else if (v == tvRecoveryPwdPhone)
         {
             startActivity(new Intent(LoginActivity.this, FindPwdActivity.class));
+        }
+        else if(v==btnGuestLogin)
+        {
+            Map<String, String> valuePairs = new HashMap<>();
+            DataRequest.instance().request(LoginActivity.this, Urls.getGusetLoginUrl(), this,
+                    HttpRequest.POST, USER_LOGIN, valuePairs, new LoginHandler());
         }
     }
 

@@ -184,7 +184,7 @@ public class WelComeActivity extends BaseActivity implements IRequestListener
     private void initDomainName()
     {
         boolean test = false;
-        if (test)
+        if (true)
         {
             mDomainName = "https://rzjyzy.com";
             mHandler.sendEmptyMessage(TEST_DOMAINNAME_SUCCESS);

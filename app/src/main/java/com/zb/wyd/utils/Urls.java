@@ -26,6 +26,11 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/user/login";
     }
+    //用戶登录
+    public static String getGusetLoginUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/user/guest";
+    }
 
 
     //用戶注册
@@ -50,13 +55,13 @@ public class Urls
     //点播
     public static String getVideoListUrl()
     {
-        return ConfigManager.instance().getDomainName() + "/video/list";
+        return ConfigManager.instance().getDomainName() + "/video/index";
     }
 
     //抖音
     public static String getDouyinListUrl()
     {
-        return ConfigManager.instance().getDomainName() + "/douyin/list";
+        return ConfigManager.instance().getDomainName() + "/douyin/index";
     }
 
     //获取真实的直播地址
@@ -125,7 +130,7 @@ public class Urls
     //获取图集
     public static String getPhotoListUrl()
     {
-        return ConfigManager.instance().getDomainName() + "/photo/list";
+        return ConfigManager.instance().getDomainName() + "/photo/index";
     }
 
 

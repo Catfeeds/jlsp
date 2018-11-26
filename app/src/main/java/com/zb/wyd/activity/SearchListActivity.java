@@ -1,33 +1,41 @@
 package com.zb.wyd.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
-import com.zb.wyd.adapter.AnchorPhotoAdapter;
-import com.zb.wyd.adapter.DyVideoAdapter;
-import com.zb.wyd.entity.AuthorPhotoInfo;
-import com.zb.wyd.entity.VideoInfo;
+import com.zb.wyd.adapter.SearchAdapter;
+import com.zb.wyd.entity.ChatInfo;
+import com.zb.wyd.entity.SearchInfo;
+import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
+import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
+import com.zb.wyd.utils.LogUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
-import com.zb.wyd.widget.DividerDecoration;
 import com.zb.wyd.widget.list.refresh.PullToRefreshBase;
 import com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,24 +43,24 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-//发布的自拍
-public class AuthorPhotoListActivity extends BaseActivity implements IRequestListener, PullToRefreshBase
-        .OnRefreshListener<RecyclerView>
+//搜索结果
+public class SearchListActivity extends BaseActivity implements IRequestListener, PullToRefreshBase.OnRefreshListener<RecyclerView>
 {
     @BindView(R.id.pullToRefreshRecyclerView)
     PullToRefreshRecyclerView mPullToRefreshRecyclerView;
     @BindView(R.id.iv_back)
     ImageView ivBack;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
+    @BindView(R.id.et_content)
+    EditText etContent;
     private RecyclerView mRecyclerView; //
-    private List<AuthorPhotoInfo> mAuthorPhotoInfoList = new ArrayList<>();
+    private List<SearchInfo> mSearchInfoList = new ArrayList<>();
 
     private int pn = 1;
     private int mRefreshStatus;
 
-    private AnchorPhotoAdapter mAnchorPhotoAdapter;
+    private SearchAdapter mSearchAdapter;
 
     private static final String GET_DY_LIST = "get_douyin_list";
     private static final int GET_VIDEO_LIST_SUCCESS = 0x01;
@@ -60,7 +68,7 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
 
 
     @SuppressLint("HandlerLeak")
-    private BaseHandler mHandler = new BaseHandler(AuthorPhotoListActivity.this)
+    private BaseHandler mHandler = new BaseHandler(SearchListActivity.this)
     {
         @Override
         public void handleMessage(Message msg)
@@ -69,7 +77,7 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
             switch (msg.what)
             {
                 case REQUEST_FAIL:
-                    ToastUtil.show(AuthorPhotoListActivity.this, msg.obj.toString());
+                    ToastUtil.show(SearchListActivity.this, msg.obj.toString());
 
                     break;
 
@@ -77,16 +85,12 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
                     VideoInfoListHandler mVideoInfoListHandler = (VideoInfoListHandler) msg.obj;
                     if (pn == 1)
                     {
-                        mAuthorPhotoInfoList.clear();
+                        mSearchInfoList.clear();
                     }
-//                    mAuthorPhotoInfoList.addAll(mVideoInfoListHandler.getVideoInfoList());
-//                    mAnchorPhotoAdapter.notifyDataSetChanged();
+                    //                    mAuthorPhotoInfoList.addAll(mVideoInfoListHandler.getVideoInfoList());
+                    //                    mAnchorPhotoAdapter.notifyDataSetChanged();
 
-                    for (int i = 0; i < 15; i++)
-                    {
-                        mAuthorPhotoInfoList.add(new AuthorPhotoInfo());
-                    }
-                    mAnchorPhotoAdapter.notifyDataSetChanged();
+                    mSearchAdapter.notifyDataSetChanged();
                     break;
 
             }
@@ -101,9 +105,9 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
     @Override
     protected void initViews(Bundle savedInstanceState)
     {
-        setContentView(R.layout.activity_user_photo_list);
+        setContentView(R.layout.activity_search_list);
         StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
-        StatusBarUtil.StatusBarLightMode(AuthorPhotoListActivity.this, false);
+        StatusBarUtil.StatusBarLightMode(SearchListActivity.this, false);
     }
 
     @Override
@@ -112,17 +116,40 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
         mPullToRefreshRecyclerView.setOnRefreshListener(this);
         mPullToRefreshRecyclerView.setPullRefreshEnabled(true);
         ivBack.setOnClickListener(this);
+
+        etContent.setOnEditorActionListener(new EditText.OnEditorActionListener()
+        {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH)
+                {
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    String mContent = etContent.getText().toString();
+
+                    return true;
+                }
+                return false;
+            }
+
+        });
     }
 
     @Override
     protected void initViewData()
     {
-        tvTitle.setText("发布的自拍");
         mRecyclerView = mPullToRefreshRecyclerView.getRefreshableView();
         mPullToRefreshRecyclerView.setPullLoadEnabled(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(new DividerDecoration(R.color.line));
-        mAnchorPhotoAdapter = new AnchorPhotoAdapter(mAuthorPhotoInfoList, AuthorPhotoListActivity.this, new MyItemClickListener()
+        for (int i = 0; i < 20; i++)
+        {
+            SearchInfo mSearchInfo = new SearchInfo();
+            mSearchInfo.setType(i % 3 + "");
+            mSearchInfoList.add(mSearchInfo);
+        }
+        mSearchAdapter = new SearchAdapter(mSearchInfoList, SearchListActivity.this, new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
@@ -132,8 +159,8 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
             }
         });
 
-        mRecyclerView.setAdapter(mAnchorPhotoAdapter);
-        loadData();
+        mRecyclerView.setAdapter(mSearchAdapter);
+        //loadData();
     }
 
     private void loadData()
@@ -141,7 +168,7 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        DataRequest.instance().request(AuthorPhotoListActivity.this, Urls.getDouyinListUrl(), this, HttpRequest.GET, GET_DY_LIST, valuePairs, new
+        DataRequest.instance().request(SearchListActivity.this, Urls.getDouyinListUrl(), this, HttpRequest.GET, GET_DY_LIST, valuePairs, new
                 VideoInfoListHandler());
     }
 
@@ -159,7 +186,7 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
     @Override
     public void onPullDownToRefresh(PullToRefreshBase<RecyclerView> refreshView)
     {
-        mAuthorPhotoInfoList.clear();
+        mSearchInfoList.clear();
         pn = 1;
         mRefreshStatus = 0;
         loadData();
@@ -198,4 +225,5 @@ public class AuthorPhotoListActivity extends BaseActivity implements IRequestLis
             }
         }
     }
+
 }

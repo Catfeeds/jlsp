@@ -43,7 +43,6 @@ public class AuthorPhotoHolder extends RecyclerView.ViewHolder
 
     private MyItemClickListener listener;
     private Context context;
-    private List<PhotoInfo> list = new ArrayList<>();
 
     public AuthorPhotoHolder(View rootView, Context context, MyItemClickListener listener)
     {
@@ -62,13 +61,15 @@ public class AuthorPhotoHolder extends RecyclerView.ViewHolder
     public void setAuthorPhotoInfo(AuthorPhotoInfo mAuthorPhotoInfo, final int p)
     {
 
-
+        List<PhotoInfo> list = new ArrayList<>();
         mRecyclerView.setLayoutManager(new FullyGridLayoutManager(context, 3));
 
         for (int i = 0; i < 6; i++)
         {
             PhotoInfo mPhotoInfo = new PhotoInfo();
-            mPhotoInfo.setPicUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1543244505361&di=187c6deab8b0b3aa8da96109c19fe3e5&imgtype=0&src=http%3A%2F%2Ftx.haiqq.com%2Fuploads%2Fallimg%2Fc161025%2F14M32W35M640-31Q8.jpg");
+            mPhotoInfo.setPicUrl("https://timgsa.baidu" + ".com/timg?image&quality=80&size=b9999_10000&sec=1543244505361&di" +
+                    "=187c6deab8b0b3aa8da96109c19fe3e5&imgtype=0&src=http%3A%2F%2Ftx.haiqq" + "" +
+                    ".com%2Fuploads%2Fallimg%2Fc161025%2F14M32W35M640-31Q8.jpg");
             list.add(mPhotoInfo);
         }
 
