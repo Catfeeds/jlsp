@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_head" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dm_15">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dm_15"
+            android:text="绑定手机号"
+            android:textColor="@color/text_gray" />
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dm_5"
+            android:background="@drawable/common_f5_45dp"
+            android:hint="请输入手机号"
+            android:maxLength="16"
+            android:paddingBottom="@dimen/dm_10"
+            android:paddingLeft="@dimen/dm_15"
+            android:paddingTop="@dimen/dm_10"
+            android:textColor="@color/text_black"
+            android:textColorHint="@color/text_violet"
+            android:textSize="@dimen/t14" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dm_15"
+            android:text="密码"
+            android:textColor="@color/text_gray" />
+
+        <EditText
+            android:id="@+id/et_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dm_5"
+            android:background="@drawable/common_f5_45dp"
+            android:hint="请输入密码"
+            android:inputType="textPassword"
+            android:maxLength="18"
+            android:paddingBottom="@dimen/dm_10"
+            android:paddingLeft="@dimen/dm_15"
+            android:paddingTop="@dimen/dm_10"
+            android:textColor="@color/text_black"
+            android:textColorHint="@color/text_violet"
+            android:textSize="@dimen/t14" />
+
+        <Button
+            android:id="@+id/btn_bind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dm_30"
+            android:background="@drawable/violet_frame_on_45dp"
+            android:text="绑定"
+            android:textColor="@color/white"
+            android:textSize="@dimen/t16" />
+    </LinearLayout>
+</LinearLayout>

@@ -237,6 +237,23 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"/>
 
+        <activity
+            android:name=".activity.DouyinListActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
+        <activity
+            android:name=".activity.SafeSettingActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
+
+
+
+
+
+
+
 
         // AndroidManifest需要加一个provider的标签，里面的authorities就是我们上面需要调用的一个常量
         // 如果你有多个module的话也没关系，所有的module只要有一个地方写了这个就行，因为app打包以后所有的AndroidManifest文件将会合并到一起

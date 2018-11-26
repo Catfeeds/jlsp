@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/windowBackground"
-                android:orientation="vertical">
-    <include layout="@layout/layout_head"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackground"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_head" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_head">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,14 +29,15 @@
                 android:paddingLeft="@dimen/dm_10"
                 android:paddingTop="@dimen/dm_15"
                 android:textColor="@color/blackC"
-                android:textSize="@dimen/dm_14"/>
+                android:textColorHint="@color/text_violet_normal"
+                android:textSize="@dimen/dm_14" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dm_2"
                 android:layout_marginLeft="@dimen/dm_10"
                 android:layout_marginRight="@dimen/dm_10"
-                android:background="@color/windowBackground"/>
+                android:background="@color/windowBackground" />
 
 
             <EditText
@@ -46,7 +50,8 @@
                 android:maxLength="300"
                 android:padding="@dimen/dm_10"
                 android:textColor="@color/blackC"
-                android:textSize="@dimen/dm_14"/>
+                android:textColorHint="@color/text_violet_normal"
+                android:textSize="@dimen/dm_14" />
 
 
             <TextView
@@ -57,16 +62,18 @@
                 android:gravity="right"
                 android:text="0/300"
                 android:textColor="@color/blackA"
-                android:textSize="@dimen/t14"/>
+                android:textSize="@dimen/t14" />
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dm_10"
-                android:background="@color/line"/>
+                android:layout_height="@dimen/dm_1"
+                android:background="@color/line" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dm_15"
+                android:background="@drawable/common_normal_violet_45dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -79,7 +86,8 @@
                     android:padding="@dimen/dm_15"
                     android:text="上传免费图片"
                     android:textColor="@drawable/photo_tab_font_selector"
-                    android:textSize="@dimen/t14"/>
+                    android:textSize="@dimen/t14" />
+
                 <TextView
                     android:id="@+id/tv_charge"
                     android:layout_width="@dimen/dm_0"
@@ -90,7 +98,7 @@
                     android:padding="@dimen/dm_15"
                     android:text="上传收费图片"
                     android:textColor="@drawable/photo_tab_font_selector"
-                    android:textSize="@dimen/t14"/>
+                    android:textSize="@dimen/t14" />
             </LinearLayout>
 
             <com.zb.wyd.widget.MaxRecyclerView
@@ -99,14 +107,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dm_10"
                 android:paddingLeft="@dimen/dm_5"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <com.zb.wyd.widget.MaxRecyclerView
                 android:id="@+id/rv_charge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dm_10"
                 android:paddingLeft="@dimen/dm_5"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/ll_price"
                 android:layout_width="match_parent"
@@ -114,12 +124,13 @@
                 android:layout_marginTop="@dimen/dm_10"
                 android:orientation="vertical"
                 android:visibility="gone">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dm_1"
                     android:layout_marginLeft="@dimen/dm_10"
                     android:layout_marginRight="@dimen/dm_10"
-                    android:background="@color/line"/>
+                    android:background="@color/line" />
 
                 <EditText
                     android:id="@+id/et_price"
@@ -134,18 +145,15 @@
                     android:paddingLeft="@dimen/dm_10"
                     android:paddingTop="@dimen/dm_15"
                     android:textColor="@color/blackC"
-                    android:textSize="@dimen/t14"/>
+                    android:textSize="@dimen/t14" />
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dm_1"
-                android:layout_marginLeft="@dimen/dm_10"
-                android:layout_marginRight="@dimen/dm_10"
-                android:background="@color/line"/>
+
+
             <com.zb.wyd.widget.MaxRecyclerView
                 android:id="@+id/rv_label"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -168,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:text="添加标签"
                         android:textColor="@color/blackA"
-                        android:textSize="@dimen/t12"/>
+                        android:textSize="@dimen/t12" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -183,24 +191,27 @@
                     android:paddingLeft="@dimen/dm_15"
                     android:paddingRight="@dimen/dm_15"
                     android:paddingTop="@dimen/dm_5">
+
                     <ImageView
                         android:id="@+id/iv_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_location"/>
+                        android:src="@drawable/ic_location" />
+
                     <TextView
                         android:id="@+id/tv_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="添加地点"
                         android:textColor="@color/blackA"
-                        android:textSize="@dimen/t12"/>
+                        android:textSize="@dimen/t12" />
                 </LinearLayout>
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dm_10"
-                android:background="@color/windowBackground"/>
+                android:background="@color/windowBackground" />
 
 
             <EditText
@@ -213,7 +224,7 @@
                 android:paddingLeft="@dimen/dm_10"
                 android:paddingTop="@dimen/dm_15"
                 android:textColor="@color/blackC"
-                android:textSize="@dimen/t14"/>
+                android:textSize="@dimen/t14" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

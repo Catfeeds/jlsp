@@ -79,13 +79,7 @@ public class AuthorDetailActivity extends BaseActivity
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
+
 
     @OnClick({R.id.iv_back, R.id.iv_share, R.id.ll_photo, R.id.ll_dy, R.id.ll_block_one, R.id
             .ll_msg, R.id.ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin,
