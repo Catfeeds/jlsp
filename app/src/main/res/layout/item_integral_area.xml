@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_height="match_parent"
-            android:src="@color/text_blue1"/>
+            android:src="@drawable/icon_photo_default"/>
 
         <TextView
             android:id="@+id/tv_status"

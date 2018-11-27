@@ -64,7 +64,7 @@
 
         <activity
             android:name=".activity.VideoPlayActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
             android:windowSoftInputMode="stateHidden|adjustPan"/>
 

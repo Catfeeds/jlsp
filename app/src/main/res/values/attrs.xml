@@ -56,4 +56,21 @@
         <attr name="outerColor" format="color|reference" />
         <attr name="innnerColor" format="color|reference" />
     </declare-styleable>
+
+
+    <declare-styleable name="RatingBar">
+        <!--星星间距-->
+        <attr name="starDistance" format="dimension" />
+        <!--星星大小-->
+        <attr name="starSize" format="dimension" />
+        <!--星星个数-->
+        <attr name="starCount" format="integer" />
+        <!--星星空图-->
+        <attr name="starEmpty" format="reference" />
+        <!--星星满图-->
+        <attr name="starFill" format="reference" />
+        <!--可点击-->
+        <attr name="clickEnable" format="boolean" />
+    </declare-styleable>
+
 </resources>

@@ -52,6 +52,7 @@
     <dimen name="dm_170">170dp</dimen>
     <dimen name="dm_191">191dp</dimen>
     <dimen name="dm_200">200dp</dimen>
+    <dimen name="dm_217">217dp</dimen>
     <dimen name="dm_280">280dp</dimen>
 
     <dimen name="t10">10sp</dimen>
