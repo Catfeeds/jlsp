@@ -21,7 +21,7 @@ public class UserInfo implements Serializable
     private String online;//12345,
     private String is_live;//1
     private String uface;//1
-
+    private String sex;
     private String has_favorite;
 
     private String uname;//test003;//
@@ -75,6 +75,7 @@ public class UserInfo implements Serializable
         this.valid_vip = obj.optBoolean("valid_vip");
         this.vip_type = obj.optInt("vip_type");
         this.has_sign = obj.optBoolean("has_sign");
+        this.sex = obj.optString("sex");
     }
 
     public boolean isHas_sign()
@@ -325,5 +326,15 @@ public class UserInfo implements Serializable
     public void setValid_vip(boolean valid_vip)
     {
         this.valid_vip = valid_vip;
+    }
+
+    public String getSex()
+    {
+        return sex;
+    }
+
+    public void setSex(String sex)
+    {
+        this.sex = sex;
     }
 }

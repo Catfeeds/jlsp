@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
+import com.zb.wyd.entity.PhotoInfo;
 import com.zb.wyd.entity.SelfieInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.listener.MyItemClickListener;
@@ -24,7 +25,7 @@ import java.util.Random;
 
 /**
  */
-public class SelfieHolder extends RecyclerView.ViewHolder
+public class SelfieHolder extends SelfieBaseHolder
 {
     private TextView            mTimeTv;
     private TextView            mNameTv;
@@ -48,22 +49,21 @@ public class SelfieHolder extends RecyclerView.ViewHolder
         mLocationIv = (ImageView) rootView.findViewById(R.id.iv_location);
     }
 
-
-    public void setSelfieInfo(SelfieInfo mSelfieInfo, final int p)
+    @Override
+    public void setPhotoInfo(PhotoInfo mPhotoInfo, int p)
     {
-
         int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 3;
         int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 2;
         int height = width + MyApplication.getInstance().getPhotoDataList().get(p);
         mItemLayout.setLayoutParams(new LinearLayout.LayoutParams(width, height));
-        ImageLoader.getInstance().displayImage(mSelfieInfo.getCover(), mImgIv);
+        ImageLoader.getInstance().displayImage(mPhotoInfo.getCover(), mImgIv);
 
-        mNameTv.setText(mSelfieInfo.getPname());
-        mTimeTv.setText(mSelfieInfo.getAdd_time());
-        mFavTv.setText(mSelfieInfo.getFavour_count());
+        mNameTv.setText(mPhotoInfo.getPname());
+        mTimeTv.setText(mPhotoInfo.getAdd_time());
+        mFavTv.setText(mPhotoInfo.getFavour_count());
 
 
-        if (StringUtils.stringIsEmpty(mSelfieInfo.getLocation()))
+        if (StringUtils.stringIsEmpty(mPhotoInfo.getLocation()))
         {
             mLocationIv.setVisibility(View.GONE);
         }
@@ -81,6 +81,4 @@ public class SelfieHolder extends RecyclerView.ViewHolder
             }
         });
     }
-
-
 }

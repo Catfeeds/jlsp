@@ -12,49 +12,59 @@ import java.util.List;
  */
 public class PhotoInfo
 {
-    private String    uid;//21
-    private String    pname;//
-    private String    desc;//
-    private String    tags;//-----
-    private String    location;//--
-    private String    host;
-    private String    contact;//
-    private String    free_album;
-    private String    charge_album;//
-    private String    favour_count;//0
-    private String    add_time;//2018-06-22
+    private String id;
+    private String uid;//21
+    private String pname;//
+    private String desc;//
+    private String tags;//-----
+    private String location;//--
+    private String host;
+    private String contact;//
+    private String free_album;
+    private String charge_album;//
+    private String favour_count;//0
+    private String add_time;//2018-06-22
     private PriceInfo priceInfo;
-
+    private String cover;//2018-06-22
     private String savename;//ALJzcAHDVkwodewfchZV.jpg",
     private String savepath;//\/18\/06\/24\/01\/",
 
     private UserInfo userInfo;
-
+    private String sort;
     private String has_favorite;
 
-    private List<String> freePic   = new ArrayList<>();
+    private List<String> freePic = new ArrayList<>();
     private List<String> chargePic = new ArrayList<>();
 
 
     private String picUrl;
-    public PhotoInfo(){}
+
+    public PhotoInfo()
+    {
+    }
+
     public PhotoInfo(JSONObject obj)
     {
         this.savename = obj.optString("savename");
         this.savepath = obj.optString("savepath");
-
+        this.sort = obj.optString("isort");
+        this.id = obj.optString("id");
         this.uid = obj.optString("uid");
-        this.pname = obj.optString("pname");
-        this.desc = obj.optString("desc");
+        this.pname = obj.optString("idesc");
+        this.desc = obj.optString("idesc");
         this.tags = obj.optString("tags");
         this.location = obj.optString("location");
-        this.host = obj.optString("host");
+        this.host = obj.optString("ihost");
         this.contact = obj.optString("contact");
         this.free_album = obj.optString("free_album");
         this.charge_album = obj.optString("charge_album");
         this.favour_count = obj.optString("favour_count");
         this.add_time = obj.optString("add_time");
         this.has_favorite = obj.optString("has_favorite");
+
+        this.cover = host + obj.optString("cover");
+
+
         if (!StringUtils.stringIsEmpty(free_album)) ;
         {
             String[] free = free_album.replace("$$", ";").split(";");
@@ -286,5 +296,35 @@ public class PhotoInfo
     public void setPicUrl(String picUrl)
     {
         this.picUrl = picUrl;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getCover()
+    {
+        return cover;
+    }
+
+    public void setCover(String cover)
+    {
+        this.cover = cover;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public String getSort()
+    {
+        return sort;
+    }
+
+    public void setSort(String sort)
+    {
+        this.sort = sort;
     }
 }

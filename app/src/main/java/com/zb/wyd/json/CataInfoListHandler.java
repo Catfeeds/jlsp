@@ -32,7 +32,7 @@ public class CataInfoListHandler extends JsonHandler
             {
                 for (int i = 0; i < arr.length(); i++)
                 {
-                    CategoryInfo mCataInfo = new CategoryInfo(arr.optJSONObject(i));
+                    CategoryInfo mCataInfo = new CategoryInfo(arr.get(i).toString());
                     cataInfoList.add(mCataInfo);
                 }
             }

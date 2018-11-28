@@ -111,10 +111,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private List<VideoInfo> videoInfoList = new ArrayList<>();
 
     private OrientationUtils orientationUtils;
-    private ImageView mCollectionIv;
-    private ImageView mShareIv;
-    private ImageView mReportIv;
-    private ImageView mSettingIv;
+//    private ImageView mCollectionIv;
+//    private ImageView mShareIv;
+//    private ImageView mReportIv;
+//    private ImageView mSettingIv;
     private LinearLayout mSeekLayout;
 
     private String has_favorite = "0";
@@ -169,14 +169,14 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                         String uri = mChannelInfo.getCm() + videoUri;
                         LogUtil.e("TAG", uri);
                         has_favorite = mVideoStreamHandler.getHas_favorite();
-                        if ("1".equals(has_favorite))
-                        {
-                            mCollectionIv.setSelected(true);
-                        }
-                        else
-                        {
-                            mCollectionIv.setSelected(false);
-                        }
+//                        if ("1".equals(has_favorite))
+//                        {
+//                            mCollectionIv.setSelected(true);
+//                        }
+//                        else
+//                        {
+//                            mCollectionIv.setSelected(false);
+//                        }
 
                         //                        videoPlayer.setIS_SCREEN_ORIENTATION_LANDSCAPE
                         // (mVideoStreamHandler.getStand());
@@ -267,12 +267,12 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 case FAVORITE_LIKE_SUCCESS:
                     has_favorite = "1";
                     ToastUtil.show(VideoPlayActivity.this, "收藏成功");
-                    mCollectionIv.setSelected(true);
+                   // mCollectionIv.setSelected(true);
                     break;
                 case UN_FAVORITE_LIKE_SUCCESS:
                     has_favorite = "0";
                     ToastUtil.show(VideoPlayActivity.this, "取消收藏成功");
-                    mCollectionIv.setSelected(false);
+                  //  mCollectionIv.setSelected(false);
                     break;
                 case GET_SHARE_CODE:
                     getShareUrl();
@@ -349,16 +349,16 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     @Override
     protected void initViewData()
     {
-        mCollectionIv = (ImageView) videoPlayer.findViewById(R.id.iv_collection);
-        mShareIv = (ImageView) videoPlayer.findViewById(R.id.iv_share);
-        mSettingIv = (ImageView) videoPlayer.findViewById(R.id.iv_setting);
-        mReportIv = (ImageView) videoPlayer.findViewById(R.id.iv_report);
+//        mCollectionIv = (ImageView) videoPlayer.findViewById(R.id.iv_collection);
+//        mShareIv = (ImageView) videoPlayer.findViewById(R.id.iv_share);
+//        mSettingIv = (ImageView) videoPlayer.findViewById(R.id.iv_setting);
+//        mReportIv = (ImageView) videoPlayer.findViewById(R.id.iv_report);
         mSeekLayout = (LinearLayout) videoPlayer.findViewById(R.id.sp_layout);
 
-        mCollectionIv.setOnClickListener(this);
-        mShareIv.setOnClickListener(this);
-        mSettingIv.setOnClickListener(this);
-        mReportIv.setOnClickListener(this);
+//        mCollectionIv.setOnClickListener(this);
+//        mShareIv.setOnClickListener(this);
+//        mSettingIv.setOnClickListener(this);
+//        mReportIv.setOnClickListener(this);
 
         //  videoPlayer.setUp(source1, true, "测试视频");
         //增加封面
@@ -367,10 +367,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //        imageView.setImageResource(R.drawable.ic_launcher);
         //  videoPlayer.setThumbImageView(imageView);
         //增加title
-        videoPlayer.getTitleTextView().setVisibility(View.VISIBLE);
+     //   videoPlayer.getTitleTextView().setVisibility(View.VISIBLE);
 
         //设置返回键
-        videoPlayer.getBackButton().setVisibility(View.VISIBLE);
+    //    videoPlayer.getBackButton().setVisibility(View.VISIBLE);
 
         videoPlayer.getFullscreenButton().setVisibility(View.GONE);
 
@@ -389,14 +389,14 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         videoPlayer.setIsTouchWiget(true);
 
         //设置返回按键功能
-        videoPlayer.getBackButton().setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                onBackPressed();
-            }
-        });
+//        videoPlayer.getBackButton().setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                onBackPressed();
+//            }
+//        });
         // videoPlayer.startPlayLogic();
 
 
@@ -540,7 +540,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 errorMsg = s;
                 ToastUtil.show(VideoPlayActivity.this, "该网络暂无法播放，请切换网络重试");
                 // mChannelLayout.setVisibility(View.VISIBLE);
-                showChannelPop();
+                //showChannelPop();
 
                 videoPlayer.showSettingWidget();
                 //                DialogUtils.showChannelDialog(VideoPlayActivity.this, new
@@ -712,61 +712,61 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 }
             });
         }
-        mChannelPopupWindow.showAsDropDown(mShareIv);
+        //mChannelPopupWindow.showAsDropDown(mShareIv);
     }
 
     @Override
     public void onClick(View v)
     {
         super.onClick(v);
-        if (v == mCollectionIv)
-        {
-            if ("1".equals(has_favorite))
-            {
-                unFavoriteLike();
-            }
-            else
-            {
-                favoriteLike();
-            }
-
-        }
-        else if (v == mShareIv)
-        {
-            showProgressDialog();
-            mHandler.sendEmptyMessage(GET_SHARE_CODE);
-
-        }
-        else if (v == mSettingIv)
-        {
-            showChannelPop();
-        }
-        else if (v == mReportIv)
-        {
-            DialogUtils.showReportDialog(this, new MyOnClickListener.OnSubmitListener()
-            {
-                @Override
-                public void onSubmit(String content)
-                {
-                    switch (Integer.parseInt(content))
-                    {
-                        case 1:
-                            reportMsg("不显示画面,有声音");
-                            break;
-                        case 2:
-                            reportMsg("显示画面,无声音");
-                            break;
-
-                        case 3:
-                            reportMsg("画面显示错位");
-                            break;
-                        case 4:
-                            reportMsg(errorMsg);
-                            break;
-                    }
-                }
-            });
-        }
+//        if (v == mCollectionIv)
+//        {
+//            if ("1".equals(has_favorite))
+//            {
+//                unFavoriteLike();
+//            }
+//            else
+//            {
+//                favoriteLike();
+//            }
+//
+//        }
+//        else if (v == mShareIv)
+//        {
+//            showProgressDialog();
+//            mHandler.sendEmptyMessage(GET_SHARE_CODE);
+//
+//        }
+//        else if (v == mSettingIv)
+//        {
+//            showChannelPop();
+//        }
+//        else if (v == mReportIv)
+//        {
+//            DialogUtils.showReportDialog(this, new MyOnClickListener.OnSubmitListener()
+//            {
+//                @Override
+//                public void onSubmit(String content)
+//                {
+//                    switch (Integer.parseInt(content))
+//                    {
+//                        case 1:
+//                            reportMsg("不显示画面,有声音");
+//                            break;
+//                        case 2:
+//                            reportMsg("显示画面,无声音");
+//                            break;
+//
+//                        case 3:
+//                            reportMsg("画面显示错位");
+//                            break;
+//                        case 4:
+//                            reportMsg(errorMsg);
+//                            break;
+//                    }
+//                }
+//            });
+//        }
     }
 
 

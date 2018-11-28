@@ -20,8 +20,13 @@ public class CategoryInfo implements Serializable
 
     public CategoryInfo(JSONObject obj)
     {
-        this.id = obj.optString("pid");
-        this.name = obj.optString("name");
+        //this.id = obj.optString("pid");
+        this.name = obj.toString();
+    }
+    public CategoryInfo(String name)
+    {
+        //this.id = obj.optString("pid");
+        this.name = name;
     }
 
 

@@ -99,7 +99,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
     private VideoAdapter mVideoAdapter;
 
     private boolean isNew  = false;
-    private String  cta_id = "0";
+    private String  mVideoTag = "";
     private String  sort   = "new";
 
 
@@ -146,7 +146,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
 
                     if (!categoryInfoList.isEmpty())
                     {
-                        cta_id = categoryInfoList.get(0).getId();
+                        mVideoTag = categoryInfoList.get(0).getName();
                     }
 
                     break;
@@ -299,7 +299,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                 }
                 mCategoryAdapter.notifyDataSetChanged();
 
-                cta_id = categoryInfoList.get(position).getId();
+                mVideoTag = categoryInfoList.get(position).getName();
                 pn = 1;
                 mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
 
@@ -367,7 +367,8 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
     private void getVideoCata()
     {
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(getActivity(), Urls.getVideoCataUrl(), this, HttpRequest.POST, GET_CATA_LIST, valuePairs,
+        valuePairs.put("co_biz","video");
+        DataRequest.instance().request(getActivity(), Urls.getTagsUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs,
                 new CataInfoListHandler());
     }
 
@@ -377,7 +378,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
         valuePairs.put("sort", sort);
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        valuePairs.put("cta_id", cta_id);
+        valuePairs.put("tag", mVideoTag);
         DataRequest.instance().request(getActivity(), Urls.getVideoListUrl(), this, HttpRequest.GET, GET_VIDEO_LIST, valuePairs,
                 new VideoInfoListHandler());
     }
@@ -591,7 +592,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                         }
                     }
                     mCategoryAdapter.notifyDataSetChanged();
-                    cta_id = categoryInfoList.get(position).getId();
+                    mVideoTag = categoryInfoList.get(position).getName();
                     mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
                 }
             });

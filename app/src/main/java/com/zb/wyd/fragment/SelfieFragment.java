@@ -34,6 +34,7 @@ import com.zb.wyd.adapter.SelfieAdapter;
 import com.zb.wyd.entity.AdInfo;
 import com.zb.wyd.entity.CategoryInfo;
 import com.zb.wyd.entity.NoticeInfo;
+import com.zb.wyd.entity.PhotoInfo;
 import com.zb.wyd.entity.SelfieInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
@@ -41,6 +42,7 @@ import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.AdInfoListHandler;
 import com.zb.wyd.json.CataInfoListHandler;
+import com.zb.wyd.json.PhotoInfoListHandler;
 import com.zb.wyd.json.SelfieInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.APPUtils;
@@ -90,7 +92,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     private CategoryAdapter mCataAdapter;
 
     private int getPhotoCount;
-    private List<SelfieInfo> selfieInfoList = new ArrayList<>();
+    private List<PhotoInfo> selfieInfoList = new ArrayList<>();
     private SelfieAdapter mSelfieAdapter;
 
     private List<String> picList = new ArrayList<>();
@@ -100,7 +102,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     private Unbinder unbinder;
     private int pn = 1;
 
-    private String photoTag = "0";
+    private String photoTag = "";
     private String sort = "new";
     private static final String GET_AD_LIST = "get_ad_list";
     private static final String GET_CATA_LIST = "get_cata_list";
@@ -123,17 +125,22 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             switch (msg.what)
             {
                 case REQUEST_SUCCESS:
-                    SelfieInfoListHandler mSelfieInfoListHandler = (SelfieInfoListHandler) msg.obj;
-
+                    PhotoInfoListHandler mPhotoInfoListHandler = (PhotoInfoListHandler) msg.obj;
                     if (pn == 1)
                     {
                         selfieInfoList.clear();
+                        if("new".equals(sort))
+                        {
+                            rvPhoto.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        }
+                        else
+                        {   rvPhoto.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                        }
                     }
-                    if (!mSelfieInfoListHandler.getSelfieInfoList().isEmpty())
-                    {
-                        selfieInfoList.addAll(mSelfieInfoListHandler.getSelfieInfoList());
-                        mSelfieAdapter.notifyDataSetChanged();
-                    }
+                    selfieInfoList.addAll(mPhotoInfoListHandler.getPhotoInfoList());
+
+                    mSelfieAdapter.notifyDataSetChanged();
+
                     break;
 
                 case REQUEST_FAIL:
@@ -163,7 +170,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                     cataInfoList.add(0, mCataInfo);
                     if (!cataInfoList.isEmpty())
                     {
-                        photoTag = cataInfoList.get(0).getId();
+                        photoTag = cataInfoList.get(0).getName();
                         cataInfoList.get(0).setSelected(true);
                     }
 
@@ -291,12 +298,30 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState)
             {
-                StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+                RecyclerView.LayoutManager manager;
+                if("new".equals(sort))
+                {
+                    manager = (LinearLayoutManager)recyclerView.getLayoutManager();
+                }
+                else
+                {
+                    manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+                }
+
                 // 当不滚动时
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
                 {
                     //获取最后一个完全显示的ItemPosition
-                    int[] lastVisiblePositions = manager.findLastVisibleItemPositions(new int[manager.getSpanCount()]);
+                    int[] lastVisiblePositions =null;
+                    if("new".equals(sort))
+                    {
+                        lastVisiblePositions= new int[]{((LinearLayoutManager)manager).findLastVisibleItemPosition()};
+                    }
+                    else
+                    {
+                        lastVisiblePositions= ((StaggeredGridLayoutManager)manager).findLastVisibleItemPositions(new int[((StaggeredGridLayoutManager)manager).getSpanCount()]);
+                    }
+
                     int lastVisiblePos = getMaxElem(lastVisiblePositions);
                     int totalItemCount = manager.getItemCount();
 
@@ -304,8 +329,10 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                     if (lastVisiblePos == (totalItemCount - 1) && isSlidingToLast)
                     {
                         //加载更多功能的代码
-                        //                        Ln.e("howes right="+manager.findLastCompletelyVisibleItemPosition());
-                        //                        Toast.makeText(getActivityContext(),"加载更多",0).show();
+                        //                        Ln.e("howes right="+manager
+                        // .findLastCompletelyVisibleItemPosition());
+                        //                        Toast.makeText(getActivityContext(),"加载更多",0)
+                        // .show();
 
                         pn += 1;
                         getPhotoList();
@@ -383,7 +410,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         rvCata.setAdapter(mCataAdapter);
 
 
-        rvPhoto.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        rvPhoto.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSelfieAdapter = new SelfieAdapter(selfieInfoList, getActivity(), new MyItemClickListener()
         {
             @Override
@@ -433,8 +460,8 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("pn", "1");
         valuePairs.put("num", "15");
-        DataRequest.instance().request(getActivity(), Urls.getPhotoCataUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs, new
-                CataInfoListHandler());
+        valuePairs.put("co_biz", "photo");
+        DataRequest.instance().request(getActivity(), Urls.getTagsUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs, new CataInfoListHandler());
     }
 
 
@@ -446,7 +473,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         valuePairs.put("sort", sort);
         valuePairs.put("num", "20");
         DataRequest.instance().request(getActivity(), Urls.getPhotoListUrl(), this, HttpRequest.GET, GET_PHPTO_LIST, valuePairs, new
-                SelfieInfoListHandler());
+                PhotoInfoListHandler());
     }
 
 

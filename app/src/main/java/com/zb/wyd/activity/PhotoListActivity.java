@@ -177,23 +177,23 @@ public class PhotoListActivity extends BaseActivity  implements IRequestListener
     {
         tvTitle.setText("图片列表");
         rvPhoto.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        mSelfieAdapter = new SelfieAdapter(selfieInfoList, PhotoListActivity.this, new MyItemClickListener()
-        {
-            @Override
-            public void onItemClick(View view, int position)
-            {
-                if (MyApplication.getInstance().isLogin())
-                {
-                    startActivity(new Intent(PhotoListActivity.this, PhotoDetailActivity.class).putExtra("biz_id", selfieInfoList.get(position).getId()));
-
-                }
-                else
-                {
-                    startActivity(new Intent(PhotoListActivity.this, LoginActivity.class));
-                }
-
-            }
-        });
+//        mSelfieAdapter = new SelfieAdapter(selfieInfoList, PhotoListActivity.this, new MyItemClickListener()
+//        {
+//            @Override
+//            public void onItemClick(View view, int position)
+//            {
+//                if (MyApplication.getInstance().isLogin())
+//                {
+//                    startActivity(new Intent(PhotoListActivity.this, PhotoDetailActivity.class).putExtra("biz_id", selfieInfoList.get(position).getId()));
+//
+//                }
+//                else
+//                {
+//                    startActivity(new Intent(PhotoListActivity.this, LoginActivity.class));
+//                }
+//
+//            }
+//        });
         rvPhoto.setAdapter(mSelfieAdapter);
 
 

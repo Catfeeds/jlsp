@@ -171,7 +171,8 @@ public class LabelActivity extends BaseActivity implements IRequestListener
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("pn", "1");
         valuePairs.put("num", "150");
-        DataRequest.instance().request(LabelActivity.this, Urls.getPhotoCataUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs,
+        valuePairs.put("co_biz","photo");
+        DataRequest.instance().request(LabelActivity.this, Urls.getTagsUrl(), this, HttpRequest.GET, GET_CATA_LIST, valuePairs,
                 new CataInfoListHandler());
     }
 

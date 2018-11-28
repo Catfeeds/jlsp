@@ -1,26 +1,18 @@
 package com.zb.wyd.holder;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextPaint;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.R;
-import com.zb.wyd.activity.VideoPlayActivity;
-import com.zb.wyd.activity.VidoeListActivity;
-import com.zb.wyd.adapter.IntegerAreaAdapter;
 import com.zb.wyd.adapter.PhotoDescAdapter;
 import com.zb.wyd.entity.AuthorPhotoInfo;
 import com.zb.wyd.entity.PhotoInfo;
-import com.zb.wyd.entity.StyleInfo;
-import com.zb.wyd.entity.TaskInfo;
+import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.widget.CircleImageView;
 import com.zb.wyd.widget.FullyGridLayoutManager;
@@ -32,7 +24,7 @@ import java.util.List;
 
 /**
  */
-public class AuthorPhotoHolder extends RecyclerView.ViewHolder
+public class NewSelfieHolder extends SelfieBaseHolder
 {
     private TextView mUserNameTv;
     private TextView mDescTv;
@@ -40,11 +32,11 @@ public class AuthorPhotoHolder extends RecyclerView.ViewHolder
     private ImageView mSexIv;
     private CircleImageView mUserPicIv;
     private MaxRecyclerView mRecyclerView;
-
+    private LinearLayout itemLayout;
     private MyItemClickListener listener;
     private Context context;
 
-    public AuthorPhotoHolder(View rootView, Context context, MyItemClickListener listener)
+    public NewSelfieHolder(View rootView, Context context, MyItemClickListener listener)
     {
         super(rootView);
         this.listener = listener;
@@ -55,28 +47,51 @@ public class AuthorPhotoHolder extends RecyclerView.ViewHolder
         mUserPicIv = (CircleImageView) rootView.findViewById(R.id.iv_user_pic);
         mSexIv = (ImageView) rootView.findViewById(R.id.iv_user_sex);
         mRecyclerView = (MaxRecyclerView) rootView.findViewById(R.id.rv_photo);
+        itemLayout =  (LinearLayout) rootView.findViewById(R.id.ll_item);
     }
 
 
-    public void setAuthorPhotoInfo(AuthorPhotoInfo mAuthorPhotoInfo, final int p)
+    @Override
+    public void setPhotoInfo(PhotoInfo basePhotoInfo, int p)
     {
+        mDescTv.setText(basePhotoInfo.getDesc());
+        mUpdateTimeTv.setText(basePhotoInfo.getAdd_time());
+        UserInfo userInfo = basePhotoInfo.getUserInfo();
+        if (null != userInfo)
+        {
+            mUserNameTv.setText(userInfo.getUnick());
+            ImageLoader.getInstance().displayImage(userInfo.getUface(), mUserPicIv);
 
+            if ("男".equals(userInfo.getSex()))
+            {
+                mSexIv.setImageResource(R.drawable.ic_man);
+            }
+            else
+            {
+                mSexIv.setImageResource(R.drawable.ic_woman);
+            }
+        }
+        itemLayout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                listener.onItemClick(v,p);
+            }
+        });
         List<PhotoInfo> list = new ArrayList<>();
         mRecyclerView.setLayoutManager(new FullyGridLayoutManager(context, 3));
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < basePhotoInfo.getFreePic().size(); i++)
         {
-            PhotoInfo mPhotoInfo = new PhotoInfo();
-            mPhotoInfo.setPicUrl("https://timgsa.baidu" + ".com/timg?image&quality=80&size=b9999_10000&sec=1543244505361&di" +
-                    "=187c6deab8b0b3aa8da96109c19fe3e5&imgtype=0&src=http%3A%2F%2Ftx.haiqq" + "" +
-                    ".com%2Fuploads%2Fallimg%2Fc161025%2F14M32W35M640-31Q8.jpg");
-            list.add(mPhotoInfo);
+            if (i < 3)
+            {
+                PhotoInfo mPhotoInfo = new PhotoInfo();
+                mPhotoInfo.setPicUrl(basePhotoInfo.getFreePic().get(i));
+                list.add(mPhotoInfo);
+            }
         }
 
         mRecyclerView.setAdapter(new PhotoDescAdapter(list, listener));
-
-
     }
-
-
 }

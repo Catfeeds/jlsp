@@ -7,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zb.wyd.R;
+import com.zb.wyd.entity.PhotoInfo;
 import com.zb.wyd.entity.SelfieInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.holder.IntegerAreaHolder;
+import com.zb.wyd.holder.NewSelfieHolder;
+import com.zb.wyd.holder.SelfieBaseHolder;
 import com.zb.wyd.holder.SelfieHolder;
 import com.zb.wyd.listener.MyItemClickListener;
 
@@ -17,14 +20,14 @@ import java.util.List;
 
 /**
  */
-public class SelfieAdapter extends RecyclerView.Adapter<SelfieHolder>
+public class SelfieAdapter extends RecyclerView.Adapter<SelfieBaseHolder>
 {
 
     private MyItemClickListener listener;
-    private List<SelfieInfo>    list;
-    private Context             mContext;
+    private List<PhotoInfo> list;
+    private Context mContext;
 
-    public SelfieAdapter(List<SelfieInfo> list, Context mContext, MyItemClickListener listener)
+    public SelfieAdapter(List<PhotoInfo> list, Context mContext, MyItemClickListener listener)
     {
         this.list = list;
         this.mContext = mContext;
@@ -32,19 +35,32 @@ public class SelfieAdapter extends RecyclerView.Adapter<SelfieHolder>
     }
 
     @Override
-    public SelfieHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public SelfieBaseHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_selfie, parent, false);
-        SelfieHolder mHolder = new SelfieHolder(itemView, parent.getContext(), listener);
+        SelfieBaseHolder mHolder = null;
+        switch (viewType)
+        {
+            case 1:
+                mHolder = new SelfieHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_selfie, parent, false), parent.getContext
+                        (), listener);
+                break;
+
+            case 0:
+                mHolder = new NewSelfieHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_new_selfie, parent, false), parent
+                        .getContext(), listener);
+                break;
+
+        }
         return mHolder;
     }
 
 
     @Override
-    public void onBindViewHolder(SelfieHolder holder, int position)
+    public void onBindViewHolder(SelfieBaseHolder holder, int position)
     {
-        SelfieInfo mSelfieInfo = list.get(position);
-        holder.setSelfieInfo(mSelfieInfo,position);
+
+        PhotoInfo mPhotoInfo = list.get(position);
+        holder.setPhotoInfo(mPhotoInfo, position);
     }
 
     @Override
@@ -54,5 +70,19 @@ public class SelfieAdapter extends RecyclerView.Adapter<SelfieHolder>
         return list.size();
 
 
+    }
+
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        if ("fav".equals(list.get(position).getSort()))
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
 }

@@ -202,23 +202,23 @@ public class PhotoSearchFragment extends BaseFragment implements PullToRefreshBa
         mPullToRefreshRecyclerView.setPullRefreshEnabled(true);
 
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        mSelfieAdapter = new SelfieAdapter(selfieInfoList, getActivity(), new MyItemClickListener()
-        {
-            @Override
-            public void onItemClick(View view, int position)
-            {
-                if (MyApplication.getInstance().isLogin())
-                {
-                    startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", selfieInfoList.get(position).getId()));
-
-                }
-                else
-                {
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                }
-
-            }
-        });
+//        mSelfieAdapter = new SelfieAdapter(selfieInfoList, getActivity(), new MyItemClickListener()
+//        {
+//            @Override
+//            public void onItemClick(View view, int position)
+//            {
+//                if (MyApplication.getInstance().isLogin())
+//                {
+//                    startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", selfieInfoList.get(position).getId()));
+//
+//                }
+//                else
+//                {
+//                    startActivity(new Intent(getActivity(), LoginActivity.class));
+//                }
+//
+//            }
+//        });
         mRecyclerView.setAdapter(mSelfieAdapter);
 
         ( (SearchActivity)getActivity()).setPhotoSearchListener(new SearchListener() {
