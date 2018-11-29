@@ -33,7 +33,7 @@ public class PhotoDescAdapter extends RecyclerView.Adapter<PhotoDescHolder>
     public PhotoDescHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_anchor_photo_desc, parent, false);
-        PhotoDescHolder mHolder = new PhotoDescHolder(itemView, parent.getContext());
+        PhotoDescHolder mHolder = new PhotoDescHolder(itemView, parent.getContext(),listener);
         return mHolder;
     }
 

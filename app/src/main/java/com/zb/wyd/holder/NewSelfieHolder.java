@@ -2,6 +2,7 @@ package com.zb.wyd.holder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,7 +48,7 @@ public class NewSelfieHolder extends SelfieBaseHolder
         mUserPicIv = (CircleImageView) rootView.findViewById(R.id.iv_user_pic);
         mSexIv = (ImageView) rootView.findViewById(R.id.iv_user_sex);
         mRecyclerView = (MaxRecyclerView) rootView.findViewById(R.id.rv_photo);
-        itemLayout =  (LinearLayout) rootView.findViewById(R.id.ll_item);
+        itemLayout = (LinearLayout) rootView.findViewById(R.id.ll_item);
     }
 
 
@@ -76,12 +77,15 @@ public class NewSelfieHolder extends SelfieBaseHolder
             @Override
             public void onClick(View v)
             {
-                listener.onItemClick(v,p);
+                listener.onItemClick(v, p);
             }
         });
+
+
+
+
         List<PhotoInfo> list = new ArrayList<>();
         mRecyclerView.setLayoutManager(new FullyGridLayoutManager(context, 3));
-
         for (int i = 0; i < basePhotoInfo.getFreePic().size(); i++)
         {
             if (i < 3)
@@ -92,6 +96,13 @@ public class NewSelfieHolder extends SelfieBaseHolder
             }
         }
 
-        mRecyclerView.setAdapter(new PhotoDescAdapter(list, listener));
+        mRecyclerView.setAdapter(new PhotoDescAdapter(list, new MyItemClickListener()
+        {
+            @Override
+            public void onItemClick(View view, int position)
+            {
+                listener.onItemClick(view, p);
+            }
+        }));
     }
 }

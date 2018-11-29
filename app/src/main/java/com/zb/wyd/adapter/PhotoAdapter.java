@@ -31,7 +31,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>
     public PhotoHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent, false);
-        PhotoHolder mHolder = new PhotoHolder(itemView,parent.getContext());
+        PhotoHolder mHolder = new PhotoHolder(itemView,parent.getContext(),listener);
         return mHolder;
     }
 

@@ -23,16 +23,19 @@ import com.zb.wyd.widget.RoundAngleImageView;
  */
 public class PhotoHolder extends RecyclerView.ViewHolder
 {
-    private ImageView           mImgIv;
+    private ImageView mImgIv;
     private Context mContext;
-    public PhotoHolder(View rootView, Context mContext)
+    private MyItemClickListener listener;
+
+    public PhotoHolder(View rootView, Context mContext, MyItemClickListener listener)
     {
         super(rootView);
         this.mContext = mContext;
+        this.listener = listener;
         mImgIv = (ImageView) rootView.findViewById(R.id.iv_photo);
         int spacingInPixels = mContext.getResources().getDimensionPixelSize(R.dimen.dm_10) * 5;
         int width = (APPUtils.getScreenWidth(mContext) - spacingInPixels) / 3;
-        RelativeLayout.LayoutParams imgLayoutParams = new RelativeLayout.LayoutParams(width, width );
+        RelativeLayout.LayoutParams imgLayoutParams = new RelativeLayout.LayoutParams(width, width);
         mImgIv.setLayoutParams(imgLayoutParams);
         mImgIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
@@ -40,24 +43,33 @@ public class PhotoHolder extends RecyclerView.ViewHolder
 
     public void setPhoto(String picUri, final int p)
     {
-        ImageLoader.getInstance().displayImage(picUri, mImgIv);
+        if ("收费".equals(picUri))
+        {
+            mImgIv.setImageResource(R.drawable.ic_buy);
+        }
+        else
+        {
+            ImageLoader.getInstance().displayImage(picUri, mImgIv);
+        }
+
 
         mImgIv.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(mContext, SpaceImageDetailActivity.class);
-                intent.putExtra("url", picUri);
-                int[] location = new int[2];
-                mImgIv.getLocationOnScreen(location);
-                intent.putExtra("locationX", location[0]);
-                intent.putExtra("locationY", location[1]);
-
-                intent.putExtra("width", mImgIv.getWidth());
-                intent.putExtra("height", mImgIv.getHeight());
-                mContext.startActivity(intent);
-                ((Activity) mContext).overridePendingTransition(0, 0);
+                listener.onItemClick(v, p);
+                //                Intent intent = new Intent(mContext, SpaceImageDetailActivity.class);
+                //                intent.putExtra("url", picUri);
+                //                int[] location = new int[2];
+                //                mImgIv.getLocationOnScreen(location);
+                //                intent.putExtra("locationX", location[0]);
+                //                intent.putExtra("locationY", location[1]);
+                //
+                //                intent.putExtra("width", mImgIv.getWidth());
+                //                intent.putExtra("height", mImgIv.getHeight());
+                //                mContext.startActivity(intent);
+                //                ((Activity) mContext).overridePendingTransition(0, 0);
             }
         });
     }

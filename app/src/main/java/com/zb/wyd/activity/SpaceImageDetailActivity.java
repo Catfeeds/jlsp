@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.R;
+import com.zb.wyd.adapter.MyViewPagerAdapter;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.DialogUtils;
@@ -31,7 +34,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -44,12 +50,22 @@ public class SpaceImageDetailActivity extends BaseActivity
     private int mLocationY;
     private int mWidth;
     private int mHeight;
-    private SmoothImageView mSmoothImageView = null;
+    // private SmoothImageView mSmoothImageView = null;
+
+    private ImageView mBackIv;
     private ImageView mDownloadIv;
-    private String mImgUrl;
+    // private String mImgUrl;
+    private ViewPager mViewPager;
 
     private static final int SHOW_PROGRESSDIALOG = 0x01;
     private static final int HIDE_PROGRESSDIALOG = 0x02;
+
+
+    private int selectPosition;
+    private int startPosition;
+
+
+    private List<String> picList = new ArrayList<>();
     @SuppressLint("HandlerLeak")
     private BaseHandler mHandler = new BaseHandler(SpaceImageDetailActivity.this)
     {
@@ -73,11 +89,49 @@ public class SpaceImageDetailActivity extends BaseActivity
         }
     };
 
+    class SamplePagerAdapter extends PagerAdapter
+    {
+
+        @Override
+        public int getCount()
+        {
+            return picList.size();
+        }
+
+        @Override
+        public View instantiateItem(ViewGroup container, int position)
+        {
+            PhotoView photoView = new PhotoView(container.getContext());
+            selectPosition = position;
+            ImageLoader.getInstance().displayImage(picList.get(position), photoView);
+            // Now just add PhotoView to ViewPager and return it
+            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            return photoView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object)
+        {
+            return view == object;
+        }
+
+    }
+
+
     @Override
     protected void initData()
     {
-
+        picList = getIntent().getStringArrayListExtra("PIC_LIST");
+        startPosition = getIntent().getIntExtra("startPosition", 0);
+        selectPosition = startPosition;
     }
+
 
     @Override
     protected void initViews(Bundle savedInstanceState)
@@ -86,36 +140,33 @@ public class SpaceImageDetailActivity extends BaseActivity
         StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
         StatusBarUtil.StatusBarLightMode(SpaceImageDetailActivity.this, false);
 
-        mImgUrl = getIntent().getStringExtra("url");
-        mLocationX = getIntent().getIntExtra("locationX", 0);
-        mLocationY = getIntent().getIntExtra("locationY", 0);
-        mWidth = getIntent().getIntExtra("width", 0);
-        mHeight = getIntent().getIntExtra("height", 0);
-        mDownloadIv = (ImageView) findViewById(R.id.iv_download);
-        mSmoothImageView = (SmoothImageView) findViewById(R.id.smoothImageView);
-        mSmoothImageView.setOriginalInfo(mWidth, mHeight, mLocationX, mLocationY);
-        mSmoothImageView.transformIn();
-        // mSmoothImageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        mSmoothImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        //        setContentView(mSmoothImageView);
-        //        mSmoothImageView.setTag(mImgUrl);
-        Log.e("Tag", "url:" + mImgUrl);
-        ImageLoader.getInstance().displayImage(mImgUrl, mSmoothImageView);
-        //imageView.setImageResource(R.drawable.temp);
-        // ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f, 1.0f, 0.5f,
-        // 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-        // 0.5f);
-        // scaleAnimation.setDuration(300);
-        // scaleAnimation.setInterpolator(new AccelerateInterpolator());
-        // imageView.startAnimation(scaleAnimation);
 
+        mViewPager = (ViewPager) findViewById(R.id.mViewPager);
+        mBackIv = (ImageView) findViewById(R.id.iv_back);
+
+        //        mImgUrl = getIntent().getStringExtra("url");
+        //        mLocationX = getIntent().getIntExtra("locationX", 0);
+        //        mLocationY = getIntent().getIntExtra("locationY", 0);
+        //        mWidth = getIntent().getIntExtra("width", 0);
+        //        mHeight = getIntent().getIntExtra("height", 0);
+        mDownloadIv = (ImageView) findViewById(R.id.iv_download);
+        //        mSmoothImageView = (SmoothImageView) findViewById(R.id.smoothImageView);
+        //        mSmoothImageView.setOriginalInfo(mWidth, mHeight, mLocationX, mLocationY);
+        //        mSmoothImageView.transformIn();
+        //        // mSmoothImageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+        //        mSmoothImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        //        //        setContentView(mSmoothImageView);
+        //        //        mSmoothImageView.setTag(mImgUrl);
+        //        Log.e("Tag", "url:" + mImgUrl);
+        //        ImageLoader.getInstance().displayImage(mImgUrl, mSmoothImageView);
         //
-        //        imageView.setOnClickListener(new ViewGroup.OnClickListener()
+        //
+        //        mSmoothImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener()
         //        {
         //            @Override
-        //            public void onClick(View v)
+        //            public void onViewTap(View view, float x, float y)
         //            {
-        //                imageView.setOnTransformListener(new SmoothImageView.TransformListener()
+        //                mSmoothImageView.setOnTransformListener(new SmoothImageView.TransformListener()
         //                {
         //                    @Override
         //                    public void onTransformComplete(int mode)
@@ -126,30 +177,22 @@ public class SpaceImageDetailActivity extends BaseActivity
         //                        }
         //                    }
         //                });
-        //                imageView.transformOut();
+        //                mSmoothImageView.transformOut();
         //            }
         //        });
 
-        mSmoothImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener()
+
+        mViewPager.setAdapter(new SamplePagerAdapter());
+        mViewPager.setCurrentItem(startPosition);
+
+        mBackIv.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onViewTap(View view, float x, float y)
+            public void onClick(View view)
             {
-                mSmoothImageView.setOnTransformListener(new SmoothImageView.TransformListener()
-                {
-                    @Override
-                    public void onTransformComplete(int mode)
-                    {
-                        if (mode == 2)
-                        {
-                            finish();
-                        }
-                    }
-                });
-                mSmoothImageView.transformOut();
+                finish();
             }
         });
-
 
         mDownloadIv.setOnClickListener(new View.OnClickListener()
         {
@@ -185,8 +228,7 @@ public class SpaceImageDetailActivity extends BaseActivity
                                 try
                                 {
 
-
-                                    Bitmap mBitmap = getBitmap(mImgUrl);
+                                    Bitmap mBitmap = getBitmap(picList.get(selectPosition));
 
                                     if (null != mBitmap)
                                     {
@@ -229,22 +271,22 @@ public class SpaceImageDetailActivity extends BaseActivity
 
     }
 
-    @Override
-    public void onBackPressed()
-    {
-        mSmoothImageView.setOnTransformListener(new SmoothImageView.TransformListener()
-        {
-            @Override
-            public void onTransformComplete(int mode)
-            {
-                if (mode == 2)
-                {
-                    finish();
-                }
-            }
-        });
-        mSmoothImageView.transformOut();
-    }
+//    @Override
+//    public void onBackPressed()
+//    {
+//        //        mSmoothImageView.setOnTransformListener(new SmoothImageView.TransformListener()
+//        //        {
+//        //            @Override
+//        //            public void onTransformComplete(int mode)
+//        //            {
+//        //                if (mode == 2)
+//        //                {
+//        //                    finish();
+//        //                }
+//        //            }
+//        //        });
+//        //        mSmoothImageView.transformOut();
+//    }
 
     @Override
     protected void onPause()

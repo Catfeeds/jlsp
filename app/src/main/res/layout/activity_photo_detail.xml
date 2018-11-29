@@ -83,7 +83,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:text="桃子就是你"
                             android:textColor="#FF492455"
                             android:textSize="@dimen/t16" />
 
@@ -103,7 +102,6 @@
                         android:id="@+id/tv_update_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="6天前 9700次浏览"
                         android:textColor="@color/text_violet_normal"
                         android:textSize="@dimen/t14" />
 
@@ -119,7 +117,6 @@
                 android:layout_marginTop="@dimen/dm_10"
                 android:paddingLeft="@dimen/dm_10"
                 android:paddingRight="@dimen/dm_10"
-                android:text="新买了一个玩具，从未如此猛烈的感觉很刺激，爽的一笔"
                 android:textColor="#FF5A4462 "
                 android:textSize="@dimen/t14" />
 
