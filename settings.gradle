@@ -1,1 +1,1 @@
-include ':app', ':visitor-20180822'
+include ':app', ':visitor-20180822','camera'

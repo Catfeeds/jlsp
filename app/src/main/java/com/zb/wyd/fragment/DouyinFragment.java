@@ -11,12 +11,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
 import com.zb.wyd.activity.BaseHandler;
 import com.zb.wyd.activity.DyVideoActivity;
 import com.zb.wyd.activity.LoginActivity;
+import com.zb.wyd.activity.RecordActivity;
 import com.zb.wyd.adapter.DyVideoAdapter;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
@@ -43,9 +45,12 @@ import butterknife.Unbinder;
 /**
  * 描述：一句话简单描述
  */
-public class DouyinFragment extends BaseFragment implements IRequestListener, View.OnClickListener, PullToRefreshBase.OnRefreshListener<RecyclerView>,
-        SwipeRefreshLayout.OnRefreshListener
+public class DouyinFragment extends BaseFragment implements IRequestListener, View
+        .OnClickListener, PullToRefreshBase.OnRefreshListener<RecyclerView>, SwipeRefreshLayout
+        .OnRefreshListener
 {
+    @BindView(R.id.tv_record)
+    TextView mRecordTv;
 
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
@@ -63,7 +68,7 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
 
     private static final String GET_DY_LIST = "get_douyin_list";
     private static final int GET_VIDEO_LIST_SUCCESS = 0x01;
-    private static final int REQUEST_FAIL           = 0x02;
+    private static final int REQUEST_FAIL = 0x02;
 
 
     @SuppressLint("HandlerLeak")
@@ -95,7 +100,8 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState)
     {
 
         if (rootView == null)
@@ -142,6 +148,7 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     @Override
     protected void initEvent()
     {
+        mRecordTv.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mPullToRefreshRecyclerView.setOnRefreshListener(this);
         mPullToRefreshRecyclerView.setPullRefreshEnabled(true);
@@ -165,7 +172,8 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
                     {
                         Bundle b = new Bundle();
                         b.putSerializable("VideoInfo", mVideoInfoList.get(position));
-                        startActivity(new Intent(getActivity(), DyVideoActivity.class).putExtras(b));
+                        startActivity(new Intent(getActivity(), DyVideoActivity.class).putExtras
+                                (b));
                     }
                 }
                 else
@@ -180,8 +188,8 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                int topRowVerticalPosition =
-                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                int topRowVerticalPosition = (recyclerView == null || recyclerView.getChildCount
+                        () == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 mSwipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
             }
 
@@ -200,14 +208,16 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
         mSwipeRefreshLayout.setRefreshing(true);
         getDouyin();
     }
+
     private void getDouyin()
     {
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        DataRequest.instance().request(getActivity(), Urls.getDouyinListUrl(), this, HttpRequest.GET, GET_DY_LIST, valuePairs,
-                new VideoInfoListHandler());
+        DataRequest.instance().request(getActivity(), Urls.getDouyinListUrl(), this, HttpRequest
+                .GET, GET_DY_LIST, valuePairs, new VideoInfoListHandler());
     }
+
     @Override
     public void onDestroy()
     {
@@ -293,6 +303,9 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     @Override
     public void onClick(View v)
     {
-
+        if (v == mRecordTv)
+        {
+            startActivity(new Intent(getActivity(), RecordActivity.class));
+        }
     }
 }

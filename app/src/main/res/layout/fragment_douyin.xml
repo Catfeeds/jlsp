@@ -10,7 +10,7 @@
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -18,6 +18,19 @@
             android:id="@+id/pullToRefreshRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_record"
+            android:text="拍摄"
+            android:padding="@dimen/dm_15"
+            android:background="@drawable/violet_frame_on_45dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/t20"
+            android:layout_marginBottom="@dimen/dm_50"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
     </com.zb.wyd.widget.VerticalSwipeRefreshLayout>
 </FrameLayout>
