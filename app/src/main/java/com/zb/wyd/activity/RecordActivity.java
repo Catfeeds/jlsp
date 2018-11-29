@@ -87,6 +87,7 @@ public class RecordActivity extends BaseActivity
             {
                 //没有录取权限回调
                 Log.i("CJT", "AudioPermissionError");
+                getPermissions();
             }
         });
 

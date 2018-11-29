@@ -152,9 +152,6 @@ public class CaptureButton extends View
 
     public void stopRecord()
     {
-        removeCallbacks(longPressRunnable); //移除长按逻辑的Runnable
-
-
         mHandler.removeCallbacks(longPressRunnable);
         mHandler.post(new Runnable()
         {
@@ -162,7 +159,7 @@ public class CaptureButton extends View
             public void run()
             {
                 timer.cancel(); //停止计时器
-                recordEnd();    //录制结束
+                resetRecordAnim();  //重制按钮状态
                 isRecordimg = false;
                 state = STATE_IDLE;
             }
@@ -181,7 +178,18 @@ public class CaptureButton extends View
                 {
                     //handlerUnpressByState();
 
-                    stopRecord();
+                    mHandler.removeCallbacks(longPressRunnable);
+                    mHandler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            timer.cancel(); //停止计时器
+                            recordEnd();    //录制结束
+                            isRecordimg = false;
+                            state = STATE_IDLE;
+                        }
+                    });
                 }
                 else
                 {
