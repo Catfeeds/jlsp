@@ -3,5 +3,5 @@
     <item android:drawable="@drawable/add_photo_tab_45dp" android:state_checked="true"/>
     <item android:drawable="@drawable/add_photo_tab_45dp" android:state_pressed="true"/>
     <item android:drawable="@drawable/add_photo_tab_45dp" android:state_selected="true"/>
-    <item android:drawable="@drawable/common_translucent_bg"/>
+    <item android:drawable="@drawable/common_transparent_bg"/>
 </selector>

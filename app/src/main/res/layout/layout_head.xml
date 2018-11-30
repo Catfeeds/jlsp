@@ -21,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:padding="@dimen/dm_8"
             android:src="@drawable/ic_white_back"
             />
 
@@ -44,7 +43,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dm_10"
-            android:textColor="@color/blackC"
+            android:textColor="@color/white"
             android:textSize="@dimen/t14"
             />
 
