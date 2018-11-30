@@ -237,7 +237,7 @@ public class Urls
 
     public static String getSendCommentUrl()
     {
-        return ConfigManager.instance().getDomainName() + "/photo/say";
+        return ConfigManager.instance().getDomainName() + "/data/say";
     }
 
     public static String getAnchorDetailUrl()
@@ -351,7 +351,7 @@ public class Urls
     //获取留言 ?co_biz=&biz_id=
     public static String getCommentUrl()
     {
-        return ConfigManager.instance().getDomainName() + " data/comment";
+        return ConfigManager.instance().getDomainName() + "/data/comment";
     }
 
 

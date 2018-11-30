@@ -518,10 +518,12 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     private void getCommentList()
     {
         Map<String, String> valuePairs = new HashMap<>();
-        valuePairs.put("pid", biz_id);
+
+        valuePairs.put("co_biz", "photo");
+        valuePairs.put("biz_id", biz_id);
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getCommentlistUrl(), this, HttpRequest.GET, GET_COMMENT_LIST, valuePairs, new
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getCommentUrl(), this, HttpRequest.GET, GET_COMMENT_LIST, valuePairs, new
                 CommentInfoListHandler());
     }
 
@@ -588,7 +590,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         }
         showProgressDialog();
         Map<String, String> valuePairs = new HashMap<>();
-        valuePairs.put("pid", biz_id);
+        valuePairs.put("biz_id", biz_id);
+        valuePairs.put("co_biz", "photo");
         valuePairs.put("text", text);
         DataRequest.instance().request(PhotoDetailActivity.this, Urls.getSendCommentUrl(), this, HttpRequest.POST, SEND_COMMENT, valuePairs, new
                 ResultHandler());
