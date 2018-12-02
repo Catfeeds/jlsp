@@ -21,6 +21,7 @@ import com.zb.wyd.R;
 import com.zb.wyd.entity.PriceInfo;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.listener.MyOnClickListener;
+import com.zb.wyd.widget.StarBar;
 
 /**
  * 描述：一句话简单描述
@@ -663,6 +664,59 @@ public class DialogUtils
         lp.width = APPUtils.getScreenWidth(mContext) * 7 / 8;
         mWindow.setAttributes(lp);
         return dialog;
+    }
+
+
+    /**
+     * 温馨提示
+     *
+     * @return
+     */
+    public static void showScoreDialog(Context mContext, String title, String content,
+                                         MyOnClickListener.OnFloatSubmitListener listener)
+    {
+        final Dialog dialog = new Dialog(mContext, R.style.dialogNoAnimation);
+        dialog.setCancelable(false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_score, null);
+        dialog.setContentView(v);
+
+        TextView cancelTv = (TextView) v.findViewById(R.id.tv_cancel);
+        TextView submitTv = (TextView) v.findViewById(R.id.tv_submit);
+        TextView titleTv = (TextView) v.findViewById(R.id.tv_title);
+        TextView contentTv = (TextView) v.findViewById(R.id.tv_content);
+        StarBar mStarBar = (StarBar) v.findViewById(R.id.starBar);
+
+
+        titleTv.setText(title);
+        contentTv.setText(content);
+        cancelTv.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+            }
+        });
+
+        submitTv.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                listener.onSubmit(mStarBar.getStarMark());
+
+            }
+        });
+
+
+        //Dialog部分
+        Window mWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = mWindow.getAttributes();
+        lp.gravity = Gravity.CENTER;
+        lp.width = APPUtils.getScreenWidth(mContext) * 7 / 8;
+        mWindow.setAttributes(lp);
+        dialog.show();
     }
 
 

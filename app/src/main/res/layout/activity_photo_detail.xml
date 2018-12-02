@@ -152,73 +152,54 @@
     </ScrollView>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:orientation="vertical"
         android:padding="@dimen/dm_10">
 
-        <RelativeLayout
+
+        <ImageView
+            android:id="@+id/iv_hover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dm_5"
+            android:src="@drawable/ic_hover_selector" />
+
+        <TextView
+            android:id="@+id/tv_set_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dm_10"
+            android:layout_toLeftOf="@id/iv_hover"
+            android:background="@drawable/violet_frame_on_15dp"
+            android:padding="@dimen/dm_5"
+            android:text="评分"
+            android:textColor="@color/white"
+            android:textSize="@dimen/t12" />
+
+
+        <EditText
+            android:id="@+id/et_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/rl_say"
-            android:layout_marginBottom="@dimen/dm_10">
-
-            <ImageView
-                android:id="@+id/iv_collection_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_colletion_gray" />
-
-            <TextView
-                android:id="@+id/tv_collection_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dm_5"
-                android:layout_toRightOf="@+id/iv_collection_num"
-                android:text="0"
-                android:textColor="@color/blackB"
-                android:textSize="@dimen/t14" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_say"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tv_send"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dm_36"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dm_10"
-                android:background="@drawable/common_yellow_5dp"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dm_10"
-                android:paddingRight="@dimen/dm_10"
-                android:text="发送"
-                android:textColor="@color/white"
-                android:textSize="@dimen/t16" />
-
-            <EditText
-                android:id="@+id/et_content"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dm_36"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/tv_send"
-                android:background="@drawable/gray_frame_2dp"
-                android:hint="说点什么..."
-                android:maxLines="1"
-                android:padding="@dimen/dm_5"
-                android:textSize="@dimen/t14" />
-        </RelativeLayout>
-
-
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dm_5"
+            android:layout_marginRight="@dimen/dm_5"
+            android:imeOptions="actionSend"
+            android:singleLine="true"
+            android:layout_toLeftOf="@id/tv_set_score"
+            android:layout_toRightOf="@+id/tv_tangmu"
+            android:background="@drawable/common_f5_45dp"
+            android:hint="输入您想说的"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/dm_15"
+            android:paddingTop="@dimen/dm_5"
+            android:paddingBottom="@dimen/dm_5"
+            android:textSize="@dimen/t14" />
+    </RelativeLayout>
 </RelativeLayout>

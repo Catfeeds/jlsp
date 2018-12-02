@@ -15,7 +15,10 @@ public class MyOnClickListener
     {
         public abstract void onSubmit(String content);
     }
-
+    public interface OnFloatSubmitListener
+    {
+        public abstract void onSubmit(float content);
+    }
     public interface OnCallBackListener
     {
         public abstract void onSubmit(int p, String content);

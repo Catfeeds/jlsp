@@ -348,12 +348,15 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/paypal/withdraw";
     }
 
-    //获取留言 ?co_biz=&biz_id=
     public static String getCommentUrl()
     {
         return ConfigManager.instance().getDomainName() + "/data/comment";
     }
 
+    public static String getOperaUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/data/biz_opera";
+    }
 
 
 

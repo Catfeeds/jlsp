@@ -1,6 +1,7 @@
 package com.zb.wyd.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -8,8 +9,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,6 +25,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.CommentAdapter;
 import com.zb.wyd.adapter.PhotoAdapter;
+import com.zb.wyd.entity.ChatInfo;
 import com.zb.wyd.entity.CommentInfo;
 import com.zb.wyd.entity.PhotoInfo;
 import com.zb.wyd.entity.PriceInfo;
@@ -37,8 +42,10 @@ import com.zb.wyd.json.ShareInfoHandler;
 import com.zb.wyd.json.SignInfoHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.listener.MyOnClickListener;
+import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
+import com.zb.wyd.utils.LogUtil;
 import com.zb.wyd.utils.StringUtils;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
@@ -47,6 +54,9 @@ import com.zb.wyd.widget.DividerDecoration;
 import com.zb.wyd.widget.FullyGridLayoutManager;
 import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +72,8 @@ import butterknife.ButterKnife;
 public class PhotoDetailActivity extends BaseActivity implements IRequestListener
 {
 
+    @BindView(R.id.iv_hover)
+    ImageView ivHover;
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -72,10 +84,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     MaxRecyclerView rvPhoto;
     @BindView(R.id.rv_comment)
     MaxRecyclerView rvComment;
-    @BindView(R.id.tv_send)
-    TextView tvSend;
-    @BindView(R.id.tv_collection_num)
-    TextView tvCollectionNum;
+    //    @BindView(R.id.tv_send)
+    //    TextView tvSend;
     @BindView(R.id.tv_more)
     TextView tvMore;
 
@@ -92,6 +102,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
 
     @BindView(R.id.iv_user_sex)
     ImageView ivUserSex;
+    @BindView(R.id.tv_set_score)
+    TextView tvScore;
 
 
     private List<String> freePic = new ArrayList<>();
@@ -101,8 +113,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     private PhotoAdapter mPhotoAdapter;
     private CommentAdapter mCommentAdapter;
 
-    private int labelBgArr[] = {R.drawable.lable1_3dp, R.drawable.lable2_3dp, R.drawable.lable3_3dp, R.drawable.lable4_3dp, R.drawable.lable5_3dp,
-            R.drawable.lable6_3dp,};
+    private int labelBgArr[] = {R.drawable.lable1_3dp, R.drawable.lable2_3dp, R.drawable
+            .lable3_3dp, R.drawable.lable4_3dp, R.drawable.lable5_3dp, R.drawable.lable6_3dp,};
 
     private String biz_id;
     private int pn = 1;
@@ -119,6 +131,10 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     private static final String GET_PH0TO_DETAIL = "get_photo_detail";
     private static final String GET_COMMENT_LIST = " get_comment_list";
     private final String UN_FAVORITE_LIKE = "un_favorite_like";
+
+    private static final String OPAER_SCORE = "opaer_score";
+
+
     private static final int REQUEST_SUCCESS = 0x01;
     private static final int REQUEST_FAIL = 0x02;
     private static final int BUY_PHOTO_SUCCESS = 0x05;
@@ -133,8 +149,12 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     private static final int GET_TASK_SHARE_CODE = 0x13;
     private static final int GET_TASK_SHARE_SUCCESS = 0x14;
 
+    private static final int OPEAR_SCORE_SUCCESS = 0x16;
+
 
     private static final int SHARE_PHOTO_REQUEST_CODE = 0x91;
+
+
     @SuppressLint("HandlerLeak")
     private BaseHandler mHandler = new BaseHandler(PhotoDetailActivity.this)
     {
@@ -156,14 +176,14 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                         tvDesc.setText(photoInfo.getDesc());
 
                         has_favorite = photoInfo.getHas_favorite();
-                        //                        if ("1".equals(photoInfo.getHas_favorite()))
-                        //                        {
-                        //                            ivCollection.setEnabled(false);
-                        //                        }
-                        //                        else
-                        //                        {
-                        //                            ivCollection.setEnabled(true);
-                        //                        }
+                        if ("1".equals(photoInfo.getHas_favorite()))
+                        {
+                            ivHover.setSelected(true);
+                        }
+                        else
+                        {
+                            ivHover.setSelected(false);
+                        }
 
 
                         if (!TextUtils.isEmpty(photoInfo.getTags()))
@@ -174,8 +194,9 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                             for (int i = 0; i < labeArr.length; i++)
                             {
                                 TextView tvLabel = new TextView(PhotoDetailActivity.this);
-                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+                                        (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout
+                                                .LayoutParams.WRAP_CONTENT);
                                 params.leftMargin = 10;
                                 tvLabel.setPadding(10, 3, 10, 3);
                                 tvLabel.setText(labeArr[i]);
@@ -209,7 +230,6 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
 
                         freePic.clear();
                         freePic.addAll(photoInfo.getFreePic());
-                        tvCollectionNum.setText(photoInfo.getFavour_count());
                         chargePic.clear();
                         chargePic.addAll(photoInfo.getChargePic());
 
@@ -272,7 +292,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                     break;
 
                 case GET_COMMENT_LIST_SUCCESS:
-                    CommentInfoListHandler mCommentInfoListHandler = (CommentInfoListHandler) msg.obj;
+                    CommentInfoListHandler mCommentInfoListHandler = (CommentInfoListHandler) msg
+                            .obj;
 
                     if (mCommentInfoListHandler.getCommentInfoList().size() < 20)
                     {
@@ -293,13 +314,13 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                     break;
                 case FAVORITE_LIKE_SUCCESS:
                     has_favorite = "1";
-                    ToastUtil.show(PhotoDetailActivity.this, "收藏成功");
-                    // ivCollection.setSelected(true);
+                    ToastUtil.show(PhotoDetailActivity.this, "点赞成功");
+                    ivHover.setSelected(true);
                     break;
                 case UN_FAVORITE_LIKE_SUCCESS:
                     has_favorite = "0";
-                    ToastUtil.show(PhotoDetailActivity.this, "取消收藏成功");
-                    // ivCollection.setSelected(false);
+                    ToastUtil.show(PhotoDetailActivity.this, "取消成功");
+                    ivHover.setSelected(false);
                     break;
                 case SEND_COMMENT_SUCCESS:
                     etContent.setText("");
@@ -321,7 +342,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                         Intent intent1 = new Intent(Intent.ACTION_SEND);
                         intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
                         intent1.setType("text/plain");
-                        startActivityForResult(Intent.createChooser(intent1, "分享"), SHARE_PHOTO_REQUEST_CODE);
+                        startActivityForResult(Intent.createChooser(intent1, "分享"),
+                                SHARE_PHOTO_REQUEST_CODE);
 
                     }
                     break;
@@ -341,6 +363,10 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                         String task = "连续分享" + signInfo.getSeries() + "天";
                         DialogUtils.showTaskDialog(PhotoDetailActivity.this, title, desc, task);
                     }
+                    break;
+
+                case OPEAR_SCORE_SUCCESS:
+                    ToastUtil.show(PhotoDetailActivity.this, "评价成功");
                     break;
             }
         }
@@ -365,11 +391,31 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     {
         ivBack.setOnClickListener(this);
         //        btnBuy.setOnClickListener(this);
-        //  ivCollection.setOnClickListener(this);
-        tvSend.setOnClickListener(this);
+        ivHover.setOnClickListener(this);
+        //  tvSend.setOnClickListener(this);
         ivShare.setOnClickListener(this);
         tvMore.setOnClickListener(this);
         //        tvContact.setOnClickListener(this);
+
+        tvScore.setOnClickListener(this);
+        etContent.setOnEditorActionListener(new EditText.OnEditorActionListener()
+        {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (actionId == EditorInfo.IME_ACTION_SEND)
+                {
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService
+                            (Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    sendComment();
+                }
+                return false;
+            }
+
+        });
     }
 
     @Override
@@ -384,7 +430,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
             @Override
             public void onItemClick(View view, int position)
             {
-                Intent intent = new Intent(PhotoDetailActivity.this, SpaceImageDetailActivity.class);
+                Intent intent = new Intent(PhotoDetailActivity.this, SpaceImageDetailActivity
+                        .class);
                 intent.putStringArrayListExtra("PIC_LIST", allPic);
                 intent.putExtra("startPosition", position);
                 startActivity(intent);
@@ -393,7 +440,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
 
         rvPhoto.setAdapter(mPhotoAdapter);
 
-        rvComment.setLayoutManager(new LinearLayoutManager(PhotoDetailActivity.this, LinearLayoutManager.VERTICAL, false));
+        rvComment.setLayoutManager(new LinearLayoutManager(PhotoDetailActivity.this,
+                LinearLayoutManager.VERTICAL, false));
         rvComment.addItemDecoration(new DividerDecoration(this));
         mCommentAdapter = new CommentAdapter(commentInfoList);
         rvComment.setAdapter(mCommentAdapter);
@@ -410,7 +458,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     {
         if (null != priceInfo)
         {
-            DialogUtils.showLivePriceDialog(PhotoDetailActivity.this, priceInfo, new View.OnClickListener()
+            DialogUtils.showLivePriceDialog(PhotoDetailActivity.this, priceInfo, new View
+                    .OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -466,22 +515,22 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         //        {
         //            showBuyDialog();
         //        }
-        //        else if (v == ivCollection)
-        //        {
-        //            if("1".equals(has_favorite))
-        //            {
-        //                unFavoriteLike();
-        //            }
-        //            else
-        //            {
-        //                favoriteLike();
-        //            }
-        //
-        //        }
-        else if (v == tvSend)
+        else if (v == ivHover)
         {
-            sendComment();
+            if ("1".equals(has_favorite))
+            {
+                unFavoriteLike();
+            }
+            else
+            {
+                favoriteLike();
+            }
+            //
         }
+        //        else if (v == tvSend)
+        //        {
+        //            sendComment();
+        //        }
         else if (v == ivShare)
         {
             showProgressDialog();
@@ -492,6 +541,22 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
             pn += 1;
             getCommentList();
         }
+        else if (v == tvScore)
+        {
+            DialogUtils.showScoreDialog(PhotoDetailActivity.this, "自拍评价", "这个自拍怎么样，请做出您的评价", new
+                    MyOnClickListener.OnFloatSubmitListener()
+
+
+            {
+                @Override
+                public void onSubmit(float content)
+                {
+                    opearScore(content);
+                }
+            });
+        }
+
+
         //        else if (v == tvContact)
         //        {
         //            if ("fee".equals(contact))
@@ -511,8 +576,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         showProgressDialog();
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getPhotoDetailUrl(), this, HttpRequest.GET, GET_PH0TO_DETAIL, valuePairs, new
-                PhotoInfoHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getPhotoDetailUrl(), this,
+                HttpRequest.GET, GET_PH0TO_DETAIL, valuePairs, new PhotoInfoHandler());
     }
 
     private void getCommentList()
@@ -523,8 +588,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getCommentUrl(), this, HttpRequest.GET, GET_COMMENT_LIST, valuePairs, new
-                CommentInfoListHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getCommentUrl(), this,
+                HttpRequest.GET, GET_COMMENT_LIST, valuePairs, new CommentInfoListHandler());
     }
 
     //兑换
@@ -535,8 +600,21 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
         valuePairs.put("finger", finger);
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getBuyLiveUrl(), this, HttpRequest.POST, BUY_PHOTO, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getBuyLiveUrl(), this,
+                HttpRequest.POST, BUY_PHOTO, valuePairs, new ResultHandler());
+    }
+
+
+    private void opearScore(float value)
+    {
+        showProgressDialog();
+        Map<String, String> valuePairs = new HashMap<>();
+        valuePairs.put("biz_id", biz_id);
+        valuePairs.put("co_biz", "photo");
+        valuePairs.put("action", "score");
+        valuePairs.put("value", String.valueOf(Math.round(value) * 10));
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getOperaUrl(), this,
+                HttpRequest.POST, OPAER_SCORE, valuePairs, new ResultHandler());
     }
 
 
@@ -546,8 +624,9 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getCollectionRequestUrl(), this, HttpRequest.POST, FAVORITE_LIKE, valuePairs,
-                new ResultHandler());
+        valuePairs.put("action", "like");
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getOperaUrl(), this,
+                HttpRequest.POST, FAVORITE_LIKE, valuePairs, new ResultHandler());
     }
 
     private void unFavoriteLike()
@@ -556,8 +635,9 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getFavoriteUnLikeUrl(), this, HttpRequest.POST, UN_FAVORITE_LIKE, valuePairs,
-                new ResultHandler());
+        valuePairs.put("action", "unlike");
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getOperaUrl(), this,
+                HttpRequest.POST, UN_FAVORITE_LIKE, valuePairs, new ResultHandler());
     }
 
 
@@ -566,8 +646,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getShareUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new
-                ShareInfoHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getShareUrl(), this,
+                HttpRequest.GET, GET_SHARE, valuePairs, new ShareInfoHandler());
     }
 
     private void getTaskShareUrl()
@@ -575,8 +655,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getTaskShareUrl(), this, HttpRequest.GET, GET_TASK_SHARE, valuePairs, new
-                SignInfoHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getTaskShareUrl(), this,
+                HttpRequest.GET, GET_TASK_SHARE, valuePairs, new SignInfoHandler());
     }
 
     private void sendComment()
@@ -593,8 +673,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
         valuePairs.put("text", text);
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getSendCommentUrl(), this, HttpRequest.POST, SEND_COMMENT, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getSendCommentUrl(), this,
+                HttpRequest.POST, SEND_COMMENT, valuePairs, new ResultHandler());
     }
 
     @Override
@@ -691,6 +771,20 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                 mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
             }
         }
+        else if (OPAER_SCORE.equals(action))
+        {
+            hideProgressDialog();
+            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(OPEAR_SCORE_SUCCESS, obj));
+            }
+            else
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
+            }
+        }
+
+
     }
 
 

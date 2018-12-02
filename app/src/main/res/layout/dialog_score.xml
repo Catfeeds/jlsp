@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ratingbar="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dm_15">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dm_10"
+        android:gravity="center"
+        android:text="视频评论"
+        android:textColor="@color/black"
+        android:textSize="@dimen/t18" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dm_10"
+        android:gravity="center"
+        android:text="视频评论"
+        android:textColor="@color/text_violet_normal"
+        android:textSize="@dimen/t14" />
+
+    <com.zb.wyd.widget.StarBar
+        android:id="@+id/starBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dm_10"
+        ratingbar:starCount="5"
+        ratingbar:clickEnable="true"
+        ratingbar:starDistance="10dp"
+        ratingbar:starEmpty="@drawable/ic_star_off"
+        ratingbar:starFill="@drawable/ic_star_on"
+        ratingbar:starSize="30dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dm_10">
+
+
+        <TextView
+            android:id="@+id/tv_submit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dm_10"
+            android:layout_weight="1"
+            android:background="@drawable/violet_frame_on_45dp"
+            android:gravity="center"
+            android:padding="@dimen/dm_7"
+            android:text="提交评价"
+            android:textColor="@color/white"
+            android:textSize="@dimen/t16" />
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dm_10"
+            android:layout_weight="1"
+            android:background="@drawable/violet_frame_45dp"
+            android:gravity="center"
+            android:padding="@dimen/dm_7"
+            android:text="暂不评价"
+            android:textColor="@color/text_violet"
+            android:textSize="@dimen/t16" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -10,7 +10,7 @@
 
     <color name="transparentBlack">#77000000</color>
     <color name="white">#ffffff</color>
-    <color name="black">#000000</color>
+    <color name="black">#4A4A4A</color>
     <color name="gray">#cccccc</color>
     <color name="transparent">#00000000</color>
     <color name="translucent">#30ffffff</color>
@@ -46,7 +46,7 @@
     <color name="item_sign">#4f4665</color>
     <color name="yellow">#FFD000</color>
     <color name="orange">#F58E20</color>
-    <color name="line">#F1F1F1</color>
+    <color name="line">#E3E3E3</color>
 
     <color name="text_white">#E9DFED</color>
     <color name="text_violet">#4D3556</color>
