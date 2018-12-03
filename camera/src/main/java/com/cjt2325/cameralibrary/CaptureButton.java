@@ -152,18 +152,21 @@ public class CaptureButton extends View
 
     public void stopRecord()
     {
-        mHandler.removeCallbacks(longPressRunnable);
-        mHandler.post(new Runnable()
+        if (isRecordimg)
         {
-            @Override
-            public void run()
+            mHandler.removeCallbacks(longPressRunnable);
+            mHandler.post(new Runnable()
             {
-                timer.cancel(); //停止计时器
-                resetRecordAnim();  //重制按钮状态
-                isRecordimg = false;
-                state = STATE_IDLE;
-            }
-        });
+                @Override
+                public void run()
+                {
+                    timer.cancel(); //停止计时器
+                    recordEnd();    //录制结束
+                    isRecordimg = false;
+                    state = STATE_IDLE;
+                }
+            });
+        }
     }
     @Override
     public boolean onTouchEvent(MotionEvent event)

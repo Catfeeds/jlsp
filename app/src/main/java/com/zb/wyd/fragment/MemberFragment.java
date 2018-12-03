@@ -153,7 +153,7 @@ public class MemberFragment extends BaseFragment implements IRequestListener, Vi
                         String vip_level = userInfo.getVip_level();
                         int vip_type = userInfo.getVip_type();
                         String vip_expire = userInfo.getVip_expire();
-                        ConfigManager.instance().setUserRole(Integer.parseInt(userInfo.getRole()));
+//                        ConfigManager.instance().setUserRole(Integer.parseInt(userInfo.getRole()));
                         ConfigManager.instance().setValid_vip(userInfo.isValid_vip());
                         ImageLoader.getInstance().displayImage(userInfo.getUface(), ivUserPic);
                         if ("-".equals(unick) || StringUtils.stringIsEmpty(unick))

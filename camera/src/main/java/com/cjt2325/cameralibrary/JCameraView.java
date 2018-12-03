@@ -250,6 +250,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             public void onClick() {
                 if (leftClickListener != null) {
                     leftClickListener.onClick();
+                    mCaptureLayout.stopRecored();
                 }
             }
         });
@@ -263,6 +264,11 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         });
     }
 
+    public  void stopRecored()
+    {
+        if(null !=mCaptureLayout)
+        mCaptureLayout.stopRecored();
+    }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

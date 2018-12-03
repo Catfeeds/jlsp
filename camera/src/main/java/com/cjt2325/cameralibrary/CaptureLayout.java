@@ -304,6 +304,13 @@ public class CaptureLayout extends FrameLayout {
 
     }
 
+    public  void stopRecored()
+    {
+        if(null !=  btn_capture)
+        {
+            btn_capture.stopRecord();
+        }
+    }
     /**************************************************
      * 对外提供的API                      *
      **************************************************/

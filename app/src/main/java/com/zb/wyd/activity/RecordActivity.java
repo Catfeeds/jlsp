@@ -58,6 +58,9 @@ public class RecordActivity extends BaseActivity
 
     }
 
+
+
+    private String videoUrl;
     @Override
     protected void initViewData()
     {
@@ -103,8 +106,12 @@ public class RecordActivity extends BaseActivity
             @Override
             public void recordSuccess(String url, Bitmap firstFrame)
             {
+                videoUrl = url;
                 //获取视频路径
                 Log.i("CJT", "url = " + url);
+
+                TrimVideoActivity.startActivity(RecordActivity.this, url);
+                finish();
             }
             //@Override
             //public void quit() {
@@ -127,6 +134,7 @@ public class RecordActivity extends BaseActivity
             @Override
             public void onClick()
             {
+
             }
         });
 
@@ -147,6 +155,13 @@ public class RecordActivity extends BaseActivity
     protected void onPause() {
         super.onPause();
         jCameraView.onPause();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        jCameraView.stopRecored();
     }
 
     /**

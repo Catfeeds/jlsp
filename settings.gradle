@@ -1,1 +1,1 @@
-include ':app', ':visitor-20180822','camera'
+include ':app', ':visitor-20180822','camera' ,':video-effect',':video-compressor'

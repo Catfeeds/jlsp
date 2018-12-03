@@ -9,6 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/camera" />
+            <option value="$PROJECT_DIR$/video-compressor" />
+            <option value="$PROJECT_DIR$/video-effect" />
             <option value="$PROJECT_DIR$/visitor-20180822" />
           </set>
         </option>
