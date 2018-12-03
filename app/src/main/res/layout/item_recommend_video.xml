@@ -13,6 +13,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/icon_photo_default" />
 
+
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"

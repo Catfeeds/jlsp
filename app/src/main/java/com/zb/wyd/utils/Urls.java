@@ -357,7 +357,14 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/data/biz_opera";
     }
-
+    public static String getVideoDetailUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/video/detail";
+    }
+    public static String getVideoRecommendUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/video/recommend";
+    }
 
 
 }

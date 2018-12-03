@@ -24,6 +24,7 @@ public class UserInfo implements Serializable
     private String sex;
     private String has_favorite;
 
+    private int fans;
     private String uname;//test003;//
     private String email;//
     private String invite;//
@@ -49,6 +50,7 @@ public class UserInfo implements Serializable
 
     public UserInfo(JSONObject obj)
     {
+        this.fans = obj.optInt("fans");
         this.unick = obj.optString("unick");
         this.uname = obj.optString("uname");
         this.email = obj.optString("email");
@@ -76,6 +78,16 @@ public class UserInfo implements Serializable
         this.vip_type = obj.optInt("vip_type");
         this.has_sign = obj.optBoolean("has_sign");
         this.sex = obj.optString("sex");
+    }
+
+    public int getFans()
+    {
+        return fans;
+    }
+
+    public void setFans(int fans)
+    {
+        this.fans = fans;
     }
 
     public boolean isHas_sign()
