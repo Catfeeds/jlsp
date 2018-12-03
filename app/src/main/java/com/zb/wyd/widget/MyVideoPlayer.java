@@ -858,7 +858,7 @@ public class MyVideoPlayer extends GSYVideoPlayer
     /**
      * 定义开始按键显示
      */
-    protected void updateStartImage()
+    public void updateStartImage()
     {
         if (mStartButton instanceof ENPlayView)
         {

@@ -93,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dm_15"
+                android:visibility="invisible"
                 android:src="@drawable/ic_setting" />
         </RelativeLayout>
     </LinearLayout>
@@ -125,6 +126,13 @@
 
     <moe.codeest.enviews.ENPlayView
         android:id="@+id/start"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical" />
+    <moe.codeest.enviews.ENPlayView
+        android:id="@+id/video_play"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"

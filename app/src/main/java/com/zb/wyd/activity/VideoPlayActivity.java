@@ -40,6 +40,7 @@ import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.json.VideoStreamHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.listener.MyOnClickListener;
+import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.LogUtil;
@@ -62,6 +63,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import moe.codeest.enviews.ENPlayView;
 
 /**
  * 描述：一句话简单描述
@@ -132,6 +134,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     //    private ImageView mShareIv;
     //    private ImageView mReportIv;
     //    private ImageView mSettingIv;
+
+    private ENPlayView mPlayButton;
     private LinearLayout mSeekLayout;
 
     private int is_fav;
@@ -144,7 +148,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private long startTime, endTime;
     private String errorMsg = "网络异常";
 
-    private ChannelPopupWindow mChannelPopupWindow;
+    private String videoPlaylist;
 
     private static final String MSG_REPORT = "msg_report";
     private static final String GET_SHARE = "GET_SHARE";
@@ -369,10 +373,11 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                         hostInfoList.clear();
                         hostInfoList.addAll(mVideoDetailInfo.getHostInfoList());
                         mVideoChannelAdapter.notifyDataSetChanged();
-
+                        videoPlayer.release();
+                        mPlayButton.setVisibility(View.VISIBLE);
                         if (!TextUtils.isEmpty(mVideoDetailInfo.getPlaylist()))
                         {
-                            playVideo(mVideoDetailInfo.getPlaylist());
+                            videoPlaylist = mVideoDetailInfo.getPlaylist();
                         }
                         tvVideoName.setText(mVideoDetailInfo.getIname());
 
@@ -475,6 +480,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         ivHover.setOnClickListener(this);
         tvSetScore.setOnClickListener(this);
         tvCollection.setOnClickListener(this);
+
     }
 
     @Override
@@ -487,6 +493,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //        mSettingIv = (ImageView) videoPlayer.findViewById(R.id.iv_setting);
         //        mReportIv = (ImageView) videoPlayer.findViewById(R.id.iv_report);
         mSeekLayout = (LinearLayout) videoPlayer.findViewById(R.id.sp_layout);
+        mPlayButton = (ENPlayView) videoPlayer.findViewById(R.id.video_play);
+        mPlayButton.setOnClickListener(this);
 
         //        mCollectionIv.setOnClickListener(this);
         //        mShareIv.setOnClickListener(this);
@@ -672,6 +680,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 LogUtil.e("TAG", "播放错误111111111111111111111111111111111111111111111111111");
                 errorMsg = s;
                 ToastUtil.show(VideoPlayActivity.this, "该网络暂无法播放，请切换网络重试");
+                mPlayButton.setVisibility(View.VISIBLE);
                 // mChannelLayout.setVisibility(View.VISIBLE);
                 //showChannelPop();
 
@@ -756,7 +765,21 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             @Override
             public void onItemClick(View view, int position)
             {
+                HostInfo mHostInfo = hostInfoList.get(position);
 
+                if ("vip".equals(mHostInfo.getLine()))
+                {
+                    mHandler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            getLivePrice();
+                        }
+                    });
+
+
+                }
             }
         });
         rvChannel.setAdapter(mVideoChannelAdapter);
@@ -828,7 +851,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         if (null != videoPlayer)
         {
             videoPlayer.setUp(uri, false, videoName);
-            videoPlayer.startPlayLogic();
+             videoPlayer.startPlayLogic();
         }
     }
 
@@ -890,6 +913,53 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 favoriteLike();
             }
 
+        }
+        else if (v == mPlayButton)
+        {
+            if (TextUtils.isEmpty(videoPlaylist))
+            {
+
+                if (!hostInfoList.isEmpty())
+                {
+
+                    if ("vip".equals(hostInfoList.get(0).getLine()))
+                    {
+
+                        if (!ConfigManager.instance().getValid_vip())
+                        {
+                            //提示购买VIP
+                        }
+                    }
+                    else
+
+                    {
+                        mHandler.post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                getLivePrice();
+                            }
+                        });
+                    }
+                }
+
+
+            }
+            else
+            {
+                if (hostInfoList.isEmpty())
+                {
+                    playVideo(videoPlaylist);
+                }
+                else
+                {
+                    playVideo(hostInfoList.get(0).getLine() + videoPlaylist);
+                }
+
+                videoPlayer.updateStartImage();
+                mPlayButton.setVisibility(View.GONE);
+            }
         }
         else if (v == tvCollection)
         {
