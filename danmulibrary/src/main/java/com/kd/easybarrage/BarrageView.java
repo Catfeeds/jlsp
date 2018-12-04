@@ -95,12 +95,13 @@ public class BarrageView extends RelativeLayout {
         }
     }
 
+
     public void addBarrage(Barrage tb) {
         barrages.add(tb);
         if (allow_repeat) {
             cache.add(tb);
         }
-        showBarrage(tb);
+        //showBarrage(tb);
         if (!mHandler.hasMessages(0)) {
             mHandler.sendEmptyMessageDelayed(0, INTERVAL);
         }
@@ -117,7 +118,15 @@ public class BarrageView extends RelativeLayout {
 
     public void checkBarrage() {
         int index = (int) (Math.random() * barrages.size());
-        Barrage barrage = barrages.get(index);
+
+        if(barrages.isEmpty())
+        {
+            return;
+        }
+
+        Log.e("TAG", "barrages====" + barrages.size());
+        Barrage barrage = barrages.get(0);
+        barrages.remove(0);
         if (allow_repeat) {
             if (cache.contains(barrage))
                 return;

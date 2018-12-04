@@ -484,17 +484,17 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                     for (int i = 0; i < mDanmuInfoList.size(); i++)
                     {
-                        LogUtil.e("TAG", "danmuInfoList.size == " + mDanmuInfoList.size());
-                        DanmuInfo mDanmuInfo = mDanmuInfoList.get(i);
-
-                        String stryle = mDanmuInfo.getStyle();
-
+                        LogUtil.e("TAG", "danmuInfoList.size == " + i);
+                         DanmuInfo mDanmuInfo = mDanmuInfoList.get(i);
+                         String stryle = mDanmuInfo.getStyle();
                         String color = "#0000FF";
                         if (null != stryle)
                         {
                             color = stryle.split(",")[0];
                         }
                         barrageView.addBarrage(new Barrage(mDanmuInfo.getData(), Color.parseColor(color)));
+
+
                     }
 
                     mHandler.sendEmptyMessageDelayed(GET_VIDEO_CURRENT_POSITION, 1000);
@@ -508,6 +508,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 case GET_DAN_MU_SUCCESS:
                     DanmuInfoListHandler mDanmuInfoListHandler = (DanmuInfoListHandler) msg.obj;
                     danmuInfoList.addAll(mDanmuInfoListHandler.getDanmuInfoList());
+
+
                     break;
 
                 case SHOW_TOAST:
@@ -1558,7 +1560,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                     }
                 });
 
-                String wsUri = ConfigManager.instance().getChatUrl() + "/" + ConfigManager.instance().getUniqueCode() + "?co_biz=video&biz_id=" + biz_id ;
+                String wsUri = ConfigManager.instance().getChatUrl() + "/" + ConfigManager.instance().getUniqueCode() + "?co_biz=video&biz_id=" +
+                        biz_id;
 
 
                 if (null != mMySocketConnection) mMySocketConnection.startConnection(wsUri);
