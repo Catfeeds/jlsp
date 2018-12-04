@@ -223,7 +223,7 @@ public class LiveActivity extends BaseActivity implements IRequestListener
                 case GET_LIVE_PRICE_SUCCESS:
                     LivePriceInfoHandler mLivePriceInfoHandler = (LivePriceInfoHandler) msg.obj;
 
-                    PriceInfo mLivePriceInfo = mLivePriceInfoHandler.getLivePriceInfo();
+                    final PriceInfo mLivePriceInfo = mLivePriceInfoHandler.getLivePriceInfo();
 
                     if (null != mLivePriceInfo)
                     {
@@ -1345,7 +1345,7 @@ public class LiveActivity extends BaseActivity implements IRequestListener
      *
      * @return
      */
-    private Dialog showGiftDialog(Context mContext, List<GiftInfo> giftInfoList)
+    private Dialog showGiftDialog(Context mContext, final List<GiftInfo> giftInfoList)
     {
         final Dialog dialog = new Dialog(mContext, R.style.DialogStyle);
         dialog.setCancelable(true);

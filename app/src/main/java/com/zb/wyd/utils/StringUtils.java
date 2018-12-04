@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,9 +80,9 @@ public class StringUtils
         return df.format(date);// new Date()为获取当前系统时间
     }
 
-    SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd");
-    Date             date = new Date();
-    String           str  = sdf.format(date);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    Date date = new Date();
+    String str = sdf.format(date);
 
     public static String formatTime(long ms)
     {
@@ -139,7 +140,8 @@ public class StringUtils
         try
         {
             currentTime = sdf.format(format1.parse(time));
-        } catch (ParseException e)
+        }
+        catch (ParseException e)
         {
             e.printStackTrace();
         }
@@ -187,7 +189,8 @@ public class StringUtils
             {
                 return 0;
             }
-        } catch (Exception exception)
+        }
+        catch (Exception exception)
         {
             exception.printStackTrace();
         }
@@ -226,7 +229,8 @@ public class StringUtils
             {
                 return 0;
             }
-        } catch (Exception exception)
+        }
+        catch (Exception exception)
         {
             exception.printStackTrace();
         }
@@ -244,8 +248,8 @@ public class StringUtils
      */
     public static boolean checkEmail(String email)
     {
-        Pattern pattern = Pattern
-                .compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+        Pattern pattern = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))" +
+                "([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
@@ -282,7 +286,8 @@ public class StringUtils
             calendar.add(Calendar.DAY_OF_MONTH, -1);
             date1 = calendar.getTime();
             day = getDateToString(date1);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -304,7 +309,8 @@ public class StringUtils
             calendar.add(Calendar.DAY_OF_MONTH, 1);
             date1 = calendar.getTime();
             day = getDateToString(date1);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -322,7 +328,8 @@ public class StringUtils
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date date1 = sdf.parse(time);
             day = getDateToString(date1);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -432,8 +439,6 @@ public class StringUtils
 
         return dateString;
     }
-
-
 
 
     public static String formatString(String str)
@@ -586,7 +591,8 @@ public class StringUtils
             String strDatatime = time + "000";
             Long lDatatime = Long.parseLong(strDatatime);
             dateTime = sdf.format(lDatatime);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             //TODO 处理异常
             e.printStackTrace();
@@ -606,7 +612,8 @@ public class StringUtils
             String strDatatime = time + "000";
             Long lDatatime = Long.parseLong(strDatatime);
             dateTime = sdf.format(lDatatime);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             //TODO 处理异常
             e.printStackTrace();
@@ -626,7 +633,8 @@ public class StringUtils
             String strDatatime = time + "000";
             Long lDatatime = Long.parseLong(strDatatime);
             dateTime = sdf.format(lDatatime);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             //TODO 处理异常
             e.printStackTrace();
@@ -647,7 +655,8 @@ public class StringUtils
             String strDatatime = time + "000";
             Long lDatatime = Long.parseLong(strDatatime);
             dateTime = sdf.format(lDatatime);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             //TODO 处理异常
             e.printStackTrace();
@@ -688,7 +697,8 @@ public class StringUtils
             type = obj.optString("type");
 
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return type;
@@ -709,7 +719,8 @@ public class StringUtils
             type = obj.optString("msg_ymdid");
 
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return type;
@@ -730,7 +741,8 @@ public class StringUtils
             type = obj.optString("is_gild");
 
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return type;
@@ -895,13 +907,44 @@ public class StringUtils
         {
             date1 = format.parse(time1);
             date2 = format.parse(time2);
-        } catch (ParseException e)
+        }
+        catch (ParseException e)
         {
             e.printStackTrace();
         }
 
         int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
         return days;
+    }
+
+
+    public static String getRandomColor()
+    {
+        //红色
+        String red;
+        //绿色
+        String green;
+        //蓝色
+        String blue;
+        //生成随机对象
+        Random random = new Random();
+        //生成红色颜色代码
+        red = Integer.toHexString(random.nextInt(256)).toUpperCase();
+        //生成绿色颜色代码
+        green = Integer.toHexString(random.nextInt(256)).toUpperCase();
+        //生成蓝色颜色代码
+        blue = Integer.toHexString(random.nextInt(256)).toUpperCase();
+
+        //判断红色代码的位数
+        red = red.length() == 1 ? "0" + red : red;
+        //判断绿色代码的位数
+        green = green.length() == 1 ? "0" + green : green;
+        //判断蓝色代码的位数
+        blue = blue.length() == 1 ? "0" + blue : blue;
+        //生成十六进制颜色值
+        String color = "#" + red + green + blue;
+
+        return color;
     }
 
 }

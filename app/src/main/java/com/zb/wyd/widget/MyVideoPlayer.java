@@ -22,7 +22,9 @@ import com.shuyu.gsyvideoplayer.utils.NetworkUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoViewBridge;
 import com.zb.wyd.R;
+import com.zb.wyd.utils.LogUtil;
 
 import java.io.File;
 
@@ -74,6 +76,12 @@ public class MyVideoPlayer extends GSYVideoPlayer
     protected int mDialogProgressHighLightColor = -11;
 
     protected int mDialogProgressNormalColor = -11;
+
+    @Override
+    public GSYVideoViewBridge getGSYVideoManager()
+    {
+        return super.getGSYVideoManager();
+    }
 
     /**
      * 1.5.0开始加入，如果需要不同布局区分功能，需要重载
@@ -153,13 +161,16 @@ public class MyVideoPlayer extends GSYVideoPlayer
     {
         if (!NetworkUtils.isAvailable(mContext))
         {
-            //Toast.makeText(mContext, getResources().getString(R.string.no_net), Toast.LENGTH_LONG).show();
+            //Toast.makeText(mContext, getResources().getString(R.string.no_net), Toast
+            // .LENGTH_LONG).show();
             startPlayLogic();
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivityContext());
-        builder.setMessage(getResources().getString(com.shuyu.gsyvideoplayer.R.string.tips_not_wifi));
-        builder.setPositiveButton(getResources().getString(com.shuyu.gsyvideoplayer.R.string.tips_not_wifi_confirm), new DialogInterface.OnClickListener()
+        builder.setMessage(getResources().getString(com.shuyu.gsyvideoplayer.R.string
+                .tips_not_wifi));
+        builder.setPositiveButton(getResources().getString(com.shuyu.gsyvideoplayer.R.string
+                .tips_not_wifi_confirm), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -168,7 +179,8 @@ public class MyVideoPlayer extends GSYVideoPlayer
                 startPlayLogic();
             }
         });
-        builder.setNegativeButton(getResources().getString(com.shuyu.gsyvideoplayer.R.string.tips_not_wifi_cancel), new DialogInterface.OnClickListener()
+        builder.setNegativeButton(getResources().getString(com.shuyu.gsyvideoplayer.R.string
+                .tips_not_wifi_cancel), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -184,86 +196,95 @@ public class MyVideoPlayer extends GSYVideoPlayer
      */
     @Override
     @SuppressWarnings("ResourceType")
-    protected void showProgressDialog(float deltaX, String seekTime, int seekTimePosition, String totalTime, int totalTimeDuration)
+    protected void showProgressDialog(float deltaX, String seekTime, int seekTimePosition, String
+            totalTime, int totalTimeDuration)
     {
-            if (mProgressDialog == null)
+        if (mProgressDialog == null)
+        {
+            View localView = LayoutInflater.from(getActivityContext()).inflate
+                    (getProgressDialogLayoutId(), null);
+            if (localView.findViewById(getProgressDialogProgressId()) instanceof ProgressBar)
             {
-                View localView = LayoutInflater.from(getActivityContext()).inflate(getProgressDialogLayoutId(), null);
-                if (localView.findViewById(getProgressDialogProgressId()) instanceof ProgressBar)
+                mDialogProgressBar = ((ProgressBar) localView.findViewById
+                        (getProgressDialogProgressId()));
+                if (mDialogProgressBarDrawable != null)
                 {
-                    mDialogProgressBar = ((ProgressBar) localView.findViewById(getProgressDialogProgressId()));
-                    if (mDialogProgressBarDrawable != null)
-                    {
-                        mDialogProgressBar.setProgressDrawable(mDialogProgressBarDrawable);
-                    }
-                }
-                if (localView.findViewById(getProgressDialogCurrentDurationTextId()) instanceof TextView)
-                {
-                    mDialogSeekTime = ((TextView) localView.findViewById(getProgressDialogCurrentDurationTextId()));
-                }
-                if (localView.findViewById(getProgressDialogAllDurationTextId()) instanceof TextView)
-                {
-                    mDialogTotalTime = ((TextView) localView.findViewById(getProgressDialogAllDurationTextId()));
-                }
-                if (localView.findViewById(getProgressDialogImageId()) instanceof ImageView)
-                {
-                    mDialogIcon = ((ImageView) localView.findViewById(getProgressDialogImageId()));
-                }
-                mProgressDialog = new Dialog(getActivityContext(), com.shuyu.gsyvideoplayer.R.style.video_style_dialog_progress);
-                mProgressDialog.setContentView(localView);
-                mProgressDialog.getWindow().addFlags(Window.FEATURE_ACTION_BAR);
-                mProgressDialog.getWindow().addFlags(32);
-                mProgressDialog.getWindow().addFlags(16);
-                mProgressDialog.getWindow().setLayout(getWidth(), getHeight());
-                if (mDialogProgressNormalColor != -11 && mDialogTotalTime != null)
-                {
-                    mDialogTotalTime.setTextColor(mDialogProgressNormalColor);
-                }
-                if (mDialogProgressHighLightColor != -11 && mDialogSeekTime != null)
-                {
-                    mDialogSeekTime.setTextColor(mDialogProgressHighLightColor);
-                }
-                WindowManager.LayoutParams localLayoutParams = mProgressDialog.getWindow().getAttributes();
-                localLayoutParams.gravity = Gravity.TOP;
-                localLayoutParams.width = getWidth();
-                localLayoutParams.height = getHeight();
-                int location[] = new int[2];
-                getLocationOnScreen(location);
-                localLayoutParams.x = location[0];
-                localLayoutParams.y = location[1];
-                mProgressDialog.getWindow().setAttributes(localLayoutParams);
-            }
-            if (!mProgressDialog.isShowing())
-            {
-                mProgressDialog.show();
-            }
-            if (mDialogSeekTime != null)
-            {
-                mDialogSeekTime.setText(seekTime);
-            }
-            if (mDialogTotalTime != null)
-            {
-                mDialogTotalTime.setText(" / " + totalTime);
-            }
-            if (totalTimeDuration > 0)
-                if (mDialogProgressBar != null)
-                {
-                    mDialogProgressBar.setProgress(seekTimePosition * 100 / totalTimeDuration);
-                }
-            if (deltaX > 0)
-            {
-                if (mDialogIcon != null)
-                {
-                    mDialogIcon.setBackgroundResource(com.shuyu.gsyvideoplayer.R.drawable.video_forward_icon);
+                    mDialogProgressBar.setProgressDrawable(mDialogProgressBarDrawable);
                 }
             }
-            else
+            if (localView.findViewById(getProgressDialogCurrentDurationTextId()) instanceof
+                    TextView)
             {
-                if (mDialogIcon != null)
-                {
-                    mDialogIcon.setBackgroundResource(com.shuyu.gsyvideoplayer.R.drawable.video_backward_icon);
-                }
+                mDialogSeekTime = ((TextView) localView.findViewById
+                        (getProgressDialogCurrentDurationTextId()));
             }
+            if (localView.findViewById(getProgressDialogAllDurationTextId()) instanceof TextView)
+            {
+                mDialogTotalTime = ((TextView) localView.findViewById
+                        (getProgressDialogAllDurationTextId()));
+            }
+            if (localView.findViewById(getProgressDialogImageId()) instanceof ImageView)
+            {
+                mDialogIcon = ((ImageView) localView.findViewById(getProgressDialogImageId()));
+            }
+            mProgressDialog = new Dialog(getActivityContext(), com.shuyu.gsyvideoplayer.R.style
+                    .video_style_dialog_progress);
+            mProgressDialog.setContentView(localView);
+            mProgressDialog.getWindow().addFlags(Window.FEATURE_ACTION_BAR);
+            mProgressDialog.getWindow().addFlags(32);
+            mProgressDialog.getWindow().addFlags(16);
+            mProgressDialog.getWindow().setLayout(getWidth(), getHeight());
+            if (mDialogProgressNormalColor != -11 && mDialogTotalTime != null)
+            {
+                mDialogTotalTime.setTextColor(mDialogProgressNormalColor);
+            }
+            if (mDialogProgressHighLightColor != -11 && mDialogSeekTime != null)
+            {
+                mDialogSeekTime.setTextColor(mDialogProgressHighLightColor);
+            }
+            WindowManager.LayoutParams localLayoutParams = mProgressDialog.getWindow()
+                    .getAttributes();
+            localLayoutParams.gravity = Gravity.TOP;
+            localLayoutParams.width = getWidth();
+            localLayoutParams.height = getHeight();
+            int location[] = new int[2];
+            getLocationOnScreen(location);
+            localLayoutParams.x = location[0];
+            localLayoutParams.y = location[1];
+            mProgressDialog.getWindow().setAttributes(localLayoutParams);
+        }
+        if (!mProgressDialog.isShowing())
+        {
+            mProgressDialog.show();
+        }
+        if (mDialogSeekTime != null)
+        {
+            mDialogSeekTime.setText(seekTime);
+        }
+        if (mDialogTotalTime != null)
+        {
+            mDialogTotalTime.setText(" / " + totalTime);
+        }
+        if (totalTimeDuration > 0) if (mDialogProgressBar != null)
+        {
+            mDialogProgressBar.setProgress(seekTimePosition * 100 / totalTimeDuration);
+        }
+        if (deltaX > 0)
+        {
+            if (mDialogIcon != null)
+            {
+                mDialogIcon.setBackgroundResource(com.shuyu.gsyvideoplayer.R.drawable
+                        .video_forward_icon);
+            }
+        }
+        else
+        {
+            if (mDialogIcon != null)
+            {
+                mDialogIcon.setBackgroundResource(com.shuyu.gsyvideoplayer.R.drawable
+                        .video_backward_icon);
+            }
+        }
     }
 
     @Override
@@ -284,22 +305,26 @@ public class MyVideoPlayer extends GSYVideoPlayer
     {
         if (mVolumeDialog == null)
         {
-            View localView = LayoutInflater.from(getActivityContext()).inflate(getVolumeLayoutId(), null);
+            View localView = LayoutInflater.from(getActivityContext()).inflate(getVolumeLayoutId
+                    (), null);
             if (localView.findViewById(getVolumeProgressId()) instanceof ProgressBar)
             {
-                mDialogVolumeProgressBar = ((ProgressBar) localView.findViewById(getVolumeProgressId()));
+                mDialogVolumeProgressBar = ((ProgressBar) localView.findViewById
+                        (getVolumeProgressId()));
                 if (mVolumeProgressDrawable != null && mDialogVolumeProgressBar != null)
                 {
                     mDialogVolumeProgressBar.setProgressDrawable(mVolumeProgressDrawable);
                 }
             }
-            mVolumeDialog = new Dialog(getActivityContext(), com.shuyu.gsyvideoplayer.R.style.video_style_dialog_progress);
+            mVolumeDialog = new Dialog(getActivityContext(), com.shuyu.gsyvideoplayer.R.style
+                    .video_style_dialog_progress);
             mVolumeDialog.setContentView(localView);
             mVolumeDialog.getWindow().addFlags(8);
             mVolumeDialog.getWindow().addFlags(32);
             mVolumeDialog.getWindow().addFlags(16);
             mVolumeDialog.getWindow().setLayout(-2, -2);
-            WindowManager.LayoutParams localLayoutParams = mVolumeDialog.getWindow().getAttributes();
+            WindowManager.LayoutParams localLayoutParams = mVolumeDialog.getWindow()
+                    .getAttributes();
             localLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
             localLayoutParams.width = getWidth();
             localLayoutParams.height = getHeight();
@@ -338,18 +363,21 @@ public class MyVideoPlayer extends GSYVideoPlayer
     {
         if (mBrightnessDialog == null)
         {
-            View localView = LayoutInflater.from(getActivityContext()).inflate(getBrightnessLayoutId(), null);
+            View localView = LayoutInflater.from(getActivityContext()).inflate
+                    (getBrightnessLayoutId(), null);
             if (localView.findViewById(getBrightnessTextId()) instanceof TextView)
             {
                 mBrightnessDialogTv = (TextView) localView.findViewById(getBrightnessTextId());
             }
-            mBrightnessDialog = new Dialog(getActivityContext(), com.shuyu.gsyvideoplayer.R.style.video_style_dialog_progress);
+            mBrightnessDialog = new Dialog(getActivityContext(), com.shuyu.gsyvideoplayer.R.style
+                    .video_style_dialog_progress);
             mBrightnessDialog.setContentView(localView);
             mBrightnessDialog.getWindow().addFlags(8);
             mBrightnessDialog.getWindow().addFlags(32);
             mBrightnessDialog.getWindow().addFlags(16);
             mBrightnessDialog.getWindow().setLayout(-2, -2);
-            WindowManager.LayoutParams localLayoutParams = mBrightnessDialog.getWindow().getAttributes();
+            WindowManager.LayoutParams localLayoutParams = mBrightnessDialog.getWindow()
+                    .getAttributes();
             localLayoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
             localLayoutParams.width = getWidth();
             localLayoutParams.height = getHeight();
@@ -363,8 +391,7 @@ public class MyVideoPlayer extends GSYVideoPlayer
         {
             mBrightnessDialog.show();
         }
-        if (mBrightnessDialogTv != null)
-            mBrightnessDialogTv.setText((int) (percent * 100) + "%");
+        if (mBrightnessDialogTv != null) mBrightnessDialogTv.setText((int) (percent * 100) + "%");
     }
 
 
@@ -408,9 +435,11 @@ public class MyVideoPlayer extends GSYVideoPlayer
      * @return
      */
     @Override
-    public GSYBaseVideoPlayer startWindowFullscreen(Context context, boolean actionBar, boolean statusBar)
+    public GSYBaseVideoPlayer startWindowFullscreen(Context context, boolean actionBar, boolean
+            statusBar)
     {
-        GSYBaseVideoPlayer gsyBaseVideoPlayer = super.startWindowFullscreen(context, actionBar, statusBar);
+        GSYBaseVideoPlayer gsyBaseVideoPlayer = super.startWindowFullscreen(context, actionBar,
+                statusBar);
         if (gsyBaseVideoPlayer != null)
         {
             StandardGSYVideoPlayer gsyVideoPlayer = (StandardGSYVideoPlayer) gsyBaseVideoPlayer;
@@ -518,9 +547,9 @@ public class MyVideoPlayer extends GSYVideoPlayer
 
     public void showSettingWidget()
     {
-            setViewShowState(mBottomContainer, VISIBLE);
-            setViewShowState(mTopContainer, VISIBLE);
-            setViewShowState(mBottomProgressBar, VISIBLE);
+        setViewShowState(mBottomContainer, VISIBLE);
+        setViewShowState(mTopContainer, VISIBLE);
+        setViewShowState(mBottomProgressBar, VISIBLE);
 
     }
 
@@ -882,15 +911,18 @@ public class MyVideoPlayer extends GSYVideoPlayer
             ImageView imageView = (ImageView) mStartButton;
             if (mCurrentState == CURRENT_STATE_PLAYING)
             {
-                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable.video_click_pause_selector);
+                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable
+                        .video_click_pause_selector);
             }
             else if (mCurrentState == CURRENT_STATE_ERROR)
             {
-                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable.video_click_error_selector);
+                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable
+                        .video_click_error_selector);
             }
             else
             {
-                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable.video_click_play_selector);
+                imageView.setImageResource(com.shuyu.gsyvideoplayer.R.drawable
+                        .video_click_play_selector);
             }
         }
     }
@@ -924,7 +956,8 @@ public class MyVideoPlayer extends GSYVideoPlayer
 
         if (mDialogProgressHighLightColor >= 0 && mDialogProgressNormalColor >= 0)
         {
-            standardGSYVideoPlayer.setDialogProgressColor(mDialogProgressHighLightColor, mDialogProgressNormalColor);
+            standardGSYVideoPlayer.setDialogProgressColor(mDialogProgressHighLightColor,
+                    mDialogProgressNormalColor);
         }
     }
 
@@ -1017,7 +1050,8 @@ public class MyVideoPlayer extends GSYVideoPlayer
      *
      * @param high 是否需要高清的
      */
-    public void saveFrame(final File file, final boolean high, final GSYVideoShotSaveListener gsyVideoShotSaveListener)
+    public void saveFrame(final File file, final boolean high, final GSYVideoShotSaveListener
+            gsyVideoShotSaveListener)
     {
         if (getCurrentPlayer().getRenderProxy() != null)
         {

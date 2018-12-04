@@ -26,6 +26,7 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/user/login";
     }
+
     //用戶登录
     public static String getGusetLoginUrl()
     {
@@ -112,6 +113,7 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/douyin/stream";
     }
+
     //获取点播分类
     public static String getTagsUrl()
     {
@@ -247,12 +249,14 @@ public class Urls
 
     public static String getSharePhotoUrl(String biz_id)
     {
-        return ConfigManager.instance().getDomainName() + "/photo/share?token=" + ConfigManager.instance().getUniqueCode() + "&device=and&biz_id=" + biz_id;
+        return ConfigManager.instance().getDomainName() + "/photo/share?token=" + ConfigManager.instance().getUniqueCode() + "&device=and&biz_id="
+                + biz_id;
     }
 
     public static String getShareVideoUrl(String biz_id)
     {
-        return ConfigManager.instance().getDomainName() + "/video/share?token=" + ConfigManager.instance().getUniqueCode() + "&device=and&biz_id=" + biz_id;
+        return ConfigManager.instance().getDomainName() + "/video/share?token=" + ConfigManager.instance().getUniqueCode() + "&device=and&biz_id="
+                + biz_id;
     }
 
     public static String getSearchUrl()
@@ -312,7 +316,8 @@ public class Urls
 
     public static String getPayUrl(int amount, String product, String mobile_id)
     {
-        return ConfigManager.instance().getDomainName() + "/paypal?auth=" + ConfigManager.instance().getUniqueCode() + "&amount=" + amount + "&product=" + product + "&mobile_id=" + mobile_id + "&device=and";
+        return ConfigManager.instance().getDomainName() + "/paypal?auth=" + ConfigManager.instance().getUniqueCode() + "&amount=" + amount +
+                "&product=" + product + "&mobile_id=" + mobile_id + "&device=and";
     }
 
 
@@ -357,13 +362,20 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/data/biz_opera";
     }
+
     public static String getVideoDetailUrl()
     {
         return ConfigManager.instance().getDomainName() + "/video/detail";
     }
+
     public static String getVideoRecommendUrl()
     {
         return ConfigManager.instance().getDomainName() + "/video/recommend";
+    }
+
+    public static String getDanmuUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/data/danmu";
     }
 
 

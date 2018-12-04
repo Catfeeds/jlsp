@@ -261,8 +261,8 @@ public class DialogUtils
         ImageView mClosedIv = (ImageView) v.findViewById(R.id.iv_closed);
         TextView cancelTv = (TextView) v.findViewById(R.id.tv_cancel);
         TextView submitTv = (TextView) v.findViewById(R.id.tv_submit);
-        Double userMoney = Double.parseDouble(mLivePriceInfo.getUser_money());
-        int price = mLivePriceInfo.getOff_amount();
+        final Double userMoney = Double.parseDouble(mLivePriceInfo.getUser_money());
+        final int price = mLivePriceInfo.getOff_amount();
         if (TextUtils.isEmpty(mLivePriceInfo.getMsg()))
         {
             msgTv.setVisibility(View.GONE);
@@ -355,8 +355,8 @@ public class DialogUtils
         ImageView mClosedIv = (ImageView) v.findViewById(R.id.iv_closed);
         TextView cancelTv = (TextView) v.findViewById(R.id.tv_cancel);
         TextView submitTv = (TextView) v.findViewById(R.id.tv_submit);
-        Double userMoney = Double.parseDouble(mLivePriceInfo.getUser_money());
-        int price = mLivePriceInfo.getOff_amount();
+        final Double userMoney = Double.parseDouble(mLivePriceInfo.getUser_money());
+        final int price = mLivePriceInfo.getOff_amount();
         if (TextUtils.isEmpty(mLivePriceInfo.getMsg()))
         {
             msgTv.setVisibility(View.GONE);
@@ -425,7 +425,7 @@ public class DialogUtils
         Window mWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = mWindow.getAttributes();
         lp.gravity = Gravity.CENTER;
-        lp.width = APPUtils.getScreenWidth(mContext) * 1 / 2;
+        lp.width = APPUtils.getScreenWidth(mContext) * 7 / 8;
         mWindow.setAttributes(lp);
         return dialog;
     }
@@ -545,8 +545,8 @@ public class DialogUtils
      *
      * @return
      */
-    public static void showReportDialog(Context mContext, MyOnClickListener.OnSubmitListener
-            listener)
+    public static void showReportDialog(Context mContext, final MyOnClickListener
+            .OnSubmitListener listener)
     {
         final Dialog dialog = new Dialog(mContext, R.style.dialogNoAnimation);
         dialog.setCancelable(false);
@@ -652,7 +652,7 @@ public class DialogUtils
             public void onClick(View view)
             {
                 dialog.dismiss();
-                closedListener.onClick(v);
+                closedListener.onClick(view);
 
             }
         });
@@ -672,8 +672,8 @@ public class DialogUtils
      *
      * @return
      */
-    public static void showScoreDialog(Context mContext, String title, String content,
-                                         MyOnClickListener.OnFloatSubmitListener listener)
+    public static void showScoreDialog(Context mContext, String title, String content, final
+    MyOnClickListener.OnFloatSubmitListener listener)
     {
         final Dialog dialog = new Dialog(mContext, R.style.dialogNoAnimation);
         dialog.setCancelable(false);
@@ -684,7 +684,7 @@ public class DialogUtils
         TextView submitTv = (TextView) v.findViewById(R.id.tv_submit);
         TextView titleTv = (TextView) v.findViewById(R.id.tv_title);
         TextView contentTv = (TextView) v.findViewById(R.id.tv_content);
-        StarBar mStarBar = (StarBar) v.findViewById(R.id.starBar);
+        final StarBar mStarBar = (StarBar) v.findViewById(R.id.starBar);
 
 
         titleTv.setText(title);

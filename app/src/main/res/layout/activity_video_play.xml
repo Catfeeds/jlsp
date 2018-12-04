@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
     xmlns:ratingbar="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -43,17 +44,36 @@
             android:src="@drawable/ic_share" />
     </RelativeLayout>
 
-    <com.zb.wyd.widget.MyVideoPlayer
-        android:id="@+id/detail_player"
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dm_217"
-        android:layout_below="@+id/rl_top" />
+        android:layout_height="wrap_content">
+
+        <com.zb.wyd.widget.MyVideoPlayer
+            android:id="@+id/detail_player"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dm_200"
+            android:layout_below="@+id/rl_top" />
+
+
+        <com.kd.easybarrage.BarrageView
+            android:id="@+id/barrageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dm_100"
+            app:allow_repeat="false"
+            app:border_color="@color/colorAccent"
+            app:line_height="20dp"
+            app:max_text_size="20"
+            app:min_text_size="14"
+            app:random_color="false"
+            app:size="200" />
+    </FrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line"
-        android:layout_below="@+id/detail_player">
+        android:layout_below="@+id/frameLayout">
 
 
         <RelativeLayout
@@ -352,11 +372,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dm_5"
+            android:singleLine="true"
             android:layout_marginRight="@dimen/dm_5"
             android:layout_toLeftOf="@id/tv_set_score"
             android:layout_toRightOf="@+id/tv_tangmu"
             android:background="@drawable/common_f5_45dp"
             android:hint="输入您想说的"
+            android:imeOptions="actionSend"
             android:maxLines="1"
             android:paddingLeft="@dimen/dm_15"
             android:paddingTop="@dimen/dm_5"

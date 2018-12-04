@@ -1,17 +1,25 @@
 package com.zb.wyd.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.kd.easybarrage.Barrage;
+import com.kd.easybarrage.BarrageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack;
@@ -20,6 +28,8 @@ import com.zb.wyd.R;
 import com.zb.wyd.adapter.RecommendVideoAdapter;
 import com.zb.wyd.adapter.VideoChannelAdapter;
 import com.zb.wyd.entity.ChannelInfo;
+import com.zb.wyd.entity.ChatInfo;
+import com.zb.wyd.entity.DanmuInfo;
 import com.zb.wyd.entity.HostInfo;
 import com.zb.wyd.entity.MybizInfo;
 import com.zb.wyd.entity.PriceInfo;
@@ -31,6 +41,7 @@ import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
+import com.zb.wyd.json.DanmuInfoListHandler;
 import com.zb.wyd.json.LivePriceInfoHandler;
 import com.zb.wyd.json.ResultHandler;
 import com.zb.wyd.json.ShareInfoHandler;
@@ -40,10 +51,12 @@ import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.json.VideoStreamHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.listener.MyOnClickListener;
+import com.zb.wyd.listener.SocketListener;
 import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.LogUtil;
+import com.zb.wyd.utils.MySocketConnection;
 import com.zb.wyd.utils.SystemUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
@@ -53,12 +66,19 @@ import com.zb.wyd.widget.FullyGridLayoutManager;
 import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.MyVideoPlayer;
 import com.zb.wyd.widget.StarBar;
+import com.zb.wyd.widget.gift.AnimMessage;
+import com.zb.wyd.widget.gift.LPAnimationManager;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,10 +137,12 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     TextView tvSetScore;
     @BindView(R.id.et_content)
     EditText etContent;
-
-
     @BindView(R.id.rv_channel)
     MaxRecyclerView rvChannel;
+
+    @BindView(R.id.barrageView)
+    BarrageView barrageView;
+
 
     private int myScore;
     private RecommendVideoAdapter mRecommendVideoAdapter;
@@ -148,6 +170,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private long startTime, endTime;
     private String errorMsg = "网络异常";
 
+    private List<DanmuInfo> danmuInfoList = new ArrayList<>();
     private String videoPlaylist;
 
     private static final String MSG_REPORT = "msg_report";
@@ -164,6 +187,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
     private static final String VIDEO_COLLECTION = "video_collection";
     private static final String VIDEO_UNCOLLECTION = "video_uncollection";
+    private static final String GET_DAN_MU = "get_dan_mu";
 
     private static final int REQUEST_SUCCESS = 0x01;
     private static final int REQUEST_FAIL = 0x02;
@@ -187,6 +211,14 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private static final int VIDEO_UNCOLLECTION_SUCCESS = 0x19;
 
     private static final int GET_VIDEO_RECOMMEND_SUCCESS = 0x20;
+
+    private static final int GET_VIDEO_CURRENT_POSITION = 0x31;
+
+    private static final int GET_DAN_MU_CODE = 0x33;
+    private static final int GET_DAN_MU_SUCCESS = 0x32;
+
+    private static final int SHOW_TOAST = 0X34;
+
     @SuppressLint("HandlerLeak")
     private BaseHandler mHandler = new BaseHandler(VideoPlayActivity.this)
     {
@@ -242,8 +274,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                     {
 
 
-                        DialogUtils.showVideoPriceDialog(VideoPlayActivity.this, mLivePriceInfo,
-                                new View.OnClickListener()
+                        DialogUtils.showVideoPriceDialog(VideoPlayActivity.this, mLivePriceInfo, new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -266,15 +297,13 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                                 //购买VIP
                                 else if ("3".equals(content))
                                 {
-                                    startActivity(new Intent(VideoPlayActivity.this,
-                                            MemberActivity.class));
+                                    startActivity(new Intent(VideoPlayActivity.this, MemberActivity.class));
                                 }
                                 else//去做任务
                                 {
 
                                     // sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                                    startActivity(new Intent(VideoPlayActivity.this, TaskActivity
-                                            .class));
+                                    startActivity(new Intent(VideoPlayActivity.this, TaskActivity.class));
                                     finish();
                                 }
 
@@ -333,8 +362,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                         Intent intent1 = new Intent(Intent.ACTION_SEND);
                         intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
                         intent1.setType("text/plain");
-                        startActivityForResult(Intent.createChooser(intent1, "分享"),
-                                SHARE_PHOTO_REQUEST_CODE);
+                        startActivityForResult(Intent.createChooser(intent1, "分享"), SHARE_PHOTO_REQUEST_CODE);
                     }
                     break;
 
@@ -447,10 +475,48 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                     mRecommendVideoAdapter.notifyDataSetChanged();
 
                     break;
+
+                case GET_VIDEO_CURRENT_POSITION:
+                    LogUtil.e("TAG", "CurrentPosition = " + videoPlayer.getGSYVideoManager().getCurrentPosition());
+
+                    long mCurrentPosition = videoPlayer.getGSYVideoManager().getCurrentPosition();
+                    List<DanmuInfo> mDanmuInfoList = getTimePosDanmuList(mCurrentPosition);
+
+                    for (int i = 0; i < mDanmuInfoList.size(); i++)
+                    {
+                        LogUtil.e("TAG", "danmuInfoList.size == " + mDanmuInfoList.size());
+                        DanmuInfo mDanmuInfo = mDanmuInfoList.get(i);
+
+                        String stryle = mDanmuInfo.getStyle();
+
+                        String color = "#0000FF";
+                        if (null != stryle)
+                        {
+                            color = stryle.split(",")[0];
+                        }
+                        barrageView.addBarrage(new Barrage(mDanmuInfo.getData(), Color.parseColor(color)));
+                    }
+
+                    mHandler.sendEmptyMessageDelayed(GET_VIDEO_CURRENT_POSITION, 1000);
+                    break;
+
+                case GET_DAN_MU_CODE:
+                    getVideoDanmu();
+                    mHandler.sendEmptyMessageDelayed(GET_DAN_MU_CODE, 300 * 1000);
+                    break;
+
+                case GET_DAN_MU_SUCCESS:
+                    DanmuInfoListHandler mDanmuInfoListHandler = (DanmuInfoListHandler) msg.obj;
+                    danmuInfoList.addAll(mDanmuInfoListHandler.getDanmuInfoList());
+                    break;
+
+                case SHOW_TOAST:
+                    ToastUtil.show(VideoPlayActivity.this, msg.obj.toString());
+                    initWebSocket();
+                    break;
             }
         }
     };
-
 
     @Override
     protected void initData()
@@ -480,13 +546,52 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         ivHover.setOnClickListener(this);
         tvSetScore.setOnClickListener(this);
         tvCollection.setOnClickListener(this);
+        etContent.setOnEditorActionListener(new EditText.OnEditorActionListener()
+        {
 
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (actionId == EditorInfo.IME_ACTION_SEND)
+                {
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+
+                    String sendMsg = etContent.getText().toString();
+
+                    if (!TextUtils.isEmpty(sendMsg) && null != mMySocketConnection && mMySocketConnection.isConnected())
+                    {
+                        if (null != videoPlayer)
+                        {
+                            Gson gson = new Gson();
+                            DanmuInfo danmuInfo = new DanmuInfo();
+                            danmuInfo.setAction("");
+                            danmuInfo.setData(sendMsg);
+                            danmuInfo.setType("say");
+                            danmuInfo.setTimpos(videoPlayer.getGSYVideoManager().getCurrentPosition());
+                            String json = gson.toJson(danmuInfo);
+                            String sendContent = "{\"type\":\"say\",\"data\":\"" + sendMsg + "\"," + "\"action\":\"\"}";
+                            LogUtil.e("TAG", "sendContent-->" + json);
+                            mMySocketConnection.sendTextMessage(json);
+                            etContent.setText("");
+                        }
+
+
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+        });
     }
 
     @Override
     protected void initViewData()
     {
-
+        initWebSocket();
+        mHandler.sendEmptyMessage(GET_DAN_MU_CODE);
         tvTitle.setText("视频播放");
         //        mCollectionIv = (ImageView) videoPlayer.findViewById(R.id.iv_collection);
         //        mShareIv = (ImageView) videoPlayer.findViewById(R.id.iv_share);
@@ -514,7 +619,6 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //    videoPlayer.getBackButton().setVisibility(View.VISIBLE);
 
         videoPlayer.getFullscreenButton().setVisibility(View.GONE);
-
         //        //设置旋转
         orientationUtils = new OrientationUtils(this, videoPlayer);
         //        //设置全屏按键功能,这是使用的是选择屏幕，而不是全屏
@@ -554,6 +658,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             @Override
             public void onPrepared(String s, Object... objects)
             {
+                mHandler.sendEmptyMessageDelayed(GET_VIDEO_CURRENT_POSITION, 1000);
                 startTime = System.currentTimeMillis();
                 //setStatistics(0);
             }
@@ -738,8 +843,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
 
         rvRecommendVideo.setLayoutManager(new FullyGridLayoutManager(VideoPlayActivity.this, 2));
-        mRecommendVideoAdapter = new RecommendVideoAdapter(videoInfoList, VideoPlayActivity.this,
-                new MyItemClickListener()
+        mRecommendVideoAdapter = new RecommendVideoAdapter(videoInfoList, VideoPlayActivity.this, new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
@@ -759,8 +863,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
 
         rvChannel.setLayoutManager(new FullyGridLayoutManager(VideoPlayActivity.this, 3));
-        mVideoChannelAdapter = new VideoChannelAdapter(hostInfoList, VideoPlayActivity.this, new
-                MyItemClickListener()
+        mVideoChannelAdapter = new VideoChannelAdapter(hostInfoList, VideoPlayActivity.this, new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
@@ -794,13 +897,29 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
     }
 
+    private int timepos = 0;
+
+    private void getVideoDanmu()
+    {
+        showProgressDialog();
+        Map<String, String> valuePairs = new HashMap<>();
+        valuePairs.put("biz_id", biz_id);
+        valuePairs.put("co_biz", "video");
+        valuePairs.put("timepos", timepos + "");
+        valuePairs.put("duration", "300");
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getDanmuUrl(), this, HttpRequest.GET, GET_DAN_MU, valuePairs, new
+                DanmuInfoListHandler());
+        timepos += 300;
+    }
+
+
     private void getVideoDetail()
     {
         showProgressDialog();
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoDetailUrl(), this,
-                HttpRequest.GET, GET_VIDEO_DETAIL, valuePairs, new VideoDetailHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoDetailUrl(), this, HttpRequest.GET, GET_VIDEO_DETAIL, valuePairs, new
+                VideoDetailHandler());
     }
 
     private void getVideoRecommend(String tags)
@@ -809,8 +928,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("tags", tags);
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoRecommendUrl(), this,
-                HttpRequest.GET, GET_VIDEO_RECOMMEND, valuePairs, new VideoInfoListHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoRecommendUrl(), this, HttpRequest.GET, GET_VIDEO_RECOMMEND, valuePairs,
+                new VideoInfoListHandler());
     }
 
     private void getVideoStream()
@@ -818,8 +937,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         showProgressDialog();
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoStreamUrl(), this,
-                HttpRequest.GET, GET_VIDEO_STREAM, valuePairs, new VideoStreamHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoStreamUrl(), this, HttpRequest.GET, GET_VIDEO_STREAM, valuePairs, new
+                VideoStreamHandler());
     }
 
 
@@ -828,8 +947,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoPriceUrl(), this,
-                HttpRequest.POST, GET_VIDEO_PRICE, valuePairs, new LivePriceInfoHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getVideoPriceUrl(), this, HttpRequest.POST, GET_VIDEO_PRICE, valuePairs, new
+                LivePriceInfoHandler());
 
     }
 
@@ -851,7 +970,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         if (null != videoPlayer)
         {
             videoPlayer.setUp(uri, false, videoName);
-             videoPlayer.startPlayLogic();
+            videoPlayer.startPlayLogic();
         }
     }
 
@@ -863,8 +982,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("finger", finger);
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getBuyLiveUrl(), this,
-                HttpRequest.POST, BUY_VIDEO, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getBuyLiveUrl(), this, HttpRequest.POST, BUY_VIDEO, valuePairs, new
+                ResultHandler());
     }
 
     private void getTaskShareUrl()
@@ -872,8 +991,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getTaskShareUrl(), this,
-                HttpRequest.GET, GET_TASK_SHARE, valuePairs, new SignInfoHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getTaskShareUrl(), this, HttpRequest.GET, GET_TASK_SHARE, valuePairs, new
+                SignInfoHandler());
     }
 
     private void getShareUrl()
@@ -881,8 +1000,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getShareUrl(), this,
-                HttpRequest.GET, GET_SHARE, valuePairs, new ShareInfoHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getShareUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new
+                ShareInfoHandler());
     }
 
 
@@ -894,8 +1013,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("co_biz", "photo");
         valuePairs.put("action", "score");
         valuePairs.put("value", String.valueOf(Math.round(value) * 10));
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this,
-                HttpRequest.POST, OPAER_SCORE, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, OPAER_SCORE, valuePairs, new
+                ResultHandler());
     }
 
     @Override
@@ -976,8 +1095,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         {
             if (myScore == 0)
             {
-                DialogUtils.showScoreDialog(VideoPlayActivity.this, "视频评价", "这个视频怎么样，请做出您的评价",
-                        new MyOnClickListener.OnFloatSubmitListener()
+                DialogUtils.showScoreDialog(VideoPlayActivity.this, "视频评价", "这个视频怎么样，请做出您的评价", new MyOnClickListener.OnFloatSubmitListener()
 
 
                 {
@@ -1035,15 +1153,14 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private void reportMsg(String msg)
     {
         showProgressDialog();
-        String content = "{\"model\":\"" + SystemUtil.getSystemModel() + "\",\"error\":\"" + msg
-                + "\",\"sys\":\"" + SystemUtil.getSystemVersion() + "\",\"video_id\":\"" + biz_id
-                + "\"}";
+        String content = "{\"model\":\"" + SystemUtil.getSystemModel() + "\",\"error\":\"" + msg + "\",\"sys\":\"" + SystemUtil.getSystemVersion()
+                + "\",\"video_id\":\"" + biz_id + "\"}";
         LogUtil.e("TAG", "error-->" + content);
 
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("content", content);
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getMsgReportUrl(), this,
-                HttpRequest.POST, MSG_REPORT, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getMsgReportUrl(), this, HttpRequest.POST, MSG_REPORT, valuePairs, new
+                ResultHandler());
 
     }
 
@@ -1055,8 +1172,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "collect");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this,
-                HttpRequest.POST, VIDEO_COLLECTION, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, VIDEO_COLLECTION, valuePairs, new
+                ResultHandler());
     }
 
     private void unCollect()
@@ -1066,8 +1183,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "uncollect");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this,
-                HttpRequest.POST, VIDEO_UNCOLLECTION, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, VIDEO_UNCOLLECTION, valuePairs, new
+                ResultHandler());
     }
 
     private void favoriteLike()
@@ -1077,8 +1194,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "like");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this,
-                HttpRequest.POST, FAVORITE_LIKE, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, FAVORITE_LIKE, valuePairs, new
+                ResultHandler());
     }
 
     private void unFavoriteLike()
@@ -1088,8 +1205,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "unlike");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this,
-                HttpRequest.POST, UN_FAVORITE_LIKE, valuePairs, new ResultHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, UN_FAVORITE_LIKE, valuePairs, new
+                ResultHandler());
     }
 
     @Override
@@ -1116,6 +1233,13 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 100;
         //setStatistics(duration);
+
+        mHandler.removeMessages(GET_VIDEO_CURRENT_POSITION);
+
+        if (null != barrageView)
+        {
+            barrageView.destroy();
+        }
     }
 
     @Override
@@ -1293,6 +1417,17 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
             }
         }
+        else if (GET_DAN_MU.equals(action))
+        {
+            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(GET_DAN_MU_SUCCESS, obj));
+            }
+            else
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
+            }
+        }
 
 
     }
@@ -1313,9 +1448,124 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         switch (view.getId())
         {
             case R.id.iv_back:
+                finish();
                 break;
             case R.id.iv_share:
                 break;
         }
     }
+
+
+    private List<DanmuInfo> getTimePosDanmuList(long timepos)
+    {
+        List<DanmuInfo> timepostList = new ArrayList<>();
+        for (int i = 0; i < danmuInfoList.size(); i++)
+        {
+
+            if (danmuInfoList.get(i).getTimpos() < timepos)
+            {
+                timepostList.add(danmuInfoList.get(i));
+                danmuInfoList.remove(i);
+            }
+        }
+        return danmuInfoList;
+    }
+
+
+    //****************webscoket
+
+    private MySocketConnection mMySocketConnection;
+
+    private Timer timer = new Timer();
+    private TimerTask webSocketTask;
+
+    private void initWebSocket()
+    {
+        webSocketTask = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                if (null != mMySocketConnection && mMySocketConnection.isConnected())
+                {
+
+                    mMySocketConnection.sendTextMessage("ping");
+                }
+            }
+        };
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mMySocketConnection = MySocketConnection.getInstance();
+                mMySocketConnection.setSocketListener(new SocketListener()
+                {
+                    @Override
+                    public void OnOpend()
+                    {
+                        timer.schedule(webSocketTask, 0, 30000);
+                    }
+
+                    @Override
+                    public void OnPushMsg(String message)
+                    {
+
+                        if (!TextUtils.isEmpty(message))
+                        {
+                            try
+                            {
+                                DanmuInfo chatInfo = new DanmuInfo(new JSONObject(message));
+
+                                if (null != chatInfo)
+                                {
+                                    String action = chatInfo.getAction();
+                                    String data = chatInfo.getData();
+                                    String type = chatInfo.getType();
+                                    String style = chatInfo.getStyle();
+
+                                    String color = "#0000FF";
+
+                                    if (!TextUtils.isEmpty(style))
+                                    {
+                                        color = style.split(",")[0];
+                                    }
+
+                                    if ("say".equals(type))
+                                    {
+                                        barrageView.addBarrage(new Barrage(data, Color.parseColor(color)));
+                                    }
+                                }
+
+
+                            }
+                            catch (JSONException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void OnError(String msg)
+                    {
+                        Message mMessage = new Message();
+                        mMessage.obj = msg;
+                        mMessage.what = SHOW_TOAST;
+                        if (null != mHandler) mHandler.sendMessageDelayed(mMessage, 10 * 1000);
+
+
+                    }
+                });
+
+                String wsUri = ConfigManager.instance().getChatUrl() + "/" + ConfigManager.instance().getUniqueCode() + "?co_biz=video&biz_id=" + biz_id ;
+
+
+                if (null != mMySocketConnection) mMySocketConnection.startConnection(wsUri);
+
+            }
+        }).start();
+    }
+
+
 }
