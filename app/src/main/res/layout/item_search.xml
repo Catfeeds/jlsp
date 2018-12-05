@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:id="@+id/ll_item"
     android:orientation="vertical">
 
     <LinearLayout
@@ -31,7 +32,6 @@
                 android:layout_toRightOf="@+id/iv_type"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="1111111111111"
                 android:textColor="@color/text_violet"
                 android:textSize="@dimen/t16" />
         </RelativeLayout>
@@ -46,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dm_10"
-                android:text="2018-03-02 18:43:30"
                 android:textColor="@color/text_gray"
                 android:textSize="@dimen/t14" />
 
@@ -57,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dm_20"
                 android:layout_marginTop="@dimen/dm_10"
-                android:text="9999浏览"
                 android:textColor="@color/text_gray"
                 android:textSize="@dimen/t14" />
         </LinearLayout>

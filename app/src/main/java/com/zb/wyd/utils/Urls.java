@@ -377,7 +377,14 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/data/danmu";
     }
-
+    public static String getBoxUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/box/index";
+    }
+    public static String getDataSearchUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/data/search";
+    }
 
 }
 

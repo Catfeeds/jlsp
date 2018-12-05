@@ -18,8 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.kd.easybarrage.Barrage;
-import com.kd.easybarrage.BarrageView;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketAdapter;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.neovisionaries.ws.client.WebSocketFactory;
+import com.neovisionaries.ws.client.WebSocketFrame;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack;
@@ -57,32 +60,40 @@ import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.LogUtil;
 import com.zb.wyd.utils.MySocketConnection;
+import com.zb.wyd.utils.StringUtils;
 import com.zb.wyd.utils.SystemUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
-import com.zb.wyd.widget.ChannelPopupWindow;
 import com.zb.wyd.widget.CircleImageView;
 import com.zb.wyd.widget.FullyGridLayoutManager;
 import com.zb.wyd.widget.MaxRecyclerView;
 import com.zb.wyd.widget.MyVideoPlayer;
 import com.zb.wyd.widget.StarBar;
-import com.zb.wyd.widget.gift.AnimMessage;
-import com.zb.wyd.widget.gift.LPAnimationManager;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import master.flame.danmaku.controller.DrawHandler;
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
+import master.flame.danmaku.danmaku.model.IDanmakus;
+import master.flame.danmaku.danmaku.model.android.DanmakuContext;
+import master.flame.danmaku.danmaku.model.android.Danmakus;
+import master.flame.danmaku.danmaku.parser.BaseDanmakuParser;
+import master.flame.danmaku.ui.widget.DanmakuView;
 import moe.codeest.enviews.ENPlayView;
 
 /**
@@ -140,10 +151,19 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     @BindView(R.id.rv_channel)
     MaxRecyclerView rvChannel;
 
-    @BindView(R.id.barrageView)
-    BarrageView barrageView;
+    @BindView(R.id.danmaku_view)
+    DanmakuView danmakuView;
 
-
+    private boolean showDanmaku;
+    private DanmakuContext danmakuContext;
+    private BaseDanmakuParser parser = new BaseDanmakuParser()
+    {
+        @Override
+        protected IDanmakus parse()
+        {
+            return new Danmakus();
+        }
+    };
     private int myScore;
     private RecommendVideoAdapter mRecommendVideoAdapter;
     private List<VideoInfo> videoInfoList = new ArrayList<>();
@@ -170,7 +190,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private long startTime, endTime;
     private String errorMsg = "网络异常";
 
-    private List<DanmuInfo> danmuInfoList = new ArrayList<>();
+    private List<DanmuInfo> mAllDanmuInfoList = new ArrayList<>();
+    private List<DanmuInfo> mCurrentDanmuInfoList = new ArrayList<>();
     private String videoPlaylist;
 
     private static final String MSG_REPORT = "msg_report";
@@ -482,21 +503,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                     long mCurrentPosition = videoPlayer.getGSYVideoManager().getCurrentPosition();
                     List<DanmuInfo> mDanmuInfoList = getTimePosDanmuList(mCurrentPosition);
 
-                    for (int i = 0; i < mDanmuInfoList.size(); i++)
-                    {
-                        LogUtil.e("TAG", "danmuInfoList.size == " + i);
-                         DanmuInfo mDanmuInfo = mDanmuInfoList.get(i);
-                         String stryle = mDanmuInfo.getStyle();
-                        String color = "#0000FF";
-                        if (null != stryle)
-                        {
-                            color = stryle.split(",")[0];
-                        }
-                        barrageView.addBarrage(new Barrage(mDanmuInfo.getData(), Color.parseColor(color)));
-
-
-                    }
-
+                    mCurrentDanmuInfoList.addAll(mDanmuInfoList);
                     mHandler.sendEmptyMessageDelayed(GET_VIDEO_CURRENT_POSITION, 1000);
                     break;
 
@@ -507,7 +514,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                 case GET_DAN_MU_SUCCESS:
                     DanmuInfoListHandler mDanmuInfoListHandler = (DanmuInfoListHandler) msg.obj;
-                    danmuInfoList.addAll(mDanmuInfoListHandler.getDanmuInfoList());
+                    mAllDanmuInfoList.addAll(mDanmuInfoListHandler.getDanmuInfoList());
 
 
                     break;
@@ -542,6 +549,71 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         StatusBarUtil.StatusBarLightMode(VideoPlayActivity.this, false);
     }
 
+    /**
+     * 向弹幕View中添加一条弹幕
+     */
+    private void addDanmaku(DanmuInfo danmuInfo, boolean withBorder)
+    {
+        String stryle = danmuInfo.getStyle();
+        String color = "#0000FF";
+        if (null != stryle)
+        {
+            color = stryle.split(",")[0];
+        }
+        BaseDanmaku danmaku = danmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+        danmaku.text = danmuInfo.getData();
+        danmaku.padding = 5;
+        danmaku.textSize = sp2px(20);
+        danmaku.textColor = Color.parseColor(color);
+        danmaku.setTime(danmakuView.getCurrentTime());
+        if (withBorder)
+        {
+            danmaku.borderColor = Color.GREEN;
+        }
+        danmakuView.addDanmaku(danmaku);
+    }
+
+    /**
+     * 随机生成一些弹幕内容以供测试
+     */
+    private void generateSomeDanmaku()
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while (showDanmaku)
+                {
+                    if (!mCurrentDanmuInfoList.isEmpty())
+                    {
+                        DanmuInfo danmuInfo = mCurrentDanmuInfoList.get(0);
+                        int time = new Random().nextInt(300) + 200;
+                        addDanmaku(danmuInfo, false);
+                        mCurrentDanmuInfoList.remove(0);
+                        try
+                        {
+                            Thread.sleep(time);
+                        }
+                        catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * sp转px的方法。
+     */
+    public int sp2px(float spValue)
+    {
+        final float fontScale = getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+
     @Override
     protected void initEvent()
     {
@@ -562,7 +634,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                     String sendMsg = etContent.getText().toString();
 
-                    if (!TextUtils.isEmpty(sendMsg) && null != mMySocketConnection && mMySocketConnection.isConnected())
+                    if (!TextUtils.isEmpty(sendMsg) && null != mWebSocket && mWebSocket.isOpen())
                     {
                         if (null != videoPlayer)
                         {
@@ -571,11 +643,11 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                             danmuInfo.setAction("");
                             danmuInfo.setData(sendMsg);
                             danmuInfo.setType("say");
+                            danmuInfo.setStyle(StringUtils.getRandomColor());
                             danmuInfo.setTimpos(videoPlayer.getGSYVideoManager().getCurrentPosition());
                             String json = gson.toJson(danmuInfo);
-                            String sendContent = "{\"type\":\"say\",\"data\":\"" + sendMsg + "\"," + "\"action\":\"\"}";
                             LogUtil.e("TAG", "sendContent-->" + json);
-                            mMySocketConnection.sendTextMessage(json);
+                            mWebSocket.sendText(json);
                             etContent.setText("");
                         }
 
@@ -592,6 +664,34 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     @Override
     protected void initViewData()
     {
+        danmakuView.enableDanmakuDrawingCache(true);
+        danmakuView.setCallback(new DrawHandler.Callback()
+        {
+            @Override
+            public void prepared()
+            {
+                showDanmaku = true;
+                danmakuView.start();
+                generateSomeDanmaku();
+            }
+
+            @Override
+            public void updateTimer(DanmakuTimer timer)
+            {
+            }
+
+            @Override
+            public void danmakuShown(BaseDanmaku danmaku)
+            {
+            }
+
+            @Override
+            public void drawingFinished()
+            {
+            }
+        });
+        danmakuContext = DanmakuContext.create();
+        danmakuView.prepare(parser, danmakuContext);
         initWebSocket();
         mHandler.sendEmptyMessage(GET_DAN_MU_CODE);
         tvTitle.setText("视频播放");
@@ -1215,13 +1315,21 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     protected void onPause()
     {
         super.onPause();
-        //videoPlayer.onVideoPause();
+        videoPlayer.onVideoPause();
+        if (danmakuView != null && danmakuView.isPrepared())
+        {
+            danmakuView.pause();
+        }
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
+        if (danmakuView != null && danmakuView.isPrepared() && danmakuView.isPaused())
+        {
+            danmakuView.resume();
+        }
     }
 
     @Override
@@ -1237,11 +1345,13 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //setStatistics(duration);
 
         mHandler.removeMessages(GET_VIDEO_CURRENT_POSITION);
-
-        if (null != barrageView)
+        showDanmaku = false;
+        if (danmakuView != null)
         {
-            barrageView.destroy();
+            danmakuView.release();
+            danmakuView = null;
         }
+
     }
 
     @Override
@@ -1461,23 +1571,25 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private List<DanmuInfo> getTimePosDanmuList(long timepos)
     {
         List<DanmuInfo> timepostList = new ArrayList<>();
-        for (int i = 0; i < danmuInfoList.size(); i++)
+        for (int i = 0; i < mAllDanmuInfoList.size(); i++)
         {
 
-            if (danmuInfoList.get(i).getTimpos() < timepos)
+            if (mAllDanmuInfoList.get(i).getTimpos() < timepos)
             {
-                timepostList.add(danmuInfoList.get(i));
-                danmuInfoList.remove(i);
+                timepostList.add(mAllDanmuInfoList.get(i));
+                mAllDanmuInfoList.remove(i);
             }
         }
-        return danmuInfoList;
+        return mAllDanmuInfoList;
     }
 
 
     //****************webscoket
 
-    private MySocketConnection mMySocketConnection;
 
+    //private MySocketConnection mMySocketConnection;
+
+    private WebSocket mWebSocket;
     private Timer timer = new Timer();
     private TimerTask webSocketTask;
 
@@ -1488,87 +1600,77 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             @Override
             public void run()
             {
-                if (null != mMySocketConnection && mMySocketConnection.isConnected())
+                if (null != mWebSocket && mWebSocket.isOpen())
                 {
 
-                    mMySocketConnection.sendTextMessage("ping");
+                    mWebSocket.sendText("ping");
                 }
             }
         };
-        new Thread(new Runnable()
+
+        try
         {
-            @Override
-            public void run()
-            {
-                mMySocketConnection = MySocketConnection.getInstance();
-                mMySocketConnection.setSocketListener(new SocketListener()
-                {
-                    @Override
-                    public void OnOpend()
-                    {
-                        timer.schedule(webSocketTask, 0, 30000);
-                    }
+            String wsUri = ConfigManager.instance().getChatUrl() + "/" + ConfigManager.instance().getUniqueCode() + "?co_biz=video&biz_id=" + biz_id;
+            LogUtil.e("wsUri", "wsUri == " + wsUri);
+            mWebSocket = new WebSocketFactory().createSocket(wsUri, 30 * 1000) //ws地址，和设置超时时间
+                    .setFrameQueueSize(5)//设置帧队列最大值为5
+                    .setMissingCloseFrameAllowed(false)//设置不允许服务端关闭连接却未发送关闭帧
+                    .addListener(new WsListener())//添加回调监听
+                    .connectAsynchronously();//异步连接
 
-                    @Override
-                    public void OnPushMsg(String message)
-                    {
-
-                        if (!TextUtils.isEmpty(message))
-                        {
-                            try
-                            {
-                                DanmuInfo chatInfo = new DanmuInfo(new JSONObject(message));
-
-                                if (null != chatInfo)
-                                {
-                                    String action = chatInfo.getAction();
-                                    String data = chatInfo.getData();
-                                    String type = chatInfo.getType();
-                                    String style = chatInfo.getStyle();
-
-                                    String color = "#0000FF";
-
-                                    if (!TextUtils.isEmpty(style))
-                                    {
-                                        color = style.split(",")[0];
-                                    }
-
-                                    if ("say".equals(type))
-                                    {
-                                        barrageView.addBarrage(new Barrage(data, Color.parseColor(color)));
-                                    }
-                                }
-
-
-                            }
-                            catch (JSONException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void OnError(String msg)
-                    {
-                        Message mMessage = new Message();
-                        mMessage.obj = msg;
-                        mMessage.what = SHOW_TOAST;
-                        if (null != mHandler) mHandler.sendMessageDelayed(mMessage, 10 * 1000);
-
-
-                    }
-                });
-
-                String wsUri = ConfigManager.instance().getChatUrl() + "/" + ConfigManager.instance().getUniqueCode() + "?co_biz=video&biz_id=" +
-                        biz_id;
-
-
-                if (null != mMySocketConnection) mMySocketConnection.startConnection(wsUri);
-
-            }
-        }).start();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
+    class WsListener extends WebSocketAdapter
+    {
+        @Override
+        public void onTextMessage(WebSocket websocket, String text) throws Exception
+        {
+            super.onTextMessage(websocket, text);
+            LogUtil.e("onTextMessage", text);
+            if (!TextUtils.isEmpty(text))
+            {
 
+                DanmuInfo chatInfo = new DanmuInfo(new JSONObject(text));
+
+                if (null != chatInfo)
+                {
+                    if ("say".equals(chatInfo.getType())) mCurrentDanmuInfoList.add(chatInfo);
+
+                }
+
+            }
+
+        }
+
+        @Override
+        public void onConnected(WebSocket websocket, Map<String, List<String>> headers) throws Exception
+        {
+            super.onConnected(websocket, headers);
+            LogUtil.e("onTextMessage", "连接成功");
+            timer.schedule(webSocketTask, 0, 30000);
+        }
+
+        @Override
+        public void onConnectError(WebSocket websocket, WebSocketException exception) throws Exception
+        {
+            super.onConnectError(websocket, exception);
+            LogUtil.e("onTextMessage", "连接错误：" + exception.getMessage());
+            initWebSocket();
+        }
+
+        @Override
+        public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer)
+                throws Exception
+        {
+            super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
+            LogUtil.e("onTextMessage", "断开连接：");
+            initWebSocket();
+        }
+
+    }
 }

@@ -1,13 +1,36 @@
 package com.zb.wyd.entity;
 
+import org.json.JSONObject;
+
 public class SearchInfo
 {
-    private String id;
-    private String name;
-    private String type;
-    private String updateTime;
-    private String  views;
 
+
+    private String id;// 439854
+    private String co_biz;// 6 //直播，电影，自拍，抖音，小说，语音  1,2,3,5,6,7,8
+    private String biz_id;// 1514
+    private String cata_id;//
+    private String title;//
+    private String host;// -
+    private String cover;// -
+    private String user_id;// 1
+    private String add_time;// 2018-07-23
+    private String url;//
+
+
+    public SearchInfo(JSONObject obj)
+    {
+        this.id = obj.optString("id");
+        this.co_biz = obj.optString("co_biz");
+        this.biz_id = obj.optString("biz_id");
+        this.cata_id = obj.optString("cata_id");
+        this.title = obj.optString("title");
+        this.host = obj.optString("host");
+        this.cover = obj.optString("cover");
+        this.user_id = obj.optString("user_id");
+        this.add_time = obj.optString("add_time");
+        this.url = obj.optString("url");
+    }
 
     public String getId()
     {
@@ -19,44 +42,94 @@ public class SearchInfo
         this.id = id;
     }
 
-    public String getName()
+    public String getCo_biz()
     {
-        return name;
+        return co_biz;
     }
 
-    public void setName(String name)
+    public void setCo_biz(String co_biz)
     {
-        this.name = name;
+        this.co_biz = co_biz;
     }
 
-    public String getType()
+    public String getBiz_id()
     {
-        return type;
+        return biz_id;
     }
 
-    public void setType(String type)
+    public void setBiz_id(String biz_id)
     {
-        this.type = type;
+        this.biz_id = biz_id;
     }
 
-    public String getUpdateTime()
+    public String getCata_id()
     {
-        return updateTime;
+        return cata_id;
     }
 
-    public void setUpdateTime(String updateTime)
+    public void setCata_id(String cata_id)
     {
-        this.updateTime = updateTime;
+        this.cata_id = cata_id;
     }
 
-    public String getViews()
+    public String getTitle()
     {
-        return views;
+        return title;
     }
 
-    public void setViews(String views)
+    public void setTitle(String title)
     {
-        this.views = views;
+        this.title = title;
+    }
+
+    public String getHost()
+    {
+        return host;
+    }
+
+    public void setHost(String host)
+    {
+        this.host = host;
+    }
+
+    public String getCover()
+    {
+        return cover;
+    }
+
+    public void setCover(String cover)
+    {
+        this.cover = cover;
+    }
+
+    public String getUser_id()
+    {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id)
+    {
+        this.user_id = user_id;
+    }
+
+    public String getAdd_time()
+    {
+        return add_time;
+    }
+
+    public void setAdd_time(String add_time)
+    {
+        this.add_time = add_time;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
     }
 }
 

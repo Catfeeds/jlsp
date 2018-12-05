@@ -1,35 +1,71 @@
-package com.zb.wyd.activity;
+package com.zb.wyd.fragment;
 
-import android.app.Activity;
+
+import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
+import com.zb.wyd.activity.BaseHandler;
+import com.zb.wyd.activity.BindEmailActivity;
+import com.zb.wyd.activity.DomainNameActivity;
+import com.zb.wyd.activity.LoginActivity;
+import com.zb.wyd.activity.MainActivity;
+import com.zb.wyd.activity.MemberActivity;
+import com.zb.wyd.activity.MessageListActivity;
+import com.zb.wyd.activity.MyCollectionActivity;
+import com.zb.wyd.activity.PhotoDetailActivity;
+import com.zb.wyd.activity.PhotoListActivity;
+import com.zb.wyd.activity.TaskActivity;
+import com.zb.wyd.activity.UserDetailActivity;
+import com.zb.wyd.activity.VideoPlayActivity;
+import com.zb.wyd.activity.VidoeListActivity;
+import com.zb.wyd.activity.WealthListActivity;
+import com.zb.wyd.activity.WebViewActivity;
+import com.zb.wyd.entity.FortuneInfo;
+import com.zb.wyd.entity.SignInfo;
+import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.entity.VideoInfo;
+import com.zb.wyd.http.DataRequest;
+import com.zb.wyd.http.HttpRequest;
+import com.zb.wyd.http.IRequestListener;
+import com.zb.wyd.json.SignInfoHandler;
+import com.zb.wyd.json.UserInfoHandler;
 import com.zb.wyd.utils.APPUtils;
 import com.zb.wyd.utils.ConfigManager;
-import com.zb.wyd.utils.LogUtil;
+import com.zb.wyd.utils.ConstantUtil;
+import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.StringUtils;
 import com.zb.wyd.utils.ToastUtil;
-import com.zb.wyd.widget.statusbar.StatusBarUtil;
+import com.zb.wyd.utils.Urls;
+import com.zb.wyd.widget.CircleImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,63 +74,61 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
- * DESC: H5界面跳转
+ * 描述：一句话简单描述
  */
-public class WebViewActivity extends Activity
+public class BoxFragment extends BaseFragment implements View.OnClickListener
 {
-    public static final String EXTRA_URL = "extra_url";
-    public static final String EXTRA_TITLE = "extra_title";
-    public static final String IS_SETTITLE = "isSetTitle";
+
+
+    private View rootView = null;
+
     private WebView mWebView;
-    private String mUrl;
-    private boolean isSetTitle;
-    private ImageView mBackIv;
-    private TextView mTitleTv;
-    private TextView mSubmitTv;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webview);
-        initView();
-        initViewData();
-        initEvent();
+
+        if (rootView == null)
+        {
+            rootView = inflater.inflate(R.layout.fragment_box, null);
+            initData();
+            initViews();
+            initViewData();
+            initEvent();
+        }
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null)
+        {
+            parent.removeView(rootView);
+        }
+        return rootView;
+    }
+
+    @Override
+    protected void initData()
+    {
 
     }
 
-    protected void initView()
+    @Override
+    protected void initViews()
     {
-
-
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
-        StatusBarUtil.StatusBarLightMode(WebViewActivity.this, false);
-        mBackIv = (ImageView) findViewById(R.id.iv_back);
-        mSubmitTv = (TextView) findViewById(R.id.tv_submit);
-        mTitleTv = (TextView) findViewById(R.id.tv_title);
-        mWebView = (WebView) findViewById(R.id.mWebView);
+        mWebView = (WebView) rootView.findViewById(R.id.mWebView);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setBuiltInZoomControls(false);
         mWebView.getSettings().setSupportZoom(false);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new JSService(), "native");
-
-        String type = getIntent().getStringExtra("TYPE");
-        if ("CUSTOMER".equals(type))
-        {
-            mSubmitTv.setText("联系客服");
-            mSubmitTv.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            mSubmitTv.setVisibility(View.GONE);
-        }
-
-
         mWebView.setWebViewClient(new WebViewClient()
                                   {
                                       @Override
@@ -165,7 +199,6 @@ public class WebViewActivity extends Activity
             {
                 super.onReceivedTitle(view, title);
 
-                if (!isSetTitle) mTitleTv.setText(title);
             }
 
             @Override
@@ -193,50 +226,31 @@ public class WebViewActivity extends Activity
         });
     }
 
+    @Override
+    protected void initEvent()
+    {
+
+    }
+
+    @Override
     protected void initViewData()
     {
-        mUrl = getIntent().getStringExtra(EXTRA_URL) + "?auth=" + ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(this) + "&device=and";
+        mWebView.loadUrl(Urls.getBoxUrl());
+    }
 
-        LogUtil.e("TAG", "url-->" + mUrl);
-        isSetTitle = getIntent().getBooleanExtra(IS_SETTITLE, true);
+    @Override
+    public void onResume()
+    {
+        super.onResume();
 
-        if (isSetTitle)
-        {
-            mTitleTv.setText(getIntent().getStringExtra(EXTRA_TITLE));
-        }
-        if (!StringUtils.stringIsEmpty(mUrl))
-        {
-            mWebView.loadUrl(mUrl);
-        }
     }
 
 
-    private void initEvent()
-    {
-        mBackIv.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mWebView.canGoBack())
-                {
-                    mWebView.goBack();
-                }
-                else
-                {
-                    finish();
-                }
-            }
-        });
 
-        mSubmitTv.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                startActivity(new Intent(WebViewActivity.this, QuestionActivity.class));
-            }
-        });
+    @Override
+    public void onClick(View v)
+    {
+
     }
 
     public class JSService
@@ -253,7 +267,6 @@ public class WebViewActivity extends Activity
         @JavascriptInterface
         public void onClosed()
         {
-            finish();
         }
 
         @JavascriptInterface
@@ -274,8 +287,8 @@ public class WebViewActivity extends Activity
         @JavascriptInterface
         public void copy(String text)
         {
-            ToastUtil.show(WebViewActivity.this, "内容已复制到剪贴板");
-            ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ToastUtil.show(getActivity(), "内容已复制到剪贴板");
+            ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setText(text);
         }
 
@@ -304,12 +317,11 @@ public class WebViewActivity extends Activity
                 mVideoInfo.setV_name("");
                 Bundle b = new Bundle();
                 b.putSerializable("VideoInfo", mVideoInfo);
-                startActivity(new Intent(WebViewActivity.this, VideoPlayActivity.class).putExtras(b));
-                finish();
+                startActivity(new Intent(getActivity(), VideoPlayActivity.class).putExtras(b));
             }
             else
             {
-                startActivity(new Intent(WebViewActivity.this, LoginActivity.class));
+                startActivity(new Intent(getActivity(), LoginActivity.class));
             }
 
         }
@@ -318,14 +330,13 @@ public class WebViewActivity extends Activity
         public void videolist(String cat_id)
         {
             if (!TextUtils.isEmpty(cat_id))
-                startActivity(new Intent(WebViewActivity.this, VidoeListActivity.class).putExtra("sort", "new").putExtra("cta_id", cat_id));
+                startActivity(new Intent(getActivity(), VidoeListActivity.class).putExtra("sort", "new").putExtra("cta_id", cat_id));
         }
 
         @JavascriptInterface
         public void photolist(String cat_id)
         {
-            startActivity(new Intent(WebViewActivity.this, PhotoListActivity.class).putExtra("cat_id", cat_id));
-            finish();
+            startActivity(new Intent(getActivity(), PhotoListActivity.class).putExtra("cat_id", cat_id));
         }
 
         @JavascriptInterface
@@ -333,12 +344,11 @@ public class WebViewActivity extends Activity
         {
             if (MyApplication.getInstance().isLogin())
             {
-                startActivity(new Intent(WebViewActivity.this, PhotoDetailActivity.class).putExtra("biz_id", photo_id));
-                finish();
+                startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", photo_id));
             }
             else
             {
-                startActivity(new Intent(WebViewActivity.this, LoginActivity.class));
+                startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         }
 
@@ -396,29 +406,6 @@ public class WebViewActivity extends Activity
 
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if ((keyCode == KeyEvent.KEYCODE_BACK))
-        {
-
-            if (mWebView.canGoBack())
-            {
-                mWebView.goBack();
-            }
-            else
-            {
-                return super.onKeyDown(keyCode, event);
-            }
-
-            return false;
-        }
-        else
-        {
-            return super.onKeyDown(keyCode, event);
-        }
-
-    }
 
     private Bitmap getBitmap(String path) throws IOException
     {
@@ -474,4 +461,5 @@ public class WebViewActivity extends Activity
             return f;
         }
     }
+
 }

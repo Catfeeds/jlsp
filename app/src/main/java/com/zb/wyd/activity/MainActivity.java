@@ -18,13 +18,16 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
+import com.zb.wyd.fragment.BoxFragment;
 import com.zb.wyd.fragment.DouyinFragment;
 import com.zb.wyd.fragment.LiveIndexFragment;
 import com.zb.wyd.fragment.MemberFragment;
 import com.zb.wyd.fragment.SelfieFragment;
 import com.zb.wyd.fragment.VideoFragment;
+import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.VersionManager;
@@ -54,7 +57,7 @@ public class MainActivity extends BaseActivity
             .ic_photo_selector, R.drawable.ic_box_selector};
 
 
-    private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class, MemberFragment.class};
+    private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class,BoxFragment.class};
 
     @Override
     protected void initData()
@@ -83,14 +86,6 @@ public class MainActivity extends BaseActivity
             @Override
             public void onTabChanged(String tabId)
             {
-                if ("任务".equals(tabId))
-                {
-                    if (!MyApplication.getInstance().isLogin())
-                    {
-                        fragmentTabHost.setCurrentTab(0);
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    }
-                }
             }
         });
 
@@ -164,6 +159,8 @@ public class MainActivity extends BaseActivity
         }
         fragmentTabHost.getTabWidget().setDividerDrawable(R.color.transparent);
         new VersionManager(this).init();
+
+        ImageLoader.getInstance().displayImage(ConfigManager.instance().getUserPic(),ivUserPic);
     }
 
     private View getView(int i)
@@ -287,7 +284,8 @@ public class MainActivity extends BaseActivity
         super.onClick(v);
         if (v == tvSignIn)
         {
-            startActivity(new Intent(MainActivity.this, AuthorPhotoListActivity.class));
+           // startActivity(new Intent(MainActivity.this, AuthorPhotoListActivity.class));
+            startActivity(new Intent(MainActivity.this, SignInActivity.class));
         }
         else if (v == rlSearch)
         {

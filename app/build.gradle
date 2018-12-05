@@ -104,6 +104,9 @@ dependencies {
 
 
     //弹幕
-    compile project(':danmulibrary')
+    compile 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
+   // compile project(':danmulibrary')
     //compile 'com.kd.easybarrage:library:0.0.1'
+
+    implementation 'com.neovisionaries:nv-websocket-client:2.2'
 }

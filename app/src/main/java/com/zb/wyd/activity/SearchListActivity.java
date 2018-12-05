@@ -23,6 +23,7 @@ import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
+import com.zb.wyd.json.SearchInfoListHandler;
 import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.ConfigManager;
@@ -63,7 +64,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
     private SearchAdapter mSearchAdapter;
 
     private static final String GET_DY_LIST = "get_douyin_list";
-    private static final int GET_VIDEO_LIST_SUCCESS = 0x01;
+    private static final int GET_SEARCH_LIST_SUCCESS = 0x01;
     private static final int REQUEST_FAIL = 0x02;
 
 
@@ -81,15 +82,13 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
 
                     break;
 
-                case GET_VIDEO_LIST_SUCCESS:
-                    VideoInfoListHandler mVideoInfoListHandler = (VideoInfoListHandler) msg.obj;
+                case GET_SEARCH_LIST_SUCCESS:
+                    SearchInfoListHandler mSearchInfoListHandler = (SearchInfoListHandler) msg.obj;
                     if (pn == 1)
                     {
                         mSearchInfoList.clear();
                     }
-                    //                    mAuthorPhotoInfoList.addAll(mVideoInfoListHandler.getVideoInfoList());
-                    //                    mAnchorPhotoAdapter.notifyDataSetChanged();
-
+                    mSearchInfoList.addAll(mSearchInfoListHandler.getSearchInfoList());
                     mSearchAdapter.notifyDataSetChanged();
                     break;
 
@@ -129,6 +128,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     String mContent = etContent.getText().toString();
 
+                    if (!TextUtils.isEmpty(mContent)) loadData(mContent);
                     return true;
                 }
                 return false;
@@ -143,33 +143,40 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
         mRecyclerView = mPullToRefreshRecyclerView.getRefreshableView();
         mPullToRefreshRecyclerView.setPullLoadEnabled(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        for (int i = 0; i < 20; i++)
-        {
-            SearchInfo mSearchInfo = new SearchInfo();
-            mSearchInfo.setType(i % 3 + "");
-            mSearchInfoList.add(mSearchInfo);
-        }
+
         mSearchAdapter = new SearchAdapter(mSearchInfoList, SearchListActivity.this, new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
             {
 
+                SearchInfo searchInfo = mSearchInfoList.get(position);
+                switch (Integer.parseInt(searchInfo.getCo_biz()))
+                {
 
+                }
             }
         });
 
         mRecyclerView.setAdapter(mSearchAdapter);
-        //loadData();
+
     }
 
-    private void loadData()
+    private String kw;
+
+    private void loadData(String kw)
     {
+        if (TextUtils.isEmpty(kw))
+        {
+            return;
+        }
+        this.kw = kw;
         Map<String, String> valuePairs = new HashMap<>();
+        valuePairs.put("kw", kw);
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        DataRequest.instance().request(SearchListActivity.this, Urls.getDouyinListUrl(), this, HttpRequest.GET, GET_DY_LIST, valuePairs, new
-                VideoInfoListHandler());
+        DataRequest.instance().request(SearchListActivity.this, Urls.getDataSearchUrl(), this, HttpRequest.GET, GET_DY_LIST, valuePairs, new
+                SearchInfoListHandler());
     }
 
 
@@ -189,7 +196,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
         mSearchInfoList.clear();
         pn = 1;
         mRefreshStatus = 0;
-        loadData();
+        loadData(kw);
     }
 
     @Override
@@ -197,7 +204,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
     {
         pn += 1;
         mRefreshStatus = 1;
-        loadData();
+        loadData(kw);
     }
 
 
@@ -217,7 +224,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
 
             if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
             {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_VIDEO_LIST_SUCCESS, obj));
+                mHandler.sendMessage(mHandler.obtainMessage(GET_SEARCH_LIST_SUCCESS, obj));
             }
             else
             {
