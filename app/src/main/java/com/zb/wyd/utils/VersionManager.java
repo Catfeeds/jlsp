@@ -113,6 +113,9 @@ public class VersionManager implements IRequestListener
                         ConfigManager.instance().setIpLookUp(mVersionInfo.getIplookup());
                         ConfigManager.instance().setUploadUrl(mVersionInfo.getUpload());
                         ConfigManager.instance().setChatUrl(mVersionInfo.getChat());
+                        ConfigManager.instance().setUploadDyUrl(mVersionInfo.getUpload_dy());
+                        ConfigManager.instance().setUploadImgUrl(mVersionInfo.getUpload_img());
+
                         if (!StringUtils.stringIsEmpty(mVersionInfo.getText()))
                         {
                             ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);

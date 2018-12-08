@@ -29,7 +29,9 @@ public class PhotoAddHolder extends PhotoBaseHolder
         int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 3;
         int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 4;
         int height = width * 8 / 7;
-        mItemLayout.setLayoutParams(new LinearLayout.LayoutParams(width, height));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+        layoutParams.topMargin=10;
+        mItemLayout.setLayoutParams(layoutParams);
     }
 
 

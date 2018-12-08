@@ -220,7 +220,14 @@ public class TaskActivity extends BaseActivity implements IRequestListener
                 }
                 else if ("photo://create".equals(mTaskInfo.getAction()))
                 {
-                    startActivity(new Intent(TaskActivity.this, AddPhotoActivity.class));
+                    if(MyApplication.getInstance().isLogin())
+                    {
+                        startActivity(new Intent(TaskActivity.this, AddPhotoActivity.class));
+                    }
+                    else
+                    {
+                        startActivity(new Intent(TaskActivity.this, LoginActivity.class));
+                    }
                 }
 
                 else if (mTaskInfo.getAction().startsWith("http") || mTaskInfo.getAction().startsWith("https"))

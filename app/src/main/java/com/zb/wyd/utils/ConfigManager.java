@@ -57,13 +57,11 @@ public class ConfigManager
     private static final String ZDY_DOMAIN_NAME = "zdy_domain_name";
 
     private static final String USER_ROLE = "user_role";
-
     private static final String UPLOAD_URL = "upload_url";
-
     private static final String CHAT_URL = "chat_url";
-
     private static final String VALID_VIP = "valid_vip";
-
+    private static final String UPLOAD_IMG = "upload_img";
+    private static final String UPLOAD_DY= "upload_dy";
     /**
      * 返回实例
      *
@@ -404,6 +402,29 @@ public class ConfigManager
     public boolean getValid_vip()
     {
         return mSharedPreferences.getBoolean(VALID_VIP, false);
+    }
+
+
+
+
+    public void setUploadImgUrl(String str)
+    {
+        mSharedPreferences.edit().putString(UPLOAD_IMG, str).commit();
+    }
+
+    public String getUploadImgUrl()
+    {
+        return mSharedPreferences.getString(UPLOAD_IMG,"");
+    }
+
+    public void setUploadDyUrl(String str)
+    {
+        mSharedPreferences.edit().putString(UPLOAD_DY, str).commit();
+    }
+
+    public String getUploadDyUrl()
+    {
+        return mSharedPreferences.getString(UPLOAD_DY,"");
     }
 }
 

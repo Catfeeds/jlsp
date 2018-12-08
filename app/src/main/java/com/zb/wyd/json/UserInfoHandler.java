@@ -3,8 +3,10 @@ package com.zb.wyd.json;
 
 import com.zb.wyd.entity.FortuneInfo;
 import com.zb.wyd.entity.UserInfo;
+import com.zb.wyd.utils.ConfigManager;
 
 import org.json.JSONObject;
+
 
 /**
  */
@@ -29,8 +31,12 @@ public class UserInfoHandler extends JsonHandler
             {
                 userInfo = new UserInfo(obj);
 
-                FortuneInfo mFortuneInfo = new FortuneInfo(obj.optJSONObject("fortune"));
-                userInfo.setFortuneInfo(mFortuneInfo);
+                if(null !=userInfo )
+                {
+                    FortuneInfo mFortuneInfo = new FortuneInfo(obj.optJSONObject("fortune"));
+                    userInfo.setFortuneInfo(mFortuneInfo);
+                    ConfigManager.instance().setValid_vip(userInfo.isValid_vip());
+                }
 
             }
 

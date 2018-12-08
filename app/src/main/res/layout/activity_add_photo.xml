@@ -180,6 +180,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/ll_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -208,13 +209,10 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dm_10"
-                android:background="@color/windowBackground" />
 
 
             <EditText
+                android:visibility="gone"
                 android:id="@+id/et_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

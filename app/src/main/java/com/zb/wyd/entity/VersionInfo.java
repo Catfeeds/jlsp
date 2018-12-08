@@ -22,9 +22,14 @@ public class VersionInfo
     private String crossfire;
     private String upload;
     private String chat;
+    private String upload_img;
+    private String upload_dy;
 
     public VersionInfo(JSONObject obj)
     {
+
+        this.upload_img = obj.optString("upload_img");
+        this.upload_dy = obj.optString("upload_dy");
 
         this.upload = obj.optString("upload");
         this.iplookup = obj.optString("iplookup");
@@ -226,5 +231,25 @@ public class VersionInfo
     public void setChat(String chat)
     {
         this.chat = chat;
+    }
+
+    public String getUpload_img()
+    {
+        return upload_img;
+    }
+
+    public void setUpload_img(String upload_img)
+    {
+        this.upload_img = upload_img;
+    }
+
+    public String getUpload_dy()
+    {
+        return upload_dy;
+    }
+
+    public void setUpload_dy(String upload_dy)
+    {
+        this.upload_dy = upload_dy;
     }
 }

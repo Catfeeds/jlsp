@@ -400,9 +400,9 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/data/search";
     }
 
-    public static String getPayUrl()
+    public static String getPayUrl(String type)
     {
-        return ConfigManager.instance().getDomainName() + "/paypal/index";
+        return ConfigManager.instance().getDomainName() + "/paypal/index?type=";
     }
 
     public static String getMyWorkUrl(Context context)

@@ -40,6 +40,12 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
 
     @BindView(R.id.tv_vip_expire)
     TextView tVipExpire;
+    @BindView(R.id.tv_login)
+    TextView tvLogin;
+    @BindView(R.id.tv_logout)
+    TextView tvLogout;
+
+
 
     @BindView(R.id.iv_back)
     ImageView ivBack;
@@ -88,11 +94,9 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
 
     LinearLayout llBlockThree;
     private UserInfo userInfo;
-    private static final String USER_SIGN_REQUEST = "user_sign_request";
     private static final String GET_USER_DETAIL = "get_user_detail";
     private static final int REQUEST_SUCCESS = 0x01;
     private static final int REQUEST_FAIL = 0x02;
-    private static final int USER_SIGN_SUCCESS = 0x03;
     @SuppressLint("HandlerLeak")
     private BaseHandler mHandler = new BaseHandler(this)
     {
@@ -110,7 +114,6 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                     {
                         String unick = userInfo.getUnick();
                         int vip_type = userInfo.getVip_type();
-                        ConfigManager.instance().setValid_vip(userInfo.isValid_vip());
                         ImageLoader.getInstance().displayImage(ConfigManager.instance().getDomainName() + userInfo.getUface(), ivUserPic);
                         if ("-".equals(unick) || StringUtils.stringIsEmpty(unick))
                         {
@@ -139,22 +142,27 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                                 tvVip.setBackgroundResource(R.drawable.common_gray_45dp);
                                 tvVip.setText("VIP");
                                 tVipExpire.setVisibility(View.GONE);
+                                tvXufei.setText("开通");
+                                tvXufei.setVisibility(View.VISIBLE);
                                 break;
 
-                            //包月
                             case 1:
                                 tvVip.setBackgroundResource(R.drawable.common_yellow_45dp);
                                 tvVip.setText("VIP");
                                 tVipExpire.setVisibility(View.VISIBLE);
                                 tVipExpire.setText("到期日期:" + userInfo.getVip_expire());
+                                tvXufei.setText("续费");
+                                tvXufei.setVisibility(View.VISIBLE);
+
                                 break;
 
-                            //包季
                             case 2:
                                 tvVip.setBackgroundResource(R.drawable.common_yellow_45dp);
                                 tvVip.setText("SVIP");
                                 tVipExpire.setVisibility(View.VISIBLE);
                                 tVipExpire.setText("到期日期:" + userInfo.getVip_expire());
+                                tvXufei.setText("续费");
+                                tvXufei.setVisibility(View.VISIBLE);
                                 break;
                         }
 
@@ -189,17 +197,33 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
     @Override
     protected void initEvent()
     {
-
     }
 
     @Override
     protected void initViewData()
     {
-        Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(AuthorDetailActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, GET_USER_DETAIL, valuePairs, new
-                UserInfoHandler());
+
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if (MyApplication.getInstance().isLogin())
+        {
+            tvLogin.setVisibility(View.GONE);
+            tvLogout.setVisibility(View.VISIBLE);
+            Map<String, String> valuePairs = new HashMap<>();
+            DataRequest.instance().request(AuthorDetailActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, GET_USER_DETAIL, valuePairs,
+                    new UserInfoHandler());
+        }
+        else
+        {
+            tvLogout.setVisibility(View.GONE);
+            tvLogin.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
     public void notify(String action, String resultCode, String resultMsg, Object obj)
@@ -215,21 +239,10 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                 mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
             }
         }
-        else if (USER_SIGN_REQUEST.equals(action))
-        {
-            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(USER_SIGN_SUCCESS, obj));
-            }
-            else
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
-            }
-        }
     }
 
     @OnClick({R.id.iv_back, R.id.iv_edit, R.id.tv_xufei, R.id.tv_vip, R.id.ll_my_works, R.id.ll_dy, R.id.ll_block_one, R.id.ll_msg, R.id
-            .ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin, R.id.ll_safe, R.id.ll_block_three})
+            .ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin, R.id.ll_safe, R.id.tv_login, R.id.ll_block_three})
     public void onViewClicked(View view)
     {
         switch (view.getId())
@@ -244,12 +257,12 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
             case R.id.tv_xufei:
                 checkLogin();
                 startActivity(new Intent(AuthorDetailActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl()));
+                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
                 break;
             case R.id.tv_vip:
                 checkLogin();
                 startActivity(new Intent(AuthorDetailActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl()));
+                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
                 break;
             case R.id.ll_my_works:
                 checkLogin();
@@ -276,15 +289,18 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                 break;
             case R.id.ll_block_three:
                 break;
+            case R.id.tv_login:
+                startActivity(new Intent(AuthorDetailActivity.this, LoginActivity.class));
+                break;
         }
     }
 
 
-    private void  checkLogin()
+    private void checkLogin()
     {
-        if(!MyApplication.getInstance().isLogin())
+        if (!MyApplication.getInstance().isLogin())
         {
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             return;
         }
 

@@ -2,6 +2,7 @@ package com.zb.wyd.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
@@ -133,6 +134,9 @@ public class WelComeActivity extends BaseActivity implements IRequestListener
         setContentView(R.layout.activity_welcome);
         StatusBarUtil.transparencyBar(WelComeActivity.this);
         StatusBarUtil.StatusBarLightMode(WelComeActivity.this, false);
+
+        Uri uridata = this.getIntent().getData();
+        String mydata = uridata.getQueryParameter("data");
     }
 
     @Override

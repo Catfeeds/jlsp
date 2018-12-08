@@ -88,7 +88,7 @@ public class VideoPlayActivity1 extends BaseActivity implements IRequestListener
                 case GET_VIDEO_PRICE_SUCCESS:
                     LivePriceInfoHandler mLivePriceInfoHandler = (LivePriceInfoHandler) msg.obj;
 
-                    PriceInfo mLivePriceInfo = mLivePriceInfoHandler.getLivePriceInfo();
+                    final PriceInfo mLivePriceInfo = mLivePriceInfoHandler.getLivePriceInfo();
 
                     if (null != mLivePriceInfo)
                     {

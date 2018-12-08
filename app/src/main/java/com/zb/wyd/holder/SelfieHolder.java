@@ -50,7 +50,7 @@ public class SelfieHolder extends SelfieBaseHolder
     }
 
     @Override
-    public void setPhotoInfo(PhotoInfo mPhotoInfo, int p)
+    public void setPhotoInfo(PhotoInfo mPhotoInfo, final int p)
     {
         int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 3;
         int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 2;

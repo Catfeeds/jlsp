@@ -97,14 +97,14 @@ public class MainActivity extends BaseActivity implements IRequestListener
                     SignInfoHandler mSignInfoHandler = (SignInfoHandler) msg.obj;
                     SignInfo signInfo = mSignInfoHandler.getSignInfo();
 
-//                    if (null != signInfo)
-//                    {
-                        ToastUtil.show(MainActivity.this,"签到成功!");
+                    //                    if (null != signInfo)
+                    //                    {
+                    ToastUtil.show(MainActivity.this, "签到成功!");
 
-                        startActivity(new Intent(MainActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "每日一签").putExtra
-                                (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl()));
+                    startActivity(new Intent(MainActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "每日一签").putExtra
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl()));
 
-//                    }
+                    //                    }
 
                     break;
 
@@ -216,6 +216,12 @@ public class MainActivity extends BaseActivity implements IRequestListener
         new VersionManager(this).init();
 
         ImageLoader.getInstance().displayImage(ConfigManager.instance().getUserPic(), ivUserPic);
+        if (MyApplication.getInstance().isLogin())
+        {
+            Map<String, String> valuePairs = new HashMap<>();
+            DataRequest.instance().request(MainActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, "GET_USER_DETAIL", valuePairs, new
+                    UserInfoHandler());
+        }
     }
 
     private View getView(int i)

@@ -85,8 +85,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dm_5"
             android:gravity="center"
-            android:text="保密"
             android:textColor="@color/text_violet_normal"
+            android:textSize="@dimen/t16" />
+
+        <TextView
+            android:id="@+id/tv_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:background="@drawable/violet_frame_off_45dp"
+            android:paddingLeft="@dimen/dm_15"
+            android:paddingTop="@dimen/dm_5"
+            android:text="点击登录"
+            android:paddingRight="@dimen/dm_15"
+            android:paddingBottom="@dimen/dm_5"
+            android:textColor="@drawable/video_tab_font_selector"
             android:textSize="@dimen/t16" />
 
         <LinearLayout
@@ -102,10 +116,8 @@
                 android:id="@+id/tv_vip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/common_yellow_45dp"
                 android:paddingLeft="@dimen/dm_10"
                 android:paddingRight="@dimen/dm_10"
-                android:text="VIP"
                 android:textSize="@dimen/t12" />
 
             <TextView
@@ -124,9 +136,9 @@
                 android:background="@drawable/violet_frame_off_45dp"
                 android:paddingLeft="@dimen/dm_15"
                 android:paddingTop="@dimen/dm_5"
+                android:visibility="gone"
                 android:paddingRight="@dimen/dm_15"
                 android:paddingBottom="@dimen/dm_5"
-                android:text="续费"
                 android:textColor="@drawable/video_tab_font_selector"
                 android:textSize="@dimen/t10" />
         </LinearLayout>
@@ -410,10 +422,8 @@
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
+
+
 
                 <LinearLayout
                     android:visibility="gone"
@@ -441,6 +451,18 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_logout"
+                android:padding="@dimen/dm_10"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="退出登录"
+                android:textSize="@dimen/t18"
+                android:background="@drawable/violet_frame_on_45dp"
+                android:layout_margin="@dimen/dm_15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

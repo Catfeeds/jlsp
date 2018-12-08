@@ -1,5 +1,7 @@
 package com.zb.wyd.entity;
 
+import android.text.TextUtils;
+
 import com.zb.wyd.utils.StringUtils;
 
 import org.json.JSONObject;
@@ -55,6 +57,11 @@ public class PhotoInfo
         this.tags = obj.optString("tags");
         this.location = obj.optString("location");
         this.host = obj.optString("ihost");
+
+        if (TextUtils.isEmpty(host))
+        {
+            this.host = obj.optString("host");
+        }
         this.contact = obj.optString("contact");
         this.free_album = obj.optString("free_album");
         this.charge_album = obj.optString("charge_album");

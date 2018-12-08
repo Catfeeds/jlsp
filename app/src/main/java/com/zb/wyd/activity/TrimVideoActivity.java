@@ -56,6 +56,7 @@ import com.zb.wyd.json.PhotoInfoHandler;
 import com.zb.wyd.json.ResultHandler;
 import com.zb.wyd.json.SignInfoHandler;
 import com.zb.wyd.json.VideoUploadResultHandler;
+import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.ToastUtil;
@@ -1024,7 +1025,7 @@ public class TrimVideoActivity extends com.zb.wyd.video.BaseActivity implements 
     {
         File mFile = new File(filePath);
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(TrimVideoActivity.this, Urls.getUploadVideoUrl(), this, HttpRequest.UPLOAD_VIDEO, UPLOAD_VIDEO, valuePairs,
+        DataRequest.instance().request(TrimVideoActivity.this,ConfigManager.instance().getUploadDyUrl(), this, HttpRequest.UPLOAD_VIDEO, UPLOAD_VIDEO, valuePairs,
                 mFile, new VideoUploadResultHandler());
     }
 

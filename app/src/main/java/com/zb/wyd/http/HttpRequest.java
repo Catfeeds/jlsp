@@ -237,7 +237,7 @@ public class HttpRequest implements Runnable
 
         RequestBody fileBody = RequestBody.create(MediaType.parse("image/jpeg"), mFile);
         MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        requestBody.addFormDataPart("image", mFile.getName(), fileBody);
+        requestBody.addFormDataPart("file", mFile.getName(), fileBody);
         for (String key : valuePair.keySet())
         {
             String value = valuePair.get(key);

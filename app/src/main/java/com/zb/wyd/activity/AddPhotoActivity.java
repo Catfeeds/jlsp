@@ -92,20 +92,12 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
     LinearLayout    llPrice;
     @BindView(R.id.ll_tags)
     LinearLayout    llTags;
-    @BindView(R.id.ll_location)
-    LinearLayout    llLocation;
-    @BindView(R.id.et_contact)
-    EditText        etContact;
-    @BindView(R.id.tv_location)
-    TextView        tvLocation;
     @BindView(R.id.rv_label)
     MaxRecyclerView rvLabel;
 
 
-    private boolean isShowLocation;
     private int     index;
     private String  host;
-    private String  location;
     private List<PicInfo>  freePicList     = new ArrayList<>();
     private List<PicInfo>  chargePicList   = new ArrayList<>();
     private List<CategoryInfo> labelChooseList = new ArrayList<>();
@@ -114,7 +106,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
     private AddPhotoAdapter    chargeAdapter;
     private LabelChooseAdapter mLabelChooseAdapter;
 
-    private   LocationInfo locationInfo;
+//    private   LocationInfo locationInfo;
     // 拍照临时图片
     private String                   mTempPhotoPath;
     private SelectPicturePopupWindow mSelectPicturePopupWindow;
@@ -124,7 +116,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
     private static final   int CAMERA_REQUEST_CODE                     = 9002;    // 相机拍照标记
     private static final   int GET_LABEL_CODE                          = 9003;    // 相机拍照标记
 
-    private static final String GET_LOCATION         = "get_location";
+//    private static final String GET_LOCATION         = "get_location";
     private static final String ADD_PHOTO            = "add_photo";
     private static final String UPLOAD_USER_PIC      = "upload_user_pic";
     private static final int    REQUEST_SUCCESS      = 0x01;
@@ -179,27 +171,25 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
                     finish();
                     break;
 
-                case GET_LOCATION_SUCCESS:
-                    LocationInfoHandler mLocationInfoHandler = (LocationInfoHandler) msg.obj;
-                     locationInfo = mLocationInfoHandler.getLocationInfo();
-
-                    if (null != locationInfo)
-                    {
-                        isShowLocation = true;
-                        ivLocation.setVisibility(View.VISIBLE);
-                        location = locationInfo.getProv() + "," + locationInfo.getCity() + "," + locationInfo.getDistrict();
-                        tvLocation.setText(locationInfo.getCity());
-                        tvLocation.setTextColor(ContextCompat.getColor(AddPhotoActivity.this, R.color.yellow));
-                    }
-                    break;
-
-                case GET_LOCATION_CODE:
-                    Map<String, String> valuePairs = new HashMap<>();
-                    DataRequest.instance().request(AddPhotoActivity.this, ConfigManager.instance().getIpLookUp(), AddPhotoActivity.this, HttpRequest.GET,
-                            GET_LOCATION,
-                            valuePairs,
-                            new LocationInfoHandler());
-                    break;
+//                case GET_LOCATION_SUCCESS:
+//                    LocationInfoHandler mLocationInfoHandler = (LocationInfoHandler) msg.obj;
+//                     locationInfo = mLocationInfoHandler.getLocationInfo();
+//
+//                    if (null != locationInfo)
+//                    {
+//                        isShowLocation = true;
+//                        ivLocation.setVisibility(View.VISIBLE);
+//                        location = locationInfo.getProv() + "," + locationInfo.getCity() + "," + locationInfo.getDistrict();
+//                    }
+//                    break;
+//
+//                case GET_LOCATION_CODE:
+//                    Map<String, String> valuePairs = new HashMap<>();
+//                    DataRequest.instance().request(AddPhotoActivity.this, ConfigManager.instance().getIpLookUp(), AddPhotoActivity.this, HttpRequest.GET,
+//                            GET_LOCATION,
+//                            valuePairs,
+//                            new LocationInfoHandler());
+//                    break;
             }
         }
     };
@@ -227,7 +217,6 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
         tvFree.setOnClickListener(this);
         tvCharge.setOnClickListener(this);
         tvSubmit.setOnClickListener(this);
-        llLocation.setOnClickListener(this);
         llTags.setOnClickListener(this);
         etDesc.addTextChangedListener(new TextWatcher()
         {
@@ -447,17 +436,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
             valuePairs.put("title", title);
             valuePairs.put("desc", etDesc.getText().toString());
             valuePairs.put("tags", getLabel());
-            if(isShowLocation)
-            {
-                valuePairs.put("location", location);
-            }
-            else
-            {
-                valuePairs.put("location", "");
-            }
-
             valuePairs.put("free_album", freeSb.toString());
-            valuePairs.put("contact", etContact.getText().toString());
             valuePairs.put("charge_album", chargeSb.toString());
             valuePairs.put("host", host);
             valuePairs.put("cash", etPrice.getText().toString());
@@ -475,32 +454,32 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
         {
             setTab(1);
         }
-        else if (v == llLocation)
-        {
-            //            showProgressDialog();
-            //            Map<String, String> valuePairs = new HashMap<>();
-            //            DataRequest.instance().request(AddPhotoActivity.this, Urls.getIplookupUrl(), this, HttpRequest.POST, GET_LOCATION, valuePairs,
-            //                    new LocationInfoHandler());
-
-            if (isShowLocation)
-            {
-                isShowLocation = false;
-                ivLocation.setVisibility(View.GONE);
-                tvLocation.setText("不显示地址");
-                tvLocation.setTextColor(ContextCompat.getColor(AddPhotoActivity.this, R.color.blackA));
-            }
-            else
-            {
-                if (null != locationInfo)
-                {
-                    tvLocation.setText(locationInfo.getCity());
-                }
-                isShowLocation = false;
-                ivLocation.setVisibility(View.VISIBLE);
-                tvLocation.setTextColor(ContextCompat.getColor(AddPhotoActivity.this, R.color.yellow));
-            }
-
-        }
+//        else if (v == llLocation)
+//        {
+//            //            showProgressDialog();
+//            //            Map<String, String> valuePairs = new HashMap<>();
+//            //            DataRequest.instance().request(AddPhotoActivity.this, Urls.getIplookupUrl(), this, HttpRequest.POST, GET_LOCATION, valuePairs,
+//            //                    new LocationInfoHandler());
+//
+//            if (isShowLocation)
+//            {
+//                isShowLocation = false;
+//                ivLocation.setVisibility(View.GONE);
+//                tvLocation.setText("不显示地址");
+//                tvLocation.setTextColor(ContextCompat.getColor(AddPhotoActivity.this, R.color.blackA));
+//            }
+//            else
+//            {
+//                if (null != locationInfo)
+//                {
+//                    tvLocation.setText(locationInfo.getCity());
+//                }
+//                isShowLocation = false;
+//                ivLocation.setVisibility(View.VISIBLE);
+//                tvLocation.setTextColor(ContextCompat.getColor(AddPhotoActivity.this, R.color.yellow));
+//            }
+//
+//        }
         else if (v == llTags)
         {
             startActivityForResult(new Intent(AddPhotoActivity.this, LabelActivity.class), GET_LABEL_CODE);
@@ -653,7 +632,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
         showProgressDialog();
         File mFile = new File(filePath);
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(AddPhotoActivity.this, Urls.getUploadVideoUrl(), this, HttpRequest.UPLOAD, UPLOAD_USER_PIC, valuePairs, mFile,
+        DataRequest.instance().request(AddPhotoActivity.this, ConfigManager.instance().getUploadImgUrl(), this, HttpRequest.UPLOAD, UPLOAD_USER_PIC, valuePairs, mFile,
                 new PhotoInfoHandler());
     }
 
@@ -715,17 +694,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
                 mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
             }
         }
-        else if (GET_LOCATION.equals(action))
-        {
-            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(GET_LOCATION_SUCCESS, obj));
-            }
-            else
-            {
-                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
-            }
-        }
+
     }
 
 

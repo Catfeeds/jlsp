@@ -28,6 +28,7 @@ import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.PhotoInfoHandler;
 import com.zb.wyd.json.ResultHandler;
 import com.zb.wyd.json.VideoUploadResultHandler;
+import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.ToastUtil;
@@ -250,7 +251,7 @@ public class RecordActivity extends BaseActivity implements IRequestListener
     {
         File mFile = new File(filePath);
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(RecordActivity.this, Urls.getUploadVideoUrl(), this, HttpRequest.UPLOAD_VIDEO, UPLOAD_VIDEO, valuePairs,
+        DataRequest.instance().request(RecordActivity.this, ConfigManager.instance().getUploadDyUrl(), this, HttpRequest.UPLOAD_VIDEO, UPLOAD_VIDEO, valuePairs,
                 mFile, new VideoUploadResultHandler());
     }
 

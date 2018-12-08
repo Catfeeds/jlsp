@@ -27,6 +27,7 @@ import com.zb.wyd.activity.BaseHandler;
 import com.zb.wyd.activity.LiveActivity;
 import com.zb.wyd.activity.LoginActivity;
 import com.zb.wyd.activity.PhotoDetailActivity;
+import com.zb.wyd.activity.TaskActivity;
 import com.zb.wyd.activity.VideoPlayActivity;
 import com.zb.wyd.activity.WebViewActivity;
 import com.zb.wyd.adapter.CategoryAdapter;
@@ -129,12 +130,13 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                     if (pn == 1)
                     {
                         selfieInfoList.clear();
-                        if("new".equals(sort))
+                        if ("new".equals(sort))
                         {
                             rvPhoto.setLayoutManager(new LinearLayoutManager(getActivity()));
                         }
                         else
-                        {   rvPhoto.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                        {
+                            rvPhoto.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                         }
                     }
                     selfieInfoList.addAll(mPhotoInfoListHandler.getPhotoInfoList());
@@ -299,9 +301,9 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             public void onScrollStateChanged(RecyclerView recyclerView, int newState)
             {
                 RecyclerView.LayoutManager manager;
-                if("new".equals(sort))
+                if ("new".equals(sort))
                 {
-                    manager = (LinearLayoutManager)recyclerView.getLayoutManager();
+                    manager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 }
                 else
                 {
@@ -312,14 +314,15 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
                 {
                     //获取最后一个完全显示的ItemPosition
-                    int[] lastVisiblePositions =null;
-                    if("new".equals(sort))
+                    int[] lastVisiblePositions = null;
+                    if ("new".equals(sort))
                     {
-                        lastVisiblePositions= new int[]{((LinearLayoutManager)manager).findLastVisibleItemPosition()};
+                        lastVisiblePositions = new int[]{((LinearLayoutManager) manager).findLastVisibleItemPosition()};
                     }
                     else
                     {
-                        lastVisiblePositions= ((StaggeredGridLayoutManager)manager).findLastVisibleItemPositions(new int[((StaggeredGridLayoutManager)manager).getSpanCount()]);
+                        lastVisiblePositions = ((StaggeredGridLayoutManager) manager).findLastVisibleItemPositions(new int[(
+                                (StaggeredGridLayoutManager) manager).getSpanCount()]);
                     }
 
                     int lastVisiblePos = getMaxElem(lastVisiblePositions);
@@ -668,40 +671,48 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
         else if (v == ivAdd)
         {
 
-            startActivity(new Intent(getActivity(), AddPhotoActivity.class));
+            if (MyApplication.getInstance().isLogin())
+            {
+                startActivity(new Intent(getActivity(), AddPhotoActivity.class));
+            }
+            else
+            {
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
 
-//
-//            if (MyApplication.getInstance().isLogin())
-//            {
-//                if (ConfigManager.instance().getUserRole() > 0)
-//                {
-//                    startActivity(new Intent(getActivity(), AddPhotoActivity.class));
-//                }
-//                else
-//                {
-//                    DialogUtils.showToastDialog2Button(getActivity(), "发布视频需要通过系统认证", "去申请认证", new View.OnClickListener()
-//                    {
-//                        @Override
-//                        public void onClick(View v)
-//                        {
-//                            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "申请认证").putExtra
-//                                    (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getCooperationUrl()));
-//                        }
-//                    }, new View.OnClickListener()
-//                    {
-//                        @Override
-//                        public void onClick(View v)
-//                        {
-//
-//                        }
-//                    }).show();
-//                }
-//
-//            }
-//            else
-//            {
-//                startActivity(new Intent(getActivity(), LoginActivity.class));
-//            }
+            //
+            //            if (MyApplication.getInstance().isLogin())
+            //            {
+            //                if (ConfigManager.instance().getUserRole() > 0)
+            //                {
+            //                    startActivity(new Intent(getActivity(), AddPhotoActivity.class));
+            //                }
+            //                else
+            //                {
+            //                    DialogUtils.showToastDialog2Button(getActivity(), "发布视频需要通过系统认证", "去申请认证", new View.OnClickListener()
+            //                    {
+            //                        @Override
+            //                        public void onClick(View v)
+            //                        {
+            //                            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
+            // "申请认证").putExtra
+            //                                    (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getCooperationUrl()));
+            //                        }
+            //                    }, new View.OnClickListener()
+            //                    {
+            //                        @Override
+            //                        public void onClick(View v)
+            //                        {
+            //
+            //                        }
+            //                    }).show();
+            //                }
+            //
+            //            }
+            //            else
+            //            {
+            //                startActivity(new Intent(getActivity(), LoginActivity.class));
+            //            }
         }
     }
 

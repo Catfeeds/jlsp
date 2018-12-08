@@ -21,7 +21,7 @@ public class PriceInfo
         this.user_money = obj.optString("user_money");
         this.vip_free = obj.optString("vip_free");
         this.id = obj.optString("id");
-        this.off_amount = obj.optInt("off_amount");
+        this.off_amount = obj.optInt("amount");
         this.old_amount = obj.optInt("old_amount");
         this.msg = obj.optString("msg");
     }

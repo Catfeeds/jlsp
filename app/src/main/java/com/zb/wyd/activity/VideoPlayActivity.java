@@ -185,7 +185,6 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private VideoInfo mVideoInfo;
     private String videoName, biz_id;
     private String videoUri;
-    private ChannelInfo mChannelInfo;
     private String shareCnontent;
     private long startTime, endTime;
     private String errorMsg = "网络异常";
@@ -251,13 +250,16 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             {
                 case REQUEST_SUCCESS:
                     VideoStreamHandler mVideoStreamHandler = (VideoStreamHandler) msg.obj;
-
-                    mChannelInfo = mVideoStreamHandler.getChannelInfo();
-                    if (null != mChannelInfo)
+                    if (!TextUtils.isEmpty(mVideoStreamHandler.getUri()))
                     {
-                        videoUri = mVideoStreamHandler.getUri();
-                        String uri = mChannelInfo.getCm() + videoUri;
-                        LogUtil.e("TAG", uri);
+                        playVideo(mVideoStreamHandler.getUri());
+                    }
+                        //                    mChannelInfo = mVideoStreamHandler.getChannelInfo();
+                        //                    if (null != mChannelInfo)
+                        //                    {
+                        //                        videoUri = mVideoStreamHandler.getUri();
+                        //                        String uri = mChannelInfo.getCm() + videoUri;
+                        //                        LogUtil.e("TAG", uri);
                         //                        has_favorite = mVideoStreamHandler
                         // .getHas_favorite();
 
@@ -277,9 +279,9 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                         //                          orientationUtils .resolveByClick();
                         //                      }
 
-                        playVideo(uri);
-                    }
-                    break;
+                        //                        playVideo(uri);
+                        //                    }
+                        break;
 
 
                 case REQUEST_FAIL:
@@ -295,7 +297,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                     {
 
 
-                        DialogUtils.showVideoPriceDialog(VideoPlayActivity.this, mLivePriceInfo, new View.OnClickListener()
+                        DialogUtils.showVideoPriceDialog1(VideoPlayActivity.this, mLivePriceInfo, new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -318,7 +320,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                                 //购买VIP
                                 else if ("3".equals(content))
                                 {
-                                    startActivity(new Intent(VideoPlayActivity.this, MemberActivity.class));
+                                    //  startActivity(new Intent(VideoPlayActivity.this, MemberActivity.class));
+                                    startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
+                                            "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl
+                                            ("vip")));
                                 }
                                 else//去做任务
                                 {
@@ -410,6 +415,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                 case OPEAR_SCORE_SUCCESS:
                     ToastUtil.show(VideoPlayActivity.this, "评价成功");
+                    myScore = 2;
+
                     break;
 
                 case GET_VIDEO_DETAIL_SUCCESS:
@@ -634,9 +641,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                     String sendMsg = etContent.getText().toString();
 
+
                     if (!TextUtils.isEmpty(sendMsg) && null != mWebSocket && mWebSocket.isOpen())
                     {
-                        if (null != videoPlayer)
+                        if (null != videoPlayer && videoPlayer.getGSYVideoManager().getCurrentPosition() != 0)
                         {
                             Gson gson = new Gson();
                             DanmuInfo danmuInfo = new DanmuInfo();
@@ -649,6 +657,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                             LogUtil.e("TAG", "sendContent-->" + json);
                             mWebSocket.sendText(json);
                             etContent.setText("");
+                        }
+                        else
+                        {
+                            ToastUtil.show(VideoPlayActivity.this, "视频暂未播放");
                         }
 
 
@@ -724,14 +736,14 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //        //设置旋转
         orientationUtils = new OrientationUtils(this, videoPlayer);
         //        //设置全屏按键功能,这是使用的是选择屏幕，而不是全屏
-        //        videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener()
-        //        {
-        //            @Override
-        //            public void onClick(View view)
-        //            {
-        //                orientationUtils.resolveByClick();
-        //            }
-        //        });
+                videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        orientationUtils.resolveByClick();
+                    }
+                });
         //是否可以滑动调整
         videoPlayer.setIsTouchWiget(true);
 
@@ -974,14 +986,17 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                 if ("vip".equals(mHostInfo.getLine()))
                 {
-                    mHandler.post(new Runnable()
+
+                    if (ConfigManager.instance().getValid_vip())
                     {
-                        @Override
-                        public void run()
-                        {
-                            getLivePrice();
-                        }
-                    });
+                        playVideo(mHostInfo.getLine() + videoPlaylist);
+                    }
+                    else
+                    {
+
+                        showBuyVipDialog();
+
+                    }
 
 
                 }
@@ -997,6 +1012,30 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             }
         });
 
+    }
+
+
+    private void showBuyVipDialog()
+    {
+
+        DialogUtils.showBuyVipDialog(VideoPlayActivity.this, new MyOnClickListener.OnSubmitListener()
+        {
+            @Override
+            public void onSubmit(String content)
+            {
+                //VIP
+                if ("1".equals(content))
+                {
+                    startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
+                }
+                else
+                {
+                    startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("svip")));
+                }
+            }
+        });
     }
 
     private int timepos = 0;
@@ -1114,7 +1153,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
         valuePairs.put("action", "score");
-        valuePairs.put("value", String.valueOf(Math.round(value) * 10));
+        valuePairs.put("value", String.valueOf(value * 10));
         DataRequest.instance().request(VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, OPAER_SCORE, valuePairs, new
                 ResultHandler());
     }
@@ -1148,7 +1187,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                         if (!ConfigManager.instance().getValid_vip())
                         {
-                            //提示购买VIP
+                            //TODO提示购买VIP
+                            showBuyVipDialog();
                         }
                     }
                     else
@@ -1570,7 +1610,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
     private List<DanmuInfo> getTimePosDanmuList(long timepos)
     {
-        LogUtil.e("Time","timepos = " + timepos);
+        LogUtil.e("Time", "timepos = " + timepos);
         List<DanmuInfo> timepostList = new ArrayList<>();
         for (int i = 0; i < mAllDanmuInfoList.size(); i++)
         {
@@ -1578,7 +1618,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             if (mAllDanmuInfoList.get(i).getTimpos() < timepos)
             {
 
-                LogUtil.e("Time",mAllDanmuInfoList.get(i).getTimpos()+"");
+                LogUtil.e("Time", mAllDanmuInfoList.get(i).getTimpos() + "");
                 timepostList.add(mAllDanmuInfoList.get(i));
                 mAllDanmuInfoList.remove(i);
             }
