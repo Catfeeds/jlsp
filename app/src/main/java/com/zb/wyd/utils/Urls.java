@@ -1,5 +1,7 @@
 package com.zb.wyd.utils;
 
+import android.content.Context;
+
 /**
  * URL管理类
  *
@@ -216,6 +218,16 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/msg/index";
     }
 
+    public static String getfriendMessageUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/msg/friend";
+    }
+
+    public static String getNewMessageUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/msg/newmsg";
+    }
+
     public static String getFavoritUrl()
     {
         return ConfigManager.instance().getDomainName() + "/favorite/index";
@@ -377,14 +389,49 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/data/danmu";
     }
+
     public static String getBoxUrl()
     {
         return ConfigManager.instance().getDomainName() + "/box/index";
     }
+
     public static String getDataSearchUrl()
     {
         return ConfigManager.instance().getDomainName() + "/data/search";
     }
 
+    public static String getPayUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/paypal/index";
+    }
+
+    public static String getMyWorkUrl(Context context)
+    {
+        return ConfigManager.instance().getDomainName() + "/home/product?co_biz=douyin&auth="+  ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(context) + "&device=and";
+    }
+
+
+
+
+    public static String getSendMsgUrl(Context mContext, String room)
+    {
+        return ConfigManager.instance().getDomainName() + "/msg/chat?auth=" +  ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(mContext) + "&device=and&friend="+room;
+    }
+
+
+    public static String getTaskIndexUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/task/index";
+    }
+
+    public static String getUploadVideoUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/data/upload";
+    }
+
+    public static String getDyTougaoUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/douyin/tougao";
+    }
 }
 

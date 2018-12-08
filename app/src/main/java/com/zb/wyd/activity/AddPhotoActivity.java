@@ -264,7 +264,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
         freeAdapter = new AddPhotoAdapter(freePicList, new MyItemClickListener()
         {
             @Override
-            public void onItemClick(View view, int position)
+            public void onItemClick(View view, final int position)
             {
                 if (position == (freePicList.size() - 1))
                 {
@@ -293,7 +293,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
         chargeAdapter = new AddPhotoAdapter(chargePicList, new MyItemClickListener()
         {
             @Override
-            public void onItemClick(View view, int position)
+            public void onItemClick(View view, final int position)
             {
                 if (position == (chargePicList.size() - 1))
                 {
@@ -653,7 +653,7 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
         showProgressDialog();
         File mFile = new File(filePath);
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(AddPhotoActivity.this, Urls.getPhotoUploadUrl(), this, HttpRequest.UPLOAD, UPLOAD_USER_PIC, valuePairs, mFile,
+        DataRequest.instance().request(AddPhotoActivity.this, Urls.getUploadVideoUrl(), this, HttpRequest.UPLOAD, UPLOAD_USER_PIC, valuePairs, mFile,
                 new PhotoInfoHandler());
     }
 

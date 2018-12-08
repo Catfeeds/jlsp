@@ -141,19 +141,19 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
                         tvUserNick.setText(userInfo.getUnick());
 
 
-                        if (userInfo.getEmail().equals(userInfo.getUname()))
-                        {
-                            tvPhoneStatus.setText("已绑定手机" + userInfo.getUname() + "不支持换不绑");
-                            tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.hint_edit));
-                            llBindPhone.setEnabled(false);
-                            ConfigManager.instance().setUserName(userInfo.getUname());
-                        }
-                        else
-                        {
+//                        if (userInfo.getEmail().equals(userInfo.getUname()))
+//                        {
+//                            tvPhoneStatus.setText("已绑定手机" + userInfo.getUname() + "不支持换不绑");
+//                            tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.hint_edit));
+//                            llBindPhone.setEnabled(false);
+//                            ConfigManager.instance().setUserName(userInfo.getUname());
+//                        }
+//                        else
+//                        {
                             tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.blackC));
                             tvPhoneStatus.setText("绑定手机");
                             llBindPhone.setEnabled(true);
-                        }
+//                        }
                     }
                     break;
 

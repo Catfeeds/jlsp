@@ -6,14 +6,14 @@ public class DanmuInfo
 {
     private String data;
     private String action;
-    private long timpos;
+    private long timepos;
     private String style;
     private String type;
     public DanmuInfo(JSONObject obj)
     {
         this.data = obj.optString("data");
         this.action = obj.optString("action");
-        this.timpos = obj.optLong("timpos");
+        this.timepos = obj.optLong("timepos");
         this.style = obj.optString("style");
         this.type = obj.optString("type");
     }
@@ -31,7 +31,7 @@ public class DanmuInfo
 
     public void setTimpos(long timpos)
     {
-        this.timpos = timpos;
+        this.timepos = timpos;
     }
 
     public String getData()
@@ -56,7 +56,7 @@ public class DanmuInfo
 
     public long getTimpos()
     {
-        return timpos;
+        return timepos;
     }
 
     public String getStyle()

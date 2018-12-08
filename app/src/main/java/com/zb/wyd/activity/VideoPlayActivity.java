@@ -1570,17 +1570,20 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
     private List<DanmuInfo> getTimePosDanmuList(long timepos)
     {
+        LogUtil.e("Time","timepos = " + timepos);
         List<DanmuInfo> timepostList = new ArrayList<>();
         for (int i = 0; i < mAllDanmuInfoList.size(); i++)
         {
 
             if (mAllDanmuInfoList.get(i).getTimpos() < timepos)
             {
+
+                LogUtil.e("Time",mAllDanmuInfoList.get(i).getTimpos()+"");
                 timepostList.add(mAllDanmuInfoList.get(i));
                 mAllDanmuInfoList.remove(i);
             }
         }
-        return mAllDanmuInfoList;
+        return timepostList;
     }
 
 

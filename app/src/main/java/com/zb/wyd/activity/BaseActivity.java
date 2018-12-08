@@ -20,6 +20,8 @@ import com.zb.wyd.utils.StatusBarUtil;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 
 /**
@@ -208,5 +210,17 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     {
         super.onDestroy();
         mUnbinder.unbind();
+        unsubscribe();
+    }
+    private CompositeDisposable mDisposables = new CompositeDisposable();
+    public void subscribe(Disposable disposable) {
+        mDisposables.add(disposable);
+    }
+
+    public void unsubscribe() {
+        if (mDisposables != null && !mDisposables.isDisposed()) {
+            mDisposables.dispose();
+            mDisposables.clear();
+        }
     }
 }

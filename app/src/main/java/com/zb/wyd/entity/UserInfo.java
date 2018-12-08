@@ -39,6 +39,8 @@ public class UserInfo implements Serializable
     private String unick;//
     private String total_score;
 
+    private String location;
+
     private boolean     valid_vip;
     private FortuneInfo fortuneInfo;
 
@@ -78,6 +80,17 @@ public class UserInfo implements Serializable
         this.vip_type = obj.optInt("vip_type");
         this.has_sign = obj.optBoolean("has_sign");
         this.sex = obj.optString("sex");
+        this.location = obj.optString("location");
+    }
+
+    public String getLocation()
+    {
+        return location;
+    }
+
+    public void setLocation(String location)
+    {
+        this.location = location;
     }
 
     public int getFans()

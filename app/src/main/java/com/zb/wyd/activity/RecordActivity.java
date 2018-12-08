@@ -1,12 +1,15 @@
 package com.zb.wyd.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -18,10 +21,24 @@ import com.cjt2325.cameralibrary.listener.ClickListener;
 import com.cjt2325.cameralibrary.listener.ErrorListener;
 import com.cjt2325.cameralibrary.listener.JCameraListener;
 import com.zb.wyd.R;
+import com.zb.wyd.entity.VideoUplaodResult;
+import com.zb.wyd.http.DataRequest;
+import com.zb.wyd.http.HttpRequest;
+import com.zb.wyd.http.IRequestListener;
+import com.zb.wyd.json.PhotoInfoHandler;
+import com.zb.wyd.json.ResultHandler;
+import com.zb.wyd.json.VideoUploadResultHandler;
+import com.zb.wyd.utils.ConstantUtil;
+import com.zb.wyd.utils.DialogUtils;
+import com.zb.wyd.utils.ToastUtil;
+import com.zb.wyd.utils.Urls;
+import com.zb.wyd.video.view.NormalProgressDialog;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
-public class RecordActivity extends BaseActivity
+public class RecordActivity extends BaseActivity implements IRequestListener
 {
     private JCameraView jCameraView;
     private final int GET_PERMISSION_REQUEST = 100; //权限申请自定义码
@@ -60,7 +77,6 @@ public class RecordActivity extends BaseActivity
 
 
 
-    private String videoUrl;
     @Override
     protected void initViewData()
     {
@@ -106,12 +122,19 @@ public class RecordActivity extends BaseActivity
             @Override
             public void recordSuccess(String url, Bitmap firstFrame)
             {
-                videoUrl = url;
+                videoPath = url;
                 //获取视频路径
                 Log.i("CJT", "url = " + url);
 
-                TrimVideoActivity.startActivity(RecordActivity.this, url);
-                finish();
+                DialogUtils.showToastDialog2Button(RecordActivity.this, "是否立即发布", new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        NormalProgressDialog.showLoading(RecordActivity.this, "视频发布中...", false);
+                        pushVideo(videoPath);
+                    }
+                });
             }
             //@Override
             //public void quit() {
@@ -220,4 +243,129 @@ public class RecordActivity extends BaseActivity
             }
         }
     }
+
+
+
+    private void pushVideo(String filePath)
+    {
+        File mFile = new File(filePath);
+        Map<String, String> valuePairs = new HashMap<>();
+        DataRequest.instance().request(RecordActivity.this, Urls.getUploadVideoUrl(), this, HttpRequest.UPLOAD_VIDEO, UPLOAD_VIDEO, valuePairs,
+                mFile, new VideoUploadResultHandler());
+    }
+
+    public void dyTougao(String host, String url)
+    {
+        Map<String, String> valuePairs = new HashMap<>();
+        valuePairs.put("host", host);
+        valuePairs.put("uri", url);
+        DataRequest.instance().request(RecordActivity.this, Urls.getDyTougaoUrl(), this, HttpRequest.POST, DOUYING_TOUGAO_REQUEST,
+                valuePairs, new ResultHandler());
+    }
+
+    private VideoUplaodResult mVideoUplaodResult;
+    private String videoPath;
+    private static final String UPLOAD_VIDEO = "upload_video";
+    private static final String DOUYING_TOUGAO_REQUEST = "douying_tougao_request";
+    private static final int DOUYING_TOUGAO_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
+    private static final int REQUEST_SUCCESS = 0x03;
+    private static final int DOUYING_TOUGAO_FAIL = 0x04;
+
+
+    @SuppressLint("HandlerLeak")
+    private BaseHandler mHandler = new BaseHandler(RecordActivity.this)
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+
+                case REQUEST_FAIL:
+                    ToastUtil.show(RecordActivity.this, msg.obj.toString());
+                    DialogUtils.showToastDialog2Button(RecordActivity.this, "发布失败是否重新发布", new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            NormalProgressDialog.showLoading(RecordActivity.this, "视频发布中...", false);
+                            pushVideo(videoPath);
+                        }
+                    });
+
+                    break;
+
+                case REQUEST_SUCCESS:
+                    ToastUtil.show(RecordActivity.this, "发布成功");
+
+                    VideoUploadResultHandler mVideoUploadResultHandler = (VideoUploadResultHandler) msg.obj;
+
+                    mVideoUplaodResult = mVideoUploadResultHandler.getVideoUplaodResult();
+                    if (null != mVideoUplaodResult)
+                    {
+                        dyTougao(mVideoUplaodResult.getHost(), mVideoUplaodResult.getSavepath() + mVideoUplaodResult.getSavename());
+                    }
+
+                    break;
+
+                case DOUYING_TOUGAO_SUCCESS:
+
+                    startActivity(new Intent(RecordActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "我的作品").putExtra
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getMyWorkUrl(RecordActivity.this)));
+                    finish();
+                    break;
+                case DOUYING_TOUGAO_FAIL:
+                    DialogUtils.showToastDialog2Button(RecordActivity.this, "投稿失败是否重新投稿", new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            NormalProgressDialog.showLoading(RecordActivity.this, "投稿中...", false);
+                            if (null != mVideoUplaodResult)
+                            {
+                                dyTougao(mVideoUplaodResult.getHost(), mVideoUplaodResult.getSavepath() + mVideoUplaodResult.getSavename());
+                            }
+                        }
+                    });
+
+
+                    break;
+
+
+            }
+        }
+    };
+
+
+    @Override
+    public void notify(String action, String resultCode, String resultMsg, Object obj)
+    {
+        NormalProgressDialog.stopLoading();
+        if (UPLOAD_VIDEO.equals(action))
+        {
+            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_SUCCESS, obj));
+            }
+            else
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
+            }
+        }
+        else if (DOUYING_TOUGAO_REQUEST.equals(action))
+        {
+            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(DOUYING_TOUGAO_SUCCESS, obj));
+            }
+            else
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(DOUYING_TOUGAO_FAIL, resultMsg));
+            }
+        }
+    }
+
+
 }

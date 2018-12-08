@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,12 @@ import android.widget.TextView;
 
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
+import com.zb.wyd.activity.AddPhotoActivity;
 import com.zb.wyd.activity.BaseHandler;
 import com.zb.wyd.activity.DyVideoActivity;
 import com.zb.wyd.activity.LoginActivity;
 import com.zb.wyd.activity.RecordActivity;
+import com.zb.wyd.activity.VideoAlbumActivity;
 import com.zb.wyd.adapter.DyVideoAdapter;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
@@ -29,6 +32,8 @@ import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
+import com.zb.wyd.widget.SelectPicturePopupWindow;
+import com.zb.wyd.widget.SelectVideoPopupWindow;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
 import com.zb.wyd.widget.list.refresh.PullToRefreshBase;
 import com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView;
@@ -65,7 +70,7 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     private int mRefreshStatus;
 
     private DyVideoAdapter mVideoAdapter;
-
+    private SelectVideoPopupWindow mSelectVideoPopupWindow;
     private static final String GET_DY_LIST = "get_douyin_list";
     private static final int GET_VIDEO_LIST_SUCCESS = 0x01;
     private static final int REQUEST_FAIL = 0x02;
@@ -200,6 +205,53 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
             }
         });
         mRecyclerView.setAdapter(mVideoAdapter);
+
+
+        mSelectVideoPopupWindow = new SelectVideoPopupWindow(getActivity());
+        mSelectVideoPopupWindow.setOnSelectedListener(new SelectVideoPopupWindow.OnSelectedListener()
+        {
+            @Override
+            public void OnSelected(View v, int position)
+            {
+                switch (position)
+                {
+                    case 0:
+                        mSelectVideoPopupWindow.dismissPopupWindow();
+                        if(MyApplication.getInstance().isLogin())
+                        {
+                            // "拍摄"按钮被点击了
+                            startActivity(new Intent(getActivity(), RecordActivity.class));
+
+                        }
+                        else
+                        {
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                        }
+                        break;
+                    case 1:
+                        // "从相册选择"按钮被点击了
+                        mSelectVideoPopupWindow.dismissPopupWindow();
+                        if(MyApplication.getInstance().isLogin())
+                        {
+                            startActivity(new Intent(getActivity(),VideoAlbumActivity.class));
+
+                        }
+                        else
+                        {
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                        }
+
+
+
+
+                        break;
+                    case 2:
+                        // "取消"按钮被点击了
+                        mSelectVideoPopupWindow.dismissPopupWindow();
+                        break;
+                }
+            }
+        });
         loadData();
     }
 
@@ -305,7 +357,10 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     {
         if (v == mRecordTv)
         {
-            startActivity(new Intent(getActivity(), RecordActivity.class));
+            if(null !=mSelectVideoPopupWindow)
+            {
+                mSelectVideoPopupWindow.showPopupWindow(getActivity());
+            }
         }
     }
 }

@@ -1,12 +1,14 @@
 package com.zb.wyd.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTabHost;
@@ -21,24 +23,39 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
+import com.zb.wyd.entity.FortuneInfo;
+import com.zb.wyd.entity.SignInfo;
+import com.zb.wyd.entity.TaskInfo;
+import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.fragment.BoxFragment;
 import com.zb.wyd.fragment.DouyinFragment;
 import com.zb.wyd.fragment.LiveIndexFragment;
 import com.zb.wyd.fragment.MemberFragment;
 import com.zb.wyd.fragment.SelfieFragment;
 import com.zb.wyd.fragment.VideoFragment;
+import com.zb.wyd.http.DataRequest;
+import com.zb.wyd.http.HttpRequest;
+import com.zb.wyd.http.IRequestListener;
+import com.zb.wyd.json.SignInfoHandler;
+import com.zb.wyd.json.TaskInfoListHandler;
+import com.zb.wyd.json.UserInfoHandler;
 import com.zb.wyd.utils.ConfigManager;
+import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.ToastUtil;
+import com.zb.wyd.utils.Urls;
 import com.zb.wyd.utils.VersionManager;
 import com.zb.wyd.widget.CircleImageView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity implements IRequestListener
 {
 
     @BindView(android.R.id.tabhost)
@@ -57,7 +74,44 @@ public class MainActivity extends BaseActivity
             .ic_photo_selector, R.drawable.ic_box_selector};
 
 
-    private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class,BoxFragment.class};
+    private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class, BoxFragment.class};
+    private static final String USER_SIGN_REQUEST = "user_sign_request";
+    private static final int REQUEST_FAIL = 0x02;
+    private static final int USER_SIGN_SUCCESS = 0x03;
+
+    @SuppressLint("HandlerLeak")
+    private BaseHandler mHandler = new BaseHandler(MainActivity.this)
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            super.handleMessage(msg);
+            switch (msg.what)
+            {
+
+                case REQUEST_FAIL:
+                    ToastUtil.show(MainActivity.this, msg.obj.toString());
+                    break;
+
+                case USER_SIGN_SUCCESS:
+                    SignInfoHandler mSignInfoHandler = (SignInfoHandler) msg.obj;
+                    SignInfo signInfo = mSignInfoHandler.getSignInfo();
+
+//                    if (null != signInfo)
+//                    {
+                        ToastUtil.show(MainActivity.this,"签到成功!");
+
+                        startActivity(new Intent(MainActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "每日一签").putExtra
+                                (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl()));
+
+//                    }
+
+                    break;
+
+
+            }
+        }
+    };
 
     @Override
     protected void initData()
@@ -91,6 +145,7 @@ public class MainActivity extends BaseActivity
 
         tvSignIn.setOnClickListener(this);
         rlSearch.setOnClickListener(this);
+        ivUserPic.setOnClickListener(this);
     }
 
     public void setTab(int p)
@@ -160,7 +215,7 @@ public class MainActivity extends BaseActivity
         fragmentTabHost.getTabWidget().setDividerDrawable(R.color.transparent);
         new VersionManager(this).init();
 
-        ImageLoader.getInstance().displayImage(ConfigManager.instance().getUserPic(),ivUserPic);
+        ImageLoader.getInstance().displayImage(ConfigManager.instance().getUserPic(), ivUserPic);
     }
 
     private View getView(int i)
@@ -228,6 +283,24 @@ public class MainActivity extends BaseActivity
 
     private MyBroadCastReceiver mMyBroadCastReceiver;
 
+    @Override
+    public void notify(String action, String resultCode, String resultMsg, Object obj)
+    {
+        hideProgressDialog();
+        if (USER_SIGN_REQUEST.equals(action))
+        {
+            if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(USER_SIGN_SUCCESS, obj));
+            }
+            else
+            {
+                mHandler.sendMessage(mHandler.obtainMessage(REQUEST_FAIL, resultMsg));
+            }
+        }
+
+    }
+
 
     class MyBroadCastReceiver extends BroadcastReceiver
     {
@@ -284,12 +357,30 @@ public class MainActivity extends BaseActivity
         super.onClick(v);
         if (v == tvSignIn)
         {
-           // startActivity(new Intent(MainActivity.this, AuthorPhotoListActivity.class));
-            startActivity(new Intent(MainActivity.this, SignInActivity.class));
+            // startActivity(new Intent(MainActivity.this, AuthorPhotoListActivity.class));
+
+            if (MyApplication.getInstance().isLogin())
+            {
+                //startActivity(new Intent(MainActivity.this, SignInActivity.class));
+
+                showProgressDialog();
+                Map<String, String> valuePairs = new HashMap<>();
+                DataRequest.instance().request(MainActivity.this, Urls.getUserSignUrl(), this, HttpRequest.POST, USER_SIGN_REQUEST, valuePairs, new
+                        SignInfoHandler());
+            }
+            else
+            {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
         }
         else if (v == rlSearch)
         {
             startActivity(new Intent(MainActivity.this, SearchListActivity.class));
+
+        }
+        else if (v == ivUserPic)
+        {
+            startActivity(new Intent(MainActivity.this, AuthorDetailActivity.class));
 
         }
     }

@@ -96,7 +96,7 @@ public class DomainNameActivity extends BaseActivity implements IRequestListener
     protected void initViews(Bundle savedInstanceState)
     {
         setContentView(R.layout.activity_domian_name);
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
+        StatusBarUtil.setStatusBarColor(this, R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(DomainNameActivity.this, false);
     }
 

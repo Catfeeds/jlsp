@@ -15,6 +15,12 @@ public class MessageInfo
     private String expire_time;//1530980592
     private String add_time;//2018-07-06 20:36:32
     private String unick;//
+    private String uface;//
+    private String msg_time;
+    private String msgnum;
+    private String room;
+    private String sex;
+
 
     public MessageInfo(JSONObject obj)
     {
@@ -26,7 +32,62 @@ public class MessageInfo
         this.add_time = obj.optString("add_time");
         this.expire_time = obj.optString("expire_time");
         this.unick = obj.optString("unick");
+        this.msg_time = obj.optString("msg_time");
+        this.msgnum = obj.optString("msgnum");
+        this.room = obj.optString("room");
+        this.sex = obj.optString("sex");
+        this.uface = obj.optString("uface");
 
+    }
+
+
+    public String getUface()
+    {
+        return uface;
+    }
+
+    public void setUface(String uface)
+    {
+        this.uface = uface;
+    }
+
+    public String getSex()
+    {
+        return sex;
+    }
+    public void setSex(String sex)
+    {
+        this.sex = sex;
+    }
+
+    public String getMsg_time()
+    {
+        return msg_time;
+    }
+
+    public void setMsg_time(String msg_time)
+    {
+        this.msg_time = msg_time;
+    }
+
+    public String getMsgnum()
+    {
+        return msgnum;
+    }
+
+    public void setMsgnum(String msgnum)
+    {
+        this.msgnum = msgnum;
+    }
+
+    public String getRoom()
+    {
+        return room;
+    }
+
+    public void setRoom(String room)
+    {
+        this.room = room;
     }
 
     public String getId()

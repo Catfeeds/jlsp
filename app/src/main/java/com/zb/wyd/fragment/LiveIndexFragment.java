@@ -273,7 +273,7 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
 
     private void loadData()
     {
-        mHandler.sendEmptyMessage(GET_RECOMMEND_LIVE_CODE);
+        //mHandler.sendEmptyMessage(GET_RECOMMEND_LIVE_CODE);
     }
 
     private void getAdList()

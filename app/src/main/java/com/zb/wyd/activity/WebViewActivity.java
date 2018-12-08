@@ -195,7 +195,12 @@ public class WebViewActivity extends Activity
 
     protected void initViewData()
     {
-        mUrl = getIntent().getStringExtra(EXTRA_URL) + "?auth=" + ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(this) + "&device=and";
+        mUrl = getIntent().getStringExtra(EXTRA_URL);
+
+        if (!mUrl.contains("?auth"))
+        {
+            mUrl = mUrl + "?auth=" + ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(WebViewActivity.this) + "&device=and";
+        }
 
         LogUtil.e("TAG", "url-->" + mUrl);
         isSetTitle = getIntent().getBooleanExtra(IS_SETTITLE, true);

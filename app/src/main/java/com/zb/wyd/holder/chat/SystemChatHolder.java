@@ -30,7 +30,7 @@ private Context mContext;
     }
 
     @Override
-    public void setChatInfo(ChatInfo mChatInfo,  int p)
+    public void setChatInfo(ChatInfo mChatInfo, final int p)
     {
 
         mContentTv.setText(mChatInfo.getData());
@@ -39,7 +39,8 @@ private Context mContext;
             @Override
             public void onClick(View v)
             {
-                listener.onItemClick(v, p);
+                listener.onItemClick(v, p)
+                ;
             }
         });
     }

@@ -23,13 +23,13 @@
 
 
         <ImageView
-            android:id="@+id/iv_share"
+            android:id="@+id/iv_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dm_10"
-            android:src="@drawable/ic_share" />
+            android:src="@drawable/ic_user_edit" />
     </RelativeLayout>
 
 
@@ -53,41 +53,6 @@
         android:orientation="vertical"
         android:padding="@dimen/dm_15">
 
-        <TextView
-            android:id="@+id/tv_collection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="@drawable/violet_frame_off_45dp"
-            android:paddingLeft="@dimen/dm_15"
-            android:paddingTop="@dimen/dm_5"
-            android:paddingRight="@dimen/dm_15"
-            android:paddingBottom="@dimen/dm_5"
-            android:text="续费"
-            android:textColor="@drawable/video_tab_font_selector"
-            android:textSize="@dimen/t10" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dm_20"
-            android:orientation="horizontal">
-
-
-            <ImageView
-                android:id="@+id/iv_appointment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_appointment" />
-
-            <ImageView
-                android:id="@+id/iv_vip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dm_10"
-                android:src="@drawable/ic_vip" />
-        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -100,7 +65,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="Steve Barnett"
                 android:textColor="@color/text_violet"
                 android:textSize="@dimen/t20" />
 
@@ -121,13 +85,55 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dm_5"
             android:gravity="center"
-            android:text="中国北京"
+            android:text="保密"
             android:textColor="@color/text_violet_normal"
             android:textSize="@dimen/t16" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dm_20"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_vip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_yellow_45dp"
+                android:paddingLeft="@dimen/dm_10"
+                android:paddingRight="@dimen/dm_10"
+                android:text="VIP"
+                android:textSize="@dimen/t12" />
+
+            <TextView
+                android:id="@+id/tv_vip_expire"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dm_15"
+                android:textSize="@dimen/t14" />
+
+            <TextView
+                android:id="@+id/tv_xufei"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="@dimen/dm_15"
+                android:background="@drawable/violet_frame_off_45dp"
+                android:paddingLeft="@dimen/dm_15"
+                android:paddingTop="@dimen/dm_5"
+                android:paddingRight="@dimen/dm_15"
+                android:paddingBottom="@dimen/dm_5"
+                android:text="续费"
+                android:textColor="@drawable/video_tab_font_selector"
+                android:textSize="@dimen/t10" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.zb.wyd.widget.CircleImageView
+        android:id="@+id/iv_user_pic"
         android:layout_width="@dimen/dm_100"
         android:layout_height="@dimen/dm_100"
         android:layout_centerHorizontal="true"
@@ -195,7 +201,7 @@
                     android:background="@color/line" />
 
                 <LinearLayout
-                    android:id="@+id/ll_photo"
+                    android:id="@+id/ll_my_works"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -211,7 +217,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dm_15"
-                        android:text="发布的自拍"
+                        android:text="我的作品"
                         android:textColor="@color/text_violet"
                         android:textSize="@dimen/t14" />
 
@@ -229,7 +235,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="@dimen/dm_10">
+                    android:padding="@dimen/dm_10"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -247,6 +254,29 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_woman"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dm_10">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_safe" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dm_15"
+                        android:text="女生特权"
+                        android:textColor="@color/text_violet"
+                        android:textSize="@dimen/t14" />
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -386,6 +416,7 @@
                     android:background="@color/line" />
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/ll_safe"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

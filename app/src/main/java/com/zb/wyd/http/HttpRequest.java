@@ -28,6 +28,7 @@ public class HttpRequest implements Runnable
     public static final int GET = 0;
     public static final int POST = 2;
     public static final int UPLOAD = 3;
+    public static final int UPLOAD_VIDEO = 4;
     private int mAction = GET;
 
     private String mType;
@@ -126,6 +127,10 @@ public class HttpRequest implements Runnable
             else if (mAction == UPLOAD)
             {
                 return doUpload();
+            }
+            else if(mAction ==UPLOAD_VIDEO)
+            {
+                return doUploadVideo();
             }
         }
         catch (Exception e)
@@ -253,7 +258,35 @@ public class HttpRequest implements Runnable
         }
         return null;
     }
+    private Response doUploadVideo() throws Exception
+    {
 
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody fileBody = RequestBody.create(MediaType.parse("video/mp4"), mFile);
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        requestBody.addFormDataPart("file", mFile.getName(), fileBody);
+        for (String key : valuePair.keySet())
+        {
+            String value = valuePair.get(key);
+            requestBody.addFormDataPart(key, value);
+
+        }
+
+        Request request = new Request.Builder().url(urlRequest).addHeader("User-Agent", "android").header("Content-Type", "text/html; charset=utf-8;").post(requestBody.build())//传参数、文件或者混合，改一下就行请求体就行
+                .build();
+
+        Response response = client.newCall(request).execute();// execute
+        if (response.isSuccessful())
+        {
+            System.out.println(response.code());
+            //String body = response.body().string();
+            return response;
+
+        }
+        return null;
+    }
 
     //    /**
     //     * 提交参数里有文件的数据
