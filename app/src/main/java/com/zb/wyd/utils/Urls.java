@@ -67,6 +67,13 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/douyin/index";
     }
 
+    //安全设置
+    public static String getSafeUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/user/safe_bind";
+    }
+
+
     //获取真实的直播地址
     public static String getLiveStreamUrl()
     {
@@ -411,6 +418,11 @@ public class Urls
     }
 
 
+
+    public static String getMyFavourUrl(Context context)
+    {
+        return ConfigManager.instance().getDomainName() + "/home/favour?auth="+  ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(context) + "&device=and";
+    }
 
 
     public static String getSendMsgUrl(Context mContext, String room)

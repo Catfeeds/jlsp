@@ -58,45 +58,45 @@ import butterknife.ButterKnife;
 public class UserDetailActivity extends BaseActivity implements IRequestListener
 {
     @BindView(R.id.iv_back)
-    ImageView       ivBack;
+    ImageView ivBack;
     @BindView(R.id.tv_title)
-    TextView        tvTitle;
+    TextView tvTitle;
     @BindView(R.id.iv_user_pic)
     CircleImageView ivUserPic;
     @BindView(R.id.ll_user_pic)
-    RelativeLayout  llUserPic;
+    RelativeLayout llUserPic;
     @BindView(R.id.tv_user_nick)
-    TextView        tvUserNick;
+    TextView tvUserNick;
     @BindView(R.id.ll_user_nick)
-    RelativeLayout  llUserNick;
+    RelativeLayout llUserNick;
     @BindView(R.id.ll_user_pwd)
-    RelativeLayout  llUserPwd;
+    RelativeLayout llUserPwd;
     @BindView(R.id.tv_phone_status)
-    TextView        tvPhoneStatus;
+    TextView tvPhoneStatus;
     @BindView(R.id.ll_bind_phone)
-    RelativeLayout  llBindPhone;
+    RelativeLayout llBindPhone;
 
     private UserInfo userInfo;
 
-    private static final String GET_USER_DETAIL    = "get_user_detail";
-    private static final String SAVE_USER_INFO     = "save_user_info";
-    private static final String UPLOAD_USER_PIC    = "upload_user_pic";
-    private static final int    REQUEST_SUCCESS    = 0x01;
-    private static final int    REQUEST_FAIL       = 0x02;
-    private static final int    UPLOAD_PIC_SUCCESS = 0x03;
-    private static final int    GET_USER_SUCCESS   = 0x04;
+    private static final String GET_USER_DETAIL = "get_user_detail";
+    private static final String SAVE_USER_INFO = "save_user_info";
+    private static final String UPLOAD_USER_PIC = "upload_user_pic";
+    private static final int REQUEST_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
+    private static final int UPLOAD_PIC_SUCCESS = 0x03;
+    private static final int GET_USER_SUCCESS = 0x04;
 
     private SelectPicturePopupWindow mSelectPicturePopupWindow;
-    private                Bitmap bitmap                                 = null;
-    protected static final int    REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
-    protected static final int    CAMERA_PERMISSIONS_REQUEST_CODE        = 102;
-    private static final   int    GALLERY_REQUEST_CODE                   = 9001;    // 相册选图标记
-    private static final   int    CAMERA_REQUEST_CODE                    = 9002;    // 相机拍照标记
-    private static final   int    MODIFY_USER_NICK_CODE                  = 9003;    // 修改昵称
+    private Bitmap bitmap = null;
+    protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
+    protected static final int CAMERA_PERMISSIONS_REQUEST_CODE = 102;
+    private static final int GALLERY_REQUEST_CODE = 9001;    // 相册选图标记
+    private static final int CAMERA_REQUEST_CODE = 9002;    // 相机拍照标记
+    private static final int MODIFY_USER_NICK_CODE = 9003;    // 修改昵称
     // 拍照临时图片
     private String mTempPhotoPath;
     // 剪切后图像文件
-    private Uri    mDestinationUri;
+    private Uri mDestinationUri;
 
     private String userPic;
     @SuppressLint("HandlerLeak")
@@ -136,24 +136,25 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
 
                     if (null != userInfo)
                     {
-                        if(null != ivUserPic && !TextUtils.isEmpty(userInfo.getUface()))
-                        ImageLoader.getInstance().displayImage(userInfo.getUface(), ivUserPic);
-                        tvUserNick.setText(userInfo.getUnick());
+                        if (null != ivUserPic && !TextUtils.isEmpty(userInfo.getUface()))
+                            ImageLoader.getInstance().displayImage(userInfo.getUface(), ivUserPic);
+
+                        if (null != tvUserNick) tvUserNick.setText(userInfo.getUnick());
 
 
-//                        if (userInfo.getEmail().equals(userInfo.getUname()))
-//                        {
-//                            tvPhoneStatus.setText("已绑定手机" + userInfo.getUname() + "不支持换不绑");
-//                            tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.hint_edit));
-//                            llBindPhone.setEnabled(false);
-//                            ConfigManager.instance().setUserName(userInfo.getUname());
-//                        }
-//                        else
-//                        {
-                            tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.blackC));
-                            tvPhoneStatus.setText("绑定手机");
-                            llBindPhone.setEnabled(true);
-//                        }
+                        //                        if (userInfo.getEmail().equals(userInfo.getUname()))
+                        //                        {
+                        //                            tvPhoneStatus.setText("已绑定手机" + userInfo.getUname() + "不支持换不绑");
+                        //                            tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.hint_edit));
+                        //                            llBindPhone.setEnabled(false);
+                        //                            ConfigManager.instance().setUserName(userInfo.getUname());
+                        //                        }
+                        //                        else
+                        //                        {
+                        tvPhoneStatus.setTextColor(ContextCompat.getColor(UserDetailActivity.this, R.color.blackC));
+                        tvPhoneStatus.setText("安全设置");
+                        llBindPhone.setEnabled(true);
+                        //                        }
                     }
                     break;
 
@@ -224,8 +225,8 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
     {
         super.onResume();
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(UserDetailActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, GET_USER_DETAIL, valuePairs,
-                new UserInfoHandler());
+        DataRequest.instance().request(UserDetailActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, GET_USER_DETAIL, valuePairs, new
+                UserInfoHandler());
     }
 
     @Override
@@ -251,7 +252,7 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
         }
         else if (v == llBindPhone)
         {
-            startActivity(new Intent(UserDetailActivity.this, BindPhoneActivity.class));
+            startActivity(new Intent(UserDetailActivity.this, SafeSettingActivity.class));
         }
     }
 
@@ -264,8 +265,8 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
         showProgressDialog();
         File mFile = new File(filePath);
         Map<String, String> valuePairs = new HashMap<>();
-        DataRequest.instance().request(UserDetailActivity.this, Urls.getPhotoUploadUrl(), this, HttpRequest.UPLOAD, UPLOAD_USER_PIC, valuePairs, mFile,
-                new PhotoInfoHandler());
+        DataRequest.instance().request(UserDetailActivity.this, Urls.getPhotoUploadUrl(), this, HttpRequest.UPLOAD, UPLOAD_USER_PIC, valuePairs,
+                mFile, new PhotoInfoHandler());
     }
 
 
@@ -274,22 +275,22 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
         showProgressDialog();
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put(key, value);
-        DataRequest.instance().request(this, Urls.getTaskprofileUrl(), this, HttpRequest.POST, SAVE_USER_INFO, valuePairs,
-                new ResultHandler());
+        DataRequest.instance().request(this, Urls.getTaskprofileUrl(), this, HttpRequest.POST, SAVE_USER_INFO, valuePairs, new ResultHandler());
     }
 
     private void takePhoto()
     {
-        if (ContextCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager
+                        .PERMISSION_GRANTED)
         {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(UserDetailActivity.this, Manifest.permission.CAMERA))
             {
                 ToastUtil.show(UserDetailActivity.this, "您已经拒绝过一次");
             }
-            ActivityCompat.requestPermissions(UserDetailActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
-                    CAMERA_PERMISSIONS_REQUEST_CODE);
+            ActivityCompat.requestPermissions(UserDetailActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission
+                    .READ_EXTERNAL_STORAGE}, CAMERA_PERMISSIONS_REQUEST_CODE);
         }
         else
         {
@@ -317,12 +318,10 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
             ContentValues values = new ContentValues(1);
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
             values.put(MediaStore.Images.Media.DATA, path);
-            mCameraTempUri = UserDetailActivity.this.getContentResolver()
-                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            mCameraTempUri = UserDetailActivity.this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             if (mCameraTempUri != null)
             {
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraTempUri);
@@ -331,7 +330,8 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -340,11 +340,10 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
     private void pickFromGallery()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
-                && ActivityCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
+                && ActivityCompat.checkSelfPermission(UserDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager
+                .PERMISSION_GRANTED)
         {
-            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
-                    getString(R.string.permission_read_storage_rationale),
+            requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, getString(R.string.permission_read_storage_rationale),
                     REQUEST_STORAGE_READ_ACCESS_PERMISSION);
         }
         else
@@ -364,11 +363,8 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
      */
     public void startCropActivity(Uri uri)
     {
-        UCrop.of(uri, mDestinationUri)
-                .withAspectRatio(1, 1)
-                .withMaxResultSize(200, 200)
-                .withTargetActivity(CropActivity.class)
-                .start(UserDetailActivity.this);
+        UCrop.of(uri, mDestinationUri).withAspectRatio(1, 1).withMaxResultSize(200, 200).withTargetActivity(CropActivity.class).start
+                (UserDetailActivity.this);
     }
 
     //将URI文件转化为FILE文件
@@ -377,15 +373,15 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
         if (null == uri) return null;
         final String scheme = uri.getScheme();
         String data = null;
-        if (scheme == null)
-            data = uri.getPath();
+        if (scheme == null) data = uri.getPath();
         else if (ContentResolver.SCHEME_FILE.equals(scheme))
         {
             data = uri.getPath();
         }
         else if (ContentResolver.SCHEME_CONTENT.equals(scheme))
         {
-            Cursor cursor = UserDetailActivity.this.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            Cursor cursor = UserDetailActivity.this.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null,
+                    null);
             if (null != cursor)
             {
                 if (cursor.moveToFirst())
@@ -419,7 +415,8 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
             {
 
                 uploadPic(resultUri);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }

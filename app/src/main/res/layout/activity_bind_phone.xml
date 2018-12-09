@@ -61,10 +61,10 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dm_5"
-            android:background="@drawable/btn_code_selector"
+            android:background="@drawable/violet_frame_on_15dp"
             android:gravity="center"
             android:text="发送验证码"
-            android:textColor="@drawable/task_font_selector"
+            android:textColor="@color/white"
             android:textSize="@dimen/t14"/>
 
         <EditText
@@ -89,9 +89,9 @@
         android:layout_marginLeft="@dimen/dm_10"
         android:layout_marginRight="@dimen/dm_10"
         android:layout_marginTop="@dimen/dm_15"
-        android:background="@drawable/common_yellow_5dp"
+        android:background="@drawable/violet_frame_on_15dp"
         android:text="绑定"
-        android:textColor="@color/blackC"
+        android:textColor="@color/white"
         android:textSize="@dimen/t16"/>
 
 

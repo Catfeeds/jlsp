@@ -135,8 +135,8 @@ public class WelComeActivity extends BaseActivity implements IRequestListener
         StatusBarUtil.transparencyBar(WelComeActivity.this);
         StatusBarUtil.StatusBarLightMode(WelComeActivity.this, false);
 
-        Uri uridata = this.getIntent().getData();
-        String mydata = uridata.getQueryParameter("data");
+//        Uri uridata = this.getIntent().getData();
+//        String mydata = uridata.getQueryParameter("data");
     }
 
     @Override

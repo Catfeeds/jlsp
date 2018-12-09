@@ -176,7 +176,7 @@ public class BindPhoneActivity extends BaseActivity implements IRequestListener
         }
         else if (v == tvCode)
         {
-            String phone = etPhone.getText().toString();
+            final String phone = etPhone.getText().toString();
 
             if (TextUtils.isEmpty(phone)||phone.length()<11)
             {

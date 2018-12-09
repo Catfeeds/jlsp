@@ -278,6 +278,9 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                 startActivity(new Intent(AuthorDetailActivity.this, MyMessageListActivity.class));
                 break;
             case R.id.ll_collection:
+                checkLogin();
+                startActivity(new Intent(AuthorDetailActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "我的收藏").putExtra
+                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getMyFavourUrl(AuthorDetailActivity.this)));
                 break;
             case R.id.ll_share_friend:
                 break;

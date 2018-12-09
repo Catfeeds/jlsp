@@ -61,7 +61,8 @@ public class SafeSettingActivity extends BaseActivity implements IRequestListene
                     break;
 
                 case REQUEST_SUCCESS:
-
+                    ToastUtil.show(SafeSettingActivity.this,"绑定成功");
+                    finish();
                     break;
 
             }
@@ -108,7 +109,7 @@ public class SafeSettingActivity extends BaseActivity implements IRequestListene
 
 
             String account = etPhone.getText().toString();
-           String pwd = etPwd.getText().toString();
+            String pwd = etPwd.getText().toString();
 
 
             if (TextUtils.isEmpty(account) || account.length() < 11)
@@ -124,7 +125,10 @@ public class SafeSettingActivity extends BaseActivity implements IRequestListene
                 return;
             }
             Map<String, String> valuePairs = new HashMap<>();
-            DataRequest.instance().request(this, Urls.getDouyinListUrl(), this, HttpRequest.GET, BIND_PHONE, valuePairs, new ResultHandler());
+
+            valuePairs.put("phone", account);
+            valuePairs.put("passwd", pwd);
+            DataRequest.instance().request(this, Urls.getSafeUrl(), this, HttpRequest.POST, BIND_PHONE, valuePairs, new ResultHandler());
         }
     }
 
