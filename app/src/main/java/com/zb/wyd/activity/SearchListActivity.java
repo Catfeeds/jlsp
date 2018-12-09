@@ -2,11 +2,13 @@ package com.zb.wyd.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -15,11 +17,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.SearchAdapter;
 import com.zb.wyd.entity.ChatInfo;
 import com.zb.wyd.entity.SearchInfo;
 import com.zb.wyd.entity.UserInfo;
+import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
@@ -63,7 +67,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
 
     private SearchAdapter mSearchAdapter;
 
-    private static final String GET_DY_LIST = "get_douyin_list";
+    private static final String GET_SEARCH_LIST = "get_search_list";
     private static final int GET_SEARCH_LIST_SUCCESS = 0x01;
     private static final int REQUEST_FAIL = 0x02;
 
@@ -151,8 +155,55 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
             {
 
                 SearchInfo searchInfo = mSearchInfoList.get(position);
+
+
+                if (!MyApplication.getInstance().isLogin())
+                {
+                    startActivity(new Intent(SearchListActivity.this, LoginActivity.class));
+                    return;
+                }
                 switch (Integer.parseInt(searchInfo.getCo_biz()))
                 {
+                    //1直播，2电影，3自拍，5抖音，6小说，语音
+
+                    case 1:
+                        startActivity(new Intent(SearchListActivity.this, LiveActivity.class).putExtra("biz_id", searchInfo.getBiz_id()));
+                        break;
+
+                    case 2:
+                        VideoInfo mVideoInfo = new VideoInfo();
+                        mVideoInfo.setId(searchInfo.getBiz_id());
+                        mVideoInfo.setV_name(searchInfo.getTitle());
+                        Bundle b = new Bundle();
+                        b.putSerializable("VideoInfo", mVideoInfo);
+                        startActivity(new Intent(SearchListActivity.this, VideoPlayActivity.class).putExtras(b));
+                        break;
+
+                    case 3:
+                        startActivity(new Intent(SearchListActivity.this, PhotoDetailActivity.class).putExtra("biz_id", searchInfo.getBiz_id()));
+                        break;
+
+                    case 5:
+                        VideoInfo mDyVideoInfo = new VideoInfo();
+                        mDyVideoInfo.setId(searchInfo.getBiz_id());
+                        mDyVideoInfo.setV_name(searchInfo.getTitle());
+                        Bundle mDyBundle = new Bundle();
+                        mDyBundle.putSerializable("VideoInfo", mDyVideoInfo);
+                        startActivity(new Intent(SearchListActivity.this, DyVideoActivity.class).putExtras(mDyBundle));
+                        break;
+
+                    case 6:
+                    case 7:
+                        String url = searchInfo.getUrl();
+
+                        if (!TextUtils.isEmpty(url))
+                        {
+                            url = url.replace("pear://h5/", "");
+                            startActivity(new Intent(SearchListActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "详情")
+                                    .putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, url));
+                        }
+
+                        break;
 
                 }
             }
@@ -175,7 +226,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
         valuePairs.put("kw", kw);
         valuePairs.put("pn", pn + "");
         valuePairs.put("num", "20");
-        DataRequest.instance().request(SearchListActivity.this, Urls.getDataSearchUrl(), this, HttpRequest.GET, GET_DY_LIST, valuePairs, new
+        DataRequest.instance().request(SearchListActivity.this, Urls.getDataSearchUrl(), this, HttpRequest.GET, GET_SEARCH_LIST, valuePairs, new
                 SearchInfoListHandler());
     }
 
@@ -219,7 +270,7 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
         {
             mPullToRefreshRecyclerView.onPullDownRefreshComplete();
         }
-        if (GET_DY_LIST.equals(action))
+        if (GET_SEARCH_LIST.equals(action))
         {
 
             if (ConstantUtil.RESULT_SUCCESS.equals(resultCode))

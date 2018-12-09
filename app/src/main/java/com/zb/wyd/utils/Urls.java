@@ -445,5 +445,11 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/douyin/tougao";
     }
+
+
+    public static String getTestH5Url()
+    {
+        return ConfigManager.instance().getDomainName() + "/test.html";
+    }
 }
 

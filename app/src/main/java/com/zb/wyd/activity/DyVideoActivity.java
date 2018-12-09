@@ -752,7 +752,7 @@ public class DyVideoActivity extends BaseActivity implements IRequestListener, P
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position)
+        public void onBindViewHolder(final ViewHolder holder, final int position)
         {
             VideoInfo videoInfo = videoInfoList.get(position);
             holder.tv_title.setText(videoInfo.getV_name());

@@ -15,6 +15,7 @@ import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -81,7 +82,7 @@ public class WebViewActivity extends Activity
         mWebView.getSettings().setBuiltInZoomControls(false);
         mWebView.getSettings().setSupportZoom(false);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(new JSService(), "native");
+        mWebView.addJavascriptInterface(new JSService(), "GP");
 
         String type = getIntent().getStringExtra("TYPE");
         if ("CUSTOMER".equals(type))
@@ -114,23 +115,31 @@ public class WebViewActivity extends Activity
                                       }
 
                                       @Override
+                                      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request)
+                                      {
+                                          LogUtil.e("TAG","shouldOverrideUrlLoading1111 -->" +  request.getUrl());
+
+                                          return super.shouldOverrideUrlLoading(view, request);
+                                      }
+
+                                      @Override
                                       public boolean shouldOverrideUrlLoading(WebView view, String url)
                                       {
-                                          if (url != null && url.startsWith("appay"))
+                                          LogUtil.e("TAG","shouldOverrideUrlLoading -->" + url);
+                                          if (url != null && url.startsWith("pear"))
                                           {
-                                              return false;
+                                              if(url.startsWith("pear://h5/"))
+                                              {
+                                                  Uri uri=Uri.parse(url.replace("pear://h5/",""));
+                                                  Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+                                                  startActivity(intent);
+                                              }
+
                                           }
                                           if (url.startsWith("http") || url.startsWith("https"))
                                           {
                                               return super.shouldOverrideUrlLoading(view, url);
                                           }
-                                          //                                          else
-                                          //                                          {
-                                          //                                              Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                          //                                              startActivity(intent);
-                                          //                                              finish();
-                                          //                                              return true;
-                                          //                                          }
                                           return true;
                                       }
 
@@ -357,7 +366,37 @@ public class WebViewActivity extends Activity
             intent1.setType("text/plain");
             startActivity(Intent.createChooser(intent1, "分享"));
         }
-
+        @JavascriptInterface
+        public void share( String url)
+        {
+            String shareCnontent = url;
+            Intent intent1 = new Intent(Intent.ACTION_SEND);
+            intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
+            intent1.setType("text/plain");
+            startActivity(Intent.createChooser(intent1, "分享"));
+        }
+        @JavascriptInterface
+        public void browser( String url)
+        {
+            Uri uri=Uri.parse(url);
+            Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(intent);
+        }
+        @JavascriptInterface
+        public void login()
+        {
+            Intent intent=new Intent(WebViewActivity.this,LoginActivity.class);
+            startActivity(intent);
+        }
+        @JavascriptInterface
+        public void sharePic( String url,String desc)
+        {
+            String shareCnontent = url+desc;
+            Intent intent1 = new Intent(Intent.ACTION_SEND);
+            intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
+            intent1.setType("text/plain");
+            startActivity(Intent.createChooser(intent1, "分享"));
+        }
         @JavascriptInterface
         public void shareImage(final String cover)
         {
