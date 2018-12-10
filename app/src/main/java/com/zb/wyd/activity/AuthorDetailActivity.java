@@ -242,7 +242,7 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
     }
 
     @OnClick({R.id.iv_back, R.id.iv_edit, R.id.tv_xufei, R.id.tv_vip, R.id.ll_my_works, R.id.ll_dy, R.id.ll_block_one, R.id.ll_msg, R.id
-            .ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin, R.id.ll_safe, R.id.tv_login, R.id.ll_block_three})
+            .ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin, R.id.ll_safe, R.id.tv_login, R.id.tv_logout, R.id.ll_block_three})
     public void onViewClicked(View view)
     {
         switch (view.getId())
@@ -294,6 +294,12 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                 break;
             case R.id.tv_login:
                 startActivity(new Intent(AuthorDetailActivity.this, LoginActivity.class));
+                break;
+            case R.id.tv_logout:
+
+                ConfigManager.instance().setUniqueCode("");
+                finish();
+
                 break;
         }
     }

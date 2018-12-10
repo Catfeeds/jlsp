@@ -611,11 +611,11 @@ public class DialogUtils
     {
         final Dialog dialog = new Dialog(mContext, R.style.dialogNoAnimation);
         dialog.setCancelable(false);
-        View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_dy_live_price, null);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_dy_first_in, null);
         dialog.setContentView(v);
 
-        TextView cancelTv = (TextView) v.findViewById(R.id.tv_cancel);
-        TextView submitTv = (TextView) v.findViewById(R.id.tv_submit);
+        TextView cancelTv = (TextView) v.findViewById(R.id.tv_score);
+        TextView submitTv = (TextView) v.findViewById(R.id.tv_vip);
         ImageView closedIv = (ImageView) v.findViewById(R.id.iv_closed);
         cancelTv.setOnClickListener(new View.OnClickListener()
         {
@@ -836,8 +836,64 @@ public class DialogUtils
             public void onClick(View v)
             {
                 dialog.dismiss();
-                listener.onSubmit("1");
+                listener.onSubmit("0");
 
+            }
+        });
+
+
+        //Dialog部分
+        Window mWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = mWindow.getAttributes();
+        lp.gravity = Gravity.CENTER;
+        lp.width = APPUtils.getScreenWidth(mContext) * 7 / 8;
+        mWindow.setAttributes(lp);
+        dialog.show();
+    }
+
+    /**
+     * 温馨提示
+     *
+     * @return
+     */
+    public static void show1102Dialog(Context mContext, final MyOnClickListener.OnSubmitListener listener)
+    {
+        final Dialog dialog = new Dialog(mContext, R.style.dialogNoAnimation);
+        dialog.setCancelable(false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_1102, null);
+        dialog.setContentView(v);
+
+        TextView vipTv = (TextView) v.findViewById(R.id.tv_vip);
+        TextView svipTv = (TextView) v.findViewById(R.id.tv_svip);
+      ImageView   iv_closed = (ImageView) v.findViewById(R.id.iv_closed);
+        vipTv.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                listener.onSubmit("1");
+            }
+        });
+
+        svipTv.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                listener.onSubmit("0");
+
+            }
+        });
+
+        iv_closed.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dialog.dismiss();
+                listener.onSubmit("2");
             }
         });
 

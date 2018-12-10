@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zb.wyd.MyApplication;
@@ -54,8 +55,8 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
         .OnClickListener, PullToRefreshBase.OnRefreshListener<RecyclerView>, SwipeRefreshLayout
         .OnRefreshListener
 {
-    @BindView(R.id.tv_record)
-    TextView mRecordTv;
+    @BindView(R.id.iv_record)
+    ImageView mRecordIv;
 
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
@@ -153,7 +154,7 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     @Override
     protected void initEvent()
     {
-        mRecordTv.setOnClickListener(this);
+        mRecordIv.setOnClickListener(this);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mPullToRefreshRecyclerView.setOnRefreshListener(this);
         mPullToRefreshRecyclerView.setPullRefreshEnabled(true);
@@ -355,7 +356,7 @@ public class DouyinFragment extends BaseFragment implements IRequestListener, Vi
     @Override
     public void onClick(View v)
     {
-        if (v == mRecordTv)
+        if (v == mRecordIv)
         {
             if(null !=mSelectVideoPopupWindow)
             {

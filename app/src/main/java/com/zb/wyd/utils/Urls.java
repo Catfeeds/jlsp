@@ -149,7 +149,6 @@ public class Urls
     }
 
 
-    //获取图集
     public static String getVideoPriceUrl()
     {
         return ConfigManager.instance().getDomainName() + "/video/get_price";
@@ -377,6 +376,7 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/data/comment";
     }
 
+    //点赞 收藏 喜欢等操作
     public static String getOperaUrl()
     {
         return ConfigManager.instance().getDomainName() + "/data/biz_opera";
@@ -451,5 +451,25 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/test.html";
     }
+
+       //关注作者
+    public static String getFriendAdd()
+    {
+        return ConfigManager.instance().getDomainName() + "/msg/friend_add";
+    }
+
+    //我的资产H5
+    public static String getFortuneIndex()
+    {
+        return ConfigManager.instance().getDomainName() + "/fortune/index";
+    }
+
+    public static String getShareApiUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/api/share";
+    }
+
+
+
 }
 

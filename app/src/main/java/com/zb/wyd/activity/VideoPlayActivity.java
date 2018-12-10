@@ -1391,6 +1391,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             danmakuView.release();
             danmakuView = null;
         }
+        mWebSocket.sendClose();
 
     }
 

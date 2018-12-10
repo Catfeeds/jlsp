@@ -19,14 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <TextView
-            android:id="@+id/tv_record"
-            android:text="拍摄"
-            android:padding="@dimen/dm_15"
-            android:background="@drawable/violet_frame_on_45dp"
-            android:textColor="@color/white"
-            android:textSize="@dimen/t20"
-            android:layout_marginBottom="@dimen/dm_50"
+        <ImageView
+            android:id="@+id/iv_record"
+            android:src="@drawable/ic_dy_push"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"

@@ -22,10 +22,12 @@ public class VideoInfo implements Serializable
     private String  vip_free;
     private boolean isNew;
     private String  add_time;
-
+    private String   share_count;
     private String   has_favorite;
     private UserInfo userInfo;
     private boolean  pay_for=true;
+    private String  author;
+    private MybizInfo mybizInfo;
 
     public VideoInfo() {}
 
@@ -43,7 +45,29 @@ public class VideoInfo implements Serializable
         this.vip_free = obj.optString("vip_free");
         this.add_time = obj.optString("add_time");
         this.cash = obj.optString("cash");
+        this.share_count = obj.optString("share_count");
 
+    }
+
+
+    public String getShare_count()
+    {
+        return share_count;
+    }
+
+    public void setShare_count(String share_count)
+    {
+        this.share_count = share_count;
+    }
+
+    public MybizInfo getMybizInfo()
+    {
+        return mybizInfo;
+    }
+
+    public void setMybizInfo(MybizInfo mybizInfo)
+    {
+        this.mybizInfo = mybizInfo;
     }
 
     public boolean isPay_for()
@@ -204,5 +228,15 @@ public class VideoInfo implements Serializable
     public void setUserInfo(UserInfo userInfo)
     {
         this.userInfo = userInfo;
+    }
+
+    public String getAuthor()
+    {
+        return author;
+    }
+
+    public void setAuthor(String author)
+    {
+        this.author = author;
     }
 }
