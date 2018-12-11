@@ -25,6 +25,8 @@ public class PhotoInfo
     private String free_album;
     private String charge_album;//
     private String favour_count;//0
+
+    private String   view_count;
     private String add_time;//2018-06-22
     private PriceInfo priceInfo;
     private String cover;//2018-06-22
@@ -47,6 +49,7 @@ public class PhotoInfo
 
     public PhotoInfo(JSONObject obj)
     {
+        this.view_count = obj.optString("view_count");
         this.savename = obj.optString("savename");
         this.savepath = obj.optString("savepath");
         this.sort = obj.optString("isort");
@@ -333,5 +336,16 @@ public class PhotoInfo
     public void setSort(String sort)
     {
         this.sort = sort;
+    }
+
+
+    public String getView_count()
+    {
+        return view_count;
+    }
+
+    public void setView_count(String view_count)
+    {
+        this.view_count = view_count;
     }
 }

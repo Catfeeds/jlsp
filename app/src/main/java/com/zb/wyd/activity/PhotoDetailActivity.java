@@ -305,17 +305,13 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                     break;
 
                 case GET_SHARE_SUCCESS:
-                    ShareInfoHandler mShareInfoHandler = (ShareInfoHandler) msg.obj;
-                    ShareInfo shareInfo = mShareInfoHandler.getShareInfo();
-                    if (null != shareInfo)
-                    {
-                        shareCnontent = shareInfo.getTitle() + ":" + shareInfo.getUrl();
-                        Intent intent1 = new Intent(Intent.ACTION_SEND);
-                        intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
-                        intent1.setType("text/plain");
-                        startActivityForResult(Intent.createChooser(intent1, "分享"), SHARE_PHOTO_REQUEST_CODE);
+                    ResultHandler mResultHandler = (ResultHandler) msg.obj;
+                    shareCnontent = mResultHandler.getContent();
 
-                    }
+                    Intent intent1 = new Intent(Intent.ACTION_SEND);
+                    intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
+                    intent1.setType("text/plain");
+                    startActivityForResult(Intent.createChooser(intent1, "分享"), SHARE_PHOTO_REQUEST_CODE);
                     break;
 
                 case GET_TASK_SHARE_CODE:
@@ -360,12 +356,9 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     protected void initEvent()
     {
         ivBack.setOnClickListener(this);
-        //        btnBuy.setOnClickListener(this);
         ivHover.setOnClickListener(this);
-        //  tvSend.setOnClickListener(this);
         ivShare.setOnClickListener(this);
         tvMore.setOnClickListener(this);
-        //        tvContact.setOnClickListener(this);
 
         tvScore.setOnClickListener(this);
         etContent.setOnEditorActionListener(new EditText.OnEditorActionListener()
@@ -521,18 +514,6 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
             });
         }
 
-
-        //        else if (v == tvContact)
-        //        {
-        //            if ("fee".equals(contact))
-        //            {
-        //                showBuyDialog();
-        //            }
-        //            else
-        //            {
-        //                tvContact.setText(contact);
-        //            }
-        //        }
     }
 
 
@@ -611,8 +592,7 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getShareUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new
-                ShareInfoHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getShareApiUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new ResultHandler());
     }
 
     private void getTaskShareUrl()
@@ -620,8 +600,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "photo");
-        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getTaskShareUrl(), this, HttpRequest.GET, GET_TASK_SHARE, valuePairs, new
-                SignInfoHandler());
+        DataRequest.instance().request(PhotoDetailActivity.this, Urls.getShareApiUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new ResultHandler
+                ());
     }
 
     private void sendComment()
@@ -758,7 +738,7 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("DemoActivity", "requestCode=" + requestCode + " resultCode=" + resultCode);
-        if ((int) (Math.random() * 100) <= 80) mHandler.sendEmptyMessage(GET_TASK_SHARE_CODE);
+        if ((int) (Math.random() * 100) <= 20) mHandler.sendEmptyMessage(GET_SHARE_CODE);
 
     }
 

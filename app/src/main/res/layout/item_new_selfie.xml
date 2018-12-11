@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/ll_item"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dm_5"
-    android:layout_marginRight="@dimen/dm_5"
     android:layout_marginTop="@dimen/dm_15"
+    android:layout_marginRight="@dimen/dm_5"
     android:layout_marginBottom="@dimen/dm_15"
     android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/dm_5"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dm_5">
 
         <com.zb.wyd.widget.CircleImageView
             android:id="@+id/iv_user_pic"
@@ -70,10 +70,10 @@
     </RelativeLayout>
 
     <TextView
-        android:layout_marginLeft="@dimen/dm_5"
         android:id="@+id/tv_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dm_5"
         android:layout_marginTop="@dimen/dm_10"
         android:textColor="#FF5A4462 "
         android:textSize="@dimen/t14" />
@@ -82,6 +82,44 @@
     <com.zb.wyd.widget.MaxRecyclerView
         android:id="@+id/rv_photo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.zb.wyd.widget.MaxRecyclerView>
+        android:layout_height="wrap_content"></com.zb.wyd.widget.MaxRecyclerView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/dm_10">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_heart" />
+
+        <TextView
+            android:id="@+id/tv_favour_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dm_3"
+            android:text="0"
+            android:textColor="#947F9B"
+            android:textSize="@dimen/t14" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dm_15"
+            android:src="@drawable/icon_hot_anchors" />
+
+        <TextView
+            android:id="@+id/tv_view_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dm_3"
+            android:text="0"
+            android:textColor="#947F9B"
+            android:textSize="@dimen/t14" />
+
+    </LinearLayout>
 </LinearLayout>

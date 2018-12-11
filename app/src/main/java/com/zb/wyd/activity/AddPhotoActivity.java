@@ -364,9 +364,9 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
 
             if (chargePicList.size() < 2)
             {
-                if (freePicList.size() < 6)
+                if (freePicList.size() < 4)
                 {
-                    ToastUtil.show(this, "免费图片数量不少于5张");
+                    ToastUtil.show(this, "免费图片数量不少于3张");
                     return;
                 }
             }
@@ -391,9 +391,9 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
                     ToastUtil.show(this, "请输入收费图片价格");
                     return;
                 }
-                if (Integer.parseInt(price) < 5 || Integer.parseInt(price) > 200)
+                if (Integer.parseInt(price) < 5 || Integer.parseInt(price) > 50)
                 {
-                    ToastUtil.show(this, "收费图片价格为5-200积分");
+                    ToastUtil.show(this, "收费图片价格为5-50=0积分");
                     return;
                 }
 
@@ -430,6 +430,12 @@ public class AddPhotoActivity extends BaseActivity implements IRequestListener
                 }
             }
 
+
+            if(labelChooseList.isEmpty())
+            {
+                ToastUtil.show(AddPhotoActivity.this,"请选择标签");
+                return;
+            }
             showProgressDialog();
 
             Map<String, String> valuePairs = new HashMap<>();

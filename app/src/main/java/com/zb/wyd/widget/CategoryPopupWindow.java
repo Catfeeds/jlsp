@@ -27,7 +27,6 @@ public class CategoryPopupWindow extends PopupWindow implements PopupWindow.OnDi
     private MaxRecyclerView     mCataRv;
     private Activity            mContext;
     private CataFilterAdapter   mAdapter;
-    private TextView            mClosedTv;
     private MyItemClickListener listener;
     List<CategoryInfo> mFilterList = new ArrayList<>();
 
@@ -39,11 +38,11 @@ public class CategoryPopupWindow extends PopupWindow implements PopupWindow.OnDi
         this.mFilterList = mFilterList;
         rootView = LayoutInflater.from(context).inflate(R.layout.pop_cata, null);
         setContentView(rootView);
-        setOutsideTouchable(true);
-        setFocusable(true);
+        setOutsideTouchable(false);
+        setFocusable(false);
         setBackgroundDrawable(new ColorDrawable());
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         initView();
         initEvent();
 //        WindowManager.LayoutParams lp = mContext.getWindow().getAttributes();
@@ -55,31 +54,50 @@ public class CategoryPopupWindow extends PopupWindow implements PopupWindow.OnDi
 
     private void initView()
     {
-        mClosedTv = (TextView) rootView.findViewById(R.id.tv_closed);
+//        mClosedTv = (TextView) rootView.findViewById(R.id.tv_closed);
         mCataRv = (MaxRecyclerView) rootView.findViewById(R.id.rv_cata);
-        mCataRv.setLayoutManager(new FullyGridLayoutManager(mContext, 5));
+        mCataRv.setLayoutManager(new FullyGridLayoutManager(mContext,3));
         mAdapter = new CataFilterAdapter(mFilterList, mContext, new MyItemClickListener()
         {
             @Override
             public void onItemClick(View view, int position)
             {
                 listener.onItemClick(view, position);
+                for (int i = 0; i < mFilterList.size(); i++)
+                {
+                    if (i == position)
+                    {
+                        mFilterList.get(position).setSelected(true);
+                    }
+                    else
+                    {
+                        mFilterList.get(i).setSelected(false);
+                    }
+                }
+
+                mAdapter.notifyDataSetChanged();
                 dismiss();
             }
         });
         mCataRv.setAdapter(mAdapter);
     }
 
+    public void  setFilterList( List<CategoryInfo> filterList)
+    {
+        mFilterList.clear();
+        mFilterList.addAll(filterList);
+        mAdapter.notifyDataSetChanged();
+    }
     private void initEvent()
     {
-        mClosedTv.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                dismiss();
-            }
-        });
+//        mClosedTv.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                dismiss();
+//            }
+//        });
 
     }
 

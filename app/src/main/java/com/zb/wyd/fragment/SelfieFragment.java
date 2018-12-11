@@ -75,22 +75,25 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     CustomBanner mBanner;
     @BindView(R.id.rv_photo)
     RecyclerView rvPhoto;
-    @BindView(R.id.iv_show)
-    ImageView ivMore;
-    @BindView(R.id.rv_cata)
-    RecyclerView rvCata;
     @BindView(R.id.tv_new)
     TextView tvNew;
     @BindView(R.id.tv_fav)
     TextView tvFav;
     @BindView(R.id.iv_add)
     ImageView ivAdd;
-    @BindView(R.id.topView)
-    View topView;
+    @BindView(R.id.rl_category)
+    View mCategoryLayout;
+
+    @BindView(R.id.tv_category_name)
+    TextView tv_category_name;
+
+    @BindView(R.id.iv_opened)
+    ImageView ivOpened;
+
+
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
     private List<CategoryInfo> cataInfoList = new ArrayList<>();
-    private CategoryAdapter mCataAdapter;
 
     private int getPhotoCount;
     private List<PhotoInfo> selfieInfoList = new ArrayList<>();
@@ -103,6 +106,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     private Unbinder unbinder;
     private int pn = 1;
 
+    private boolean isShowCategory;
     private String photoTag = "";
     private String sort = "new";
     private static final String GET_AD_LIST = "get_ad_list";
@@ -176,7 +180,6 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                         cataInfoList.get(0).setSelected(true);
                     }
 
-                    mCataAdapter.notifyDataSetChanged();
 
                     break;
 
@@ -287,7 +290,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     protected void initEvent()
     {
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        ivMore.setOnClickListener(this);
+        mCategoryLayout.setOnClickListener(this);
         tvNew.setOnClickListener(this);
         tvFav.setOnClickListener(this);
         ivAdd.setOnClickListener(this);
@@ -382,36 +385,6 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     {
         tvNew.setSelected(true);
         tvFav.setSelected(false);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvCata.setLayoutManager(linearLayoutManager);
-
-        mCataAdapter = new CategoryAdapter(cataInfoList, getActivity(), new MyItemClickListener()
-        {
-            @Override
-            public void onItemClick(View view, int position)
-            {
-                for (int i = 0; i < cataInfoList.size(); i++)
-                {
-                    if (i == position)
-                    {
-                        cataInfoList.get(position).setSelected(true);
-                    }
-                    else
-                    {
-                        cataInfoList.get(i).setSelected(false);
-                    }
-                }
-                mCataAdapter.notifyDataSetChanged();
-                photoTag = cataInfoList.get(position).getName();
-                pn = 1;
-                selfieInfoList.clear();
-                mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
-            }
-        });
-        rvCata.setAdapter(mCataAdapter);
-
 
         rvPhoto.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSelfieAdapter = new SelfieAdapter(selfieInfoList, getActivity(), new MyItemClickListener()
@@ -617,40 +590,52 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     @Override
     public void onClick(View v)
     {
-        if (v == ivMore)
+        if (v == mCategoryLayout)
         {
 
-            mCataPopupWindow = new CategoryPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
+            if (null == mCataPopupWindow)
             {
-                @Override
-                public void onItemClick(View view, int position)
+                mCataPopupWindow = new CategoryPopupWindow(getActivity(), cataInfoList, new MyItemClickListener()
                 {
-                    for (int i = 0; i < cataInfoList.size(); i++)
+                    @Override
+                    public void onItemClick(View view, int position)
                     {
-                        if (i == position)
+                        for (int i = 0; i < cataInfoList.size(); i++)
                         {
-                            cataInfoList.get(position).setSelected(true);
+                            if (i == position)
+                            {
+                                cataInfoList.get(position).setSelected(true);
+                            }
+                            else
+                            {
+                                cataInfoList.get(i).setSelected(false);
+                            }
                         }
-                        else
-                        {
-                            cataInfoList.get(i).setSelected(false);
-                        }
+
+                        photoTag = cataInfoList.get(position).getName();
+                        tv_category_name.setText(photoTag);
+                        pn = 1;
+                        selfieInfoList.clear();
+                        mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
                     }
-                    mCataAdapter.notifyDataSetChanged();
-
-
-                    photoTag = cataInfoList.get(position).getName();
-                    pn = 1;
-                    selfieInfoList.clear();
-                    mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
-                }
-            });
-
-
-            if (!cataInfoList.isEmpty())
-            {
-                mCataPopupWindow.showAsDropDown(topView);
+                });
             }
+            if (!mCataPopupWindow.isShowing())
+            {
+                isShowCategory = true;
+
+                mCataPopupWindow.showAsDropDown(mCategoryLayout);
+              //  mCataPopupWindow.setFilterList(cataInfoList);
+                ivOpened.setImageResource(R.drawable.ic_arrow_up);
+            }
+            else
+            {
+                isShowCategory = false;
+                mCataPopupWindow.dismiss();
+                ivOpened.setImageResource(R.drawable.ic_arrow_down);
+            }
+
+
         }
         else if (v == tvNew)
         {
@@ -679,40 +664,6 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             {
                 startActivity(new Intent(getActivity(), LoginActivity.class));
             }
-
-            //
-            //            if (MyApplication.getInstance().isLogin())
-            //            {
-            //                if (ConfigManager.instance().getUserRole() > 0)
-            //                {
-            //                    startActivity(new Intent(getActivity(), AddPhotoActivity.class));
-            //                }
-            //                else
-            //                {
-            //                    DialogUtils.showToastDialog2Button(getActivity(), "发布视频需要通过系统认证", "去申请认证", new View.OnClickListener()
-            //                    {
-            //                        @Override
-            //                        public void onClick(View v)
-            //                        {
-            //                            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
-            // "申请认证").putExtra
-            //                                    (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getCooperationUrl()));
-            //                        }
-            //                    }, new View.OnClickListener()
-            //                    {
-            //                        @Override
-            //                        public void onClick(View v)
-            //                        {
-            //
-            //                        }
-            //                    }).show();
-            //                }
-            //
-            //            }
-            //            else
-            //            {
-            //                startActivity(new Intent(getActivity(), LoginActivity.class));
-            //            }
         }
     }
 

@@ -11,6 +11,7 @@ public class CommentInfo
     private String name;
     private String time;
     private String content;
+    private UserInfo userInfo;
 
     public CommentInfo(JSONObject obj)
     {
@@ -19,6 +20,16 @@ public class CommentInfo
         this.time = obj.optString("add_time");
         this.content = obj.optString("context");
 
+    }
+
+    public UserInfo getUserInfo()
+    {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo)
+    {
+        this.userInfo = userInfo;
     }
 
     public String getPic()

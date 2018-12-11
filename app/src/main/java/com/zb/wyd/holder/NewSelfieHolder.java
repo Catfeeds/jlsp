@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class NewSelfieHolder extends SelfieBaseHolder
 {
+    private TextView mFavourCountTv;
+    private TextView mViewCountTv;
     private TextView mUserNameTv;
     private TextView mDescTv;
     private TextView mUpdateTimeTv;
@@ -49,12 +51,16 @@ public class NewSelfieHolder extends SelfieBaseHolder
         mSexIv = (ImageView) rootView.findViewById(R.id.iv_user_sex);
         mRecyclerView = (MaxRecyclerView) rootView.findViewById(R.id.rv_photo);
         itemLayout = (LinearLayout) rootView.findViewById(R.id.ll_item);
+        mFavourCountTv = (TextView) rootView.findViewById(R.id.tv_favour_count);
+        mViewCountTv= (TextView) rootView.findViewById(R.id.tv_view_count);
     }
 
 
     @Override
-    public void setPhotoInfo(PhotoInfo basePhotoInfo, int p)
+    public void setPhotoInfo(PhotoInfo basePhotoInfo, final int p)
     {
+        mFavourCountTv.setText(basePhotoInfo.getFavour_count());
+        mViewCountTv.setText(basePhotoInfo.getView_count());
         mDescTv.setText(basePhotoInfo.getDesc());
         mUpdateTimeTv.setText(basePhotoInfo.getAdd_time());
         UserInfo userInfo = basePhotoInfo.getUserInfo();

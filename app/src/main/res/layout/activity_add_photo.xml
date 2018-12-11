@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
                     android:digits="1234567890"
-                    android:hint="输入您要收取的费用5-200积分"
+                    android:hint="输入您要收取的费用5-50积分"
                     android:inputType="number"
                     android:maxLength="3"
                     android:paddingBottom="@dimen/dm_15"

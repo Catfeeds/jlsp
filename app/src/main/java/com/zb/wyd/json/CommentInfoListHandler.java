@@ -3,6 +3,7 @@ package com.zb.wyd.json;
 
 import com.zb.wyd.entity.AdInfo;
 import com.zb.wyd.entity.CommentInfo;
+import com.zb.wyd.entity.UserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,13 +28,20 @@ public class CommentInfoListHandler extends JsonHandler
         try
         {
 
-            JSONObject obj = jsonObj.optJSONObject("data");
-            JSONArray arr = obj.optJSONArray("list");
+            JSONArray arr = jsonObj.optJSONArray("data");
             if (null != arr)
             {
                 for (int i = 0; i < arr.length(); i++)
                 {
                     CommentInfo mCommentInfo = new CommentInfo(arr.optJSONObject(i));
+
+                    if(null !=arr.optJSONObject(i))
+                    {
+                        UserInfo userInfo = new UserInfo(arr.optJSONObject(i).optJSONObject("userinfo"));
+                        mCommentInfo.setUserInfo(userInfo);
+                    }
+
+
                     commentInfoList.add(mCommentInfo);
                 }
             }

@@ -12,6 +12,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.R;
 import com.zb.wyd.entity.CommentInfo;
 import com.zb.wyd.entity.LiveInfo;
+import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.utils.APPUtils;
 import com.zb.wyd.widget.CircleImageView;
@@ -22,10 +23,10 @@ import com.zb.wyd.widget.RoundAngleImageView;
  */
 public class CommentHolder extends RecyclerView.ViewHolder
 {
-    private TextView            mTimeTv;
-    private TextView            mNameTv;
-    private TextView            mContentTv;
-    private CircleImageView     mImgIv;
+    private TextView mTimeTv;
+    private TextView mNameTv;
+    private TextView mContentTv;
+    private CircleImageView mImgIv;
 
     public CommentHolder(View rootView)
     {
@@ -39,9 +40,14 @@ public class CommentHolder extends RecyclerView.ViewHolder
 
     public void setCommentInfo(CommentInfo mComment)
     {
-        ImageLoader.getInstance().displayImage(mComment.getPic(), mImgIv);
+        UserInfo userInfo = mComment.getUserInfo();
+
+        if (null != userInfo)
+        {
+            ImageLoader.getInstance().displayImage(userInfo.getUface(), mImgIv);
+            mNameTv.setText(userInfo.getUnick());
+        }
         mTimeTv.setText(mComment.getTime());
-        mNameTv.setText(mComment.getName());
         mContentTv.setText(mComment.getContent());
     }
 

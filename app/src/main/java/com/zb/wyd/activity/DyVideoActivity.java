@@ -1102,7 +1102,7 @@ public class DyVideoActivity extends BaseActivity implements IRequestListener, P
     {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("DemoActivity", "requestCode=" + requestCode + " resultCode=" + resultCode);
-        if ((int) (Math.random() * 100) <= 80) mHandler.sendEmptyMessage(GET_TASK_SHARE_CODE);
+        if ((int) (Math.random() * 100) <= 20) mHandler.sendEmptyMessage(GET_TASK_SHARE_CODE);
 
     }
 }

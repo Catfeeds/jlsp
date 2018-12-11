@@ -1,36 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_pop_list"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/main_bg"
-    android:padding="@dimen/dm_10"
+    android:layout_height="match_parent"
+    android:background="#50000000"
     android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="自拍分类"
-                android:textColor="@color/blackC"
-                android:textSize="@dimen/t14"/>
-            <TextView
-                android:id="@+id/tv_closed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="收起"
-                android:textColor="@color/blackC"
-                android:textSize="@dimen/t14"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dm_1"
+        android:background="@color/line"></View>
 
-        </RelativeLayout>
-
-        <com.zb.wyd.widget.MaxRecyclerView
-            android:id="@+id/rv_cata"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-          />
-    </LinearLayout>
+    <com.zb.wyd.widget.MaxRecyclerView
+        android:id="@+id/rv_cata"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dm_10" />
+</LinearLayout>
