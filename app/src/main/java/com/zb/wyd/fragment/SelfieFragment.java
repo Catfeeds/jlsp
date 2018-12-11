@@ -53,6 +53,7 @@ import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.Urls;
 import com.zb.wyd.widget.CategoryPopupWindow;
 import com.zb.wyd.widget.MarqueeTextView;
+import com.zb.wyd.widget.PhotoSortPopupWindow;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
 
 import java.util.ArrayList;
@@ -75,20 +76,23 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     CustomBanner mBanner;
     @BindView(R.id.rv_photo)
     RecyclerView rvPhoto;
-    @BindView(R.id.tv_new)
-    TextView tvNew;
-    @BindView(R.id.tv_fav)
-    TextView tvFav;
     @BindView(R.id.iv_add)
     ImageView ivAdd;
     @BindView(R.id.rl_category)
     View mCategoryLayout;
 
     @BindView(R.id.tv_category_name)
-    TextView tv_category_name;
-
+    TextView tvCategoryName;
     @BindView(R.id.iv_opened)
     ImageView ivOpened;
+
+
+    @BindView(R.id.rl_sort)
+    View mSortLayout;
+    @BindView(R.id.tv_sort_name)
+    TextView tvSortName;
+    @BindView(R.id.iv_sort_opened)
+    ImageView ivSortOpened;
 
 
     @BindView(R.id.swipeRefresh)
@@ -106,7 +110,6 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     private Unbinder unbinder;
     private int pn = 1;
 
-    private boolean isShowCategory;
     private String photoTag = "";
     private String sort = "new";
     private static final String GET_AD_LIST = "get_ad_list";
@@ -291,10 +294,8 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     {
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mCategoryLayout.setOnClickListener(this);
-        tvNew.setOnClickListener(this);
-        tvFav.setOnClickListener(this);
         ivAdd.setOnClickListener(this);
-
+        mSortLayout.setOnClickListener(this);
         rvPhoto.setOnScrollListener(new RecyclerView.OnScrollListener()
         {
             //用来标记是否正在向最后一个滑动，既是否向下滑动
@@ -383,8 +384,6 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     @Override
     protected void initViewData()
     {
-        tvNew.setSelected(true);
-        tvFav.setSelected(false);
 
         rvPhoto.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSelfieAdapter = new SelfieAdapter(selfieInfoList, getActivity(), new MyItemClickListener()
@@ -586,6 +585,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
     }
 
     private CategoryPopupWindow mCataPopupWindow;
+    private PhotoSortPopupWindow mPhotoSortPopupWindow;
 
     @Override
     public void onClick(View v)
@@ -613,7 +613,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                         }
 
                         photoTag = cataInfoList.get(position).getName();
-                        tv_category_name.setText(photoTag);
+                        tvCategoryName.setText(photoTag);
                         pn = 1;
                         selfieInfoList.clear();
                         mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
@@ -622,36 +622,60 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
             }
             if (!mCataPopupWindow.isShowing())
             {
-                isShowCategory = true;
 
                 mCataPopupWindow.showAsDropDown(mCategoryLayout);
-              //  mCataPopupWindow.setFilterList(cataInfoList);
                 ivOpened.setImageResource(R.drawable.ic_arrow_up);
             }
             else
             {
-                isShowCategory = false;
                 mCataPopupWindow.dismiss();
                 ivOpened.setImageResource(R.drawable.ic_arrow_down);
             }
 
 
         }
-        else if (v == tvNew)
+        else if (v == mSortLayout)
         {
-            pn = 1;
-            sort = "new";
-            tvNew.setSelected(true);
-            tvFav.setSelected(false);
-            mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
-        }
-        else if (v == tvFav)
-        {
-            pn = 1;
-            sort = "fav";
-            tvNew.setSelected(false);
-            tvFav.setSelected(true);
-            mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
+            if (null == mPhotoSortPopupWindow)
+            {
+                mPhotoSortPopupWindow = new PhotoSortPopupWindow(getActivity(), new MyItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(View view, int position)
+                    {
+                        mPhotoSortPopupWindow.dismiss();
+                        switch (position)
+                        {
+                            case 0:
+                                sort = "new";
+                                tvSortName.setText("最新发布");
+                                break;
+                            case 1:
+                                sort = "fav";
+                                tvSortName.setText("最多收藏");
+                                break;
+                            case 2:
+                                sort = "score";
+                                tvSortName.setText("评分最高");
+                                break;
+                        }
+                        pn = 1;
+                        mHandler.sendEmptyMessage(GET_PHOTO_LIST_CODE);
+                    }
+                });
+            }
+
+
+            if (mPhotoSortPopupWindow.isShowing())
+            {
+                mPhotoSortPopupWindow.dismiss();
+                ivSortOpened.setImageResource(R.drawable.ic_arrow_up);
+            }
+            else
+            {
+                mPhotoSortPopupWindow.showAsDropDown(mSortLayout);
+                ivSortOpened.setImageResource(R.drawable.ic_arrow_up);
+            }
         }
         else if (v == ivAdd)
         {

@@ -76,13 +76,13 @@ public class SelfieAdapter extends RecyclerView.Adapter<SelfieBaseHolder>
     @Override
     public int getItemViewType(int position)
     {
-        if ("fav".equals(list.get(position).getSort()))
+        if ("new".equals(list.get(position).getSort()))
         {
-            return 1;
+            return 0;
         }
         else
         {
-            return 0;
+            return 1;
         }
     }
 }
