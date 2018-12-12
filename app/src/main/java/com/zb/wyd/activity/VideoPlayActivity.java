@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -532,12 +533,11 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     @Override
     protected void initViews(Bundle savedInstanceState)
     {
-        //        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        // WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_video_play);
-        StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
-        StatusBarUtil.StatusBarLightMode(VideoPlayActivity.this, false);
+        //        StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
+        //        StatusBarUtil.StatusBarLightMode(VideoPlayActivity.this, false);
     }
 
     /**
@@ -1365,15 +1365,16 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     public void onBackPressed()
     {
         //        //先返回正常状态
-//        if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-//        {
-//            videoPlayer.getFullscreenButton().performClick();
-//            return;
-//        }
-//        //释放所有
-//        videoPlayer.setVideoAllCallBack(null);
+        //        if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        //        {
+        //            videoPlayer.getFullscreenButton().performClick();
+        //            return;
+        //        }
+        //        //释放所有
+        //        videoPlayer.setVideoAllCallBack(null);
         super.onBackPressed();
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
@@ -1399,6 +1400,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         }
 
     }
+
     @Override
     public void notify(String action, String resultCode, String resultMsg, Object obj)
     {
