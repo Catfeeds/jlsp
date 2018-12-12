@@ -24,6 +24,7 @@ public class VideoInfo implements Serializable
     private String  add_time;
     private String   share_count;
     private String   has_favorite;
+    private String iname;
     private UserInfo userInfo;
     private boolean  pay_for=true;
     private String  author;
@@ -33,6 +34,7 @@ public class VideoInfo implements Serializable
 
     public VideoInfo(JSONObject obj)
     {
+        this.iname = obj.optString("iname");
         this.id = obj.optString("id");
         this.cata_id = obj.optString("cata_id");
         this.v_name = obj.optString("v_name");
@@ -49,6 +51,15 @@ public class VideoInfo implements Serializable
 
     }
 
+    public String getIname()
+    {
+        return iname;
+    }
+
+    public void setIname(String iname)
+    {
+        this.iname = iname;
+    }
 
     public String getShare_count()
     {

@@ -70,7 +70,6 @@ public class VideoPlayActivity1 extends BaseActivity implements IRequestListener
                 case REQUEST_SUCCESS:
                     VideoStreamHandler mVideoStreamHandler = (VideoStreamHandler) msg.obj;
 
-                    mChannelInfo = mVideoStreamHandler.getChannelInfo();
                     if (null != mChannelInfo)
                     {
                         videoUri = mVideoStreamHandler.getUri();

@@ -3,18 +3,25 @@ package com.zb.wyd.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -30,13 +37,10 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.RecommendVideoAdapter;
 import com.zb.wyd.adapter.VideoChannelAdapter;
-import com.zb.wyd.entity.ChannelInfo;
-import com.zb.wyd.entity.ChatInfo;
 import com.zb.wyd.entity.DanmuInfo;
 import com.zb.wyd.entity.HostInfo;
 import com.zb.wyd.entity.MybizInfo;
 import com.zb.wyd.entity.PriceInfo;
-import com.zb.wyd.entity.ShareInfo;
 import com.zb.wyd.entity.SignInfo;
 import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.entity.VideoDetailInfo;
@@ -47,19 +51,17 @@ import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.DanmuInfoListHandler;
 import com.zb.wyd.json.LivePriceInfoHandler;
 import com.zb.wyd.json.ResultHandler;
-import com.zb.wyd.json.ShareInfoHandler;
 import com.zb.wyd.json.SignInfoHandler;
 import com.zb.wyd.json.VideoDetailHandler;
 import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.json.VideoStreamHandler;
 import com.zb.wyd.listener.MyItemClickListener;
 import com.zb.wyd.listener.MyOnClickListener;
-import com.zb.wyd.listener.SocketListener;
+import com.zb.wyd.utils.APPUtils;
 import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.DialogUtils;
 import com.zb.wyd.utils.LogUtil;
-import com.zb.wyd.utils.MySocketConnection;
 import com.zb.wyd.utils.StringUtils;
 import com.zb.wyd.utils.SystemUtil;
 import com.zb.wyd.utils.ToastUtil;
@@ -71,7 +73,6 @@ import com.zb.wyd.widget.MyVideoPlayer;
 import com.zb.wyd.widget.StarBar;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -153,6 +154,18 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
     @BindView(R.id.danmaku_view)
     DanmakuView danmakuView;
+    @BindView(R.id.rl_top)
+    RelativeLayout rlTop;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+    @BindView(R.id.line)
+    View line;
+    @BindView(R.id.rl_bottom)
+    RelativeLayout rlBottom;
+
+    //    @BindView(R.id.frameLayout)
+    //    FrameLayout mVideoLayout;
+
 
     private boolean showDanmaku;
     private DanmakuContext danmakuContext;
@@ -172,11 +185,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private VideoChannelAdapter mVideoChannelAdapter;
     private List<HostInfo> hostInfoList = new ArrayList<>();
     private OrientationUtils orientationUtils;
-    //    private ImageView mCollectionIv;
-    //    private ImageView mShareIv;
-    //    private ImageView mReportIv;
-    //    private ImageView mSettingIv;
 
+    private ImageView mFullscreenIv;
     private ENPlayView mPlayButton;
     private LinearLayout mSeekLayout;
 
@@ -188,7 +198,9 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     private String shareCnontent;
     private long startTime, endTime;
     private String errorMsg = "网络异常";
+    private boolean isDMOpened = true;//弹幕是否打开
 
+    private boolean isFullscreen;
     private List<DanmuInfo> mAllDanmuInfoList = new ArrayList<>();
     private List<DanmuInfo> mCurrentDanmuInfoList = new ArrayList<>();
     private String videoPlaylist;
@@ -250,38 +262,11 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             {
                 case REQUEST_SUCCESS:
                     VideoStreamHandler mVideoStreamHandler = (VideoStreamHandler) msg.obj;
-                    if (!TextUtils.isEmpty(mVideoStreamHandler.getUri()))
+                    if (!TextUtils.isEmpty(mVideoStreamHandler.getUri()) && !mVideoStreamHandler.getHostInfoList().isEmpty())
                     {
-                        playVideo(mVideoStreamHandler.getUri());
+                        playVideo(mVideoStreamHandler.getHostInfoList().get(0).getLine() + mVideoStreamHandler.getUri());
                     }
-                        //                    mChannelInfo = mVideoStreamHandler.getChannelInfo();
-                        //                    if (null != mChannelInfo)
-                        //                    {
-                        //                        videoUri = mVideoStreamHandler.getUri();
-                        //                        String uri = mChannelInfo.getCm() + videoUri;
-                        //                        LogUtil.e("TAG", uri);
-                        //                        has_favorite = mVideoStreamHandler
-                        // .getHas_favorite();
-
-
-                        //                        videoPlayer.setIS_SCREEN_ORIENTATION_LANDSCAPE
-                        // (mVideoStreamHandler.getStand());
-                        //                      if(mVideoStreamHandler.getStand())
-                        //                      {
-                        //                          mSeekLayout.setVisibility(View.INVISIBLE);
-                        //                          orientationUtils.setScreenType( ActivityInfo
-                        // .SCREEN_ORIENTATION_LANDSCAPE);
-                        //                      }
-                        //                      else
-                        //                      {
-                        //                          orientationUtils.setScreenType( ActivityInfo
-                        // .SCREEN_ORIENTATION_PORTRAIT);
-                        //                          orientationUtils .resolveByClick();
-                        //                      }
-
-                        //                        playVideo(uri);
-                        //                    }
-                        break;
+                    break;
 
 
                 case REQUEST_FAIL:
@@ -290,7 +275,6 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
                 case GET_VIDEO_PRICE_SUCCESS:
                     LivePriceInfoHandler mLivePriceInfoHandler = (LivePriceInfoHandler) msg.obj;
-
                     final PriceInfo mLivePriceInfo = mLivePriceInfoHandler.getLivePriceInfo();
 
                     if (null != mLivePriceInfo)
@@ -320,7 +304,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                                 //购买VIP
                                 else if ("3".equals(content))
                                 {
-                                    //  startActivity(new Intent(VideoPlayActivity.this, MemberActivity.class));
+                                    //  startActivity(new Intent(VideoPlayActivity.this,
+                                    // MemberActivity.class));
                                     startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
                                             "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl
                                             ("vip")));
@@ -379,17 +364,13 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                     break;
 
                 case GET_SHARE_SUCCESS:
-                    ShareInfoHandler mShareInfoHandler = (ShareInfoHandler) msg.obj;
-                    ShareInfo shareInfo = mShareInfoHandler.getShareInfo();
-                    if (null != shareInfo)
-                    {
-                        shareCnontent = shareInfo.getTitle() + ":" + shareInfo.getUrl();
+                    ResultHandler mResultHandler = (ResultHandler) msg.obj;
+                    shareCnontent = mResultHandler.getContent();
 
-                        Intent intent1 = new Intent(Intent.ACTION_SEND);
-                        intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
-                        intent1.setType("text/plain");
-                        startActivityForResult(Intent.createChooser(intent1, "分享"), SHARE_PHOTO_REQUEST_CODE);
-                    }
+                    Intent intent1 = new Intent(Intent.ACTION_SEND);
+                    intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
+                    intent1.setType("text/plain");
+                    startActivityForResult(Intent.createChooser(intent1, "分享"), SHARE_PHOTO_REQUEST_CODE);
                     break;
 
                 case GET_TASK_SHARE_CODE:
@@ -436,7 +417,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                             videoPlaylist = mVideoDetailInfo.getPlaylist();
                         }
                         tvVideoName.setText(mVideoDetailInfo.getIname());
-
+                        //                        ImageView imageView = new ImageView(VideoPlayActivity.this);
+                        //                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        //                     ImageLoader.getInstance().displayImage();
+                        //                        videoPlayer.setThumbImageView(imageView);
 
                         getVideoRecommend(mVideoDetailInfo.getTags());
                         if (mVideoDetailInfo.getCash() > 0)
@@ -561,6 +545,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
      */
     private void addDanmaku(DanmuInfo danmuInfo, boolean withBorder)
     {
+        if (!isDMOpened)
+        {
+            return;
+        }
         String stryle = danmuInfo.getStyle();
         String color = "#0000FF";
         if (null != stryle)
@@ -624,6 +612,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     @Override
     protected void initEvent()
     {
+        tvTangmu.setOnClickListener(this);
         ivHover.setOnClickListener(this);
         tvSetScore.setOnClickListener(this);
         tvCollection.setOnClickListener(this);
@@ -713,13 +702,9 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //        mReportIv = (ImageView) videoPlayer.findViewById(R.id.iv_report);
         mSeekLayout = (LinearLayout) videoPlayer.findViewById(R.id.sp_layout);
         mPlayButton = (ENPlayView) videoPlayer.findViewById(R.id.video_play);
+        mFullscreenIv = (ImageView) videoPlayer.findViewById(R.id.iv_fullscreen);
         mPlayButton.setOnClickListener(this);
-
-        //        mCollectionIv.setOnClickListener(this);
-        //        mShareIv.setOnClickListener(this);
-        //        mSettingIv.setOnClickListener(this);
-        //        mReportIv.setOnClickListener(this);
-
+        mFullscreenIv.setOnClickListener(this);
         //  videoPlayer.setUp(source1, true, "测试视频");
         //增加封面
         //        ImageView imageView = new ImageView(this);
@@ -736,14 +721,14 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         //        //设置旋转
         orientationUtils = new OrientationUtils(this, videoPlayer);
         //        //设置全屏按键功能,这是使用的是选择屏幕，而不是全屏
-                videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        orientationUtils.resolveByClick();
-                    }
-                });
+        //        videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener()
+        //        {
+        //            @Override
+        //            public void onClick(View view)
+        //            {
+        //                orientationUtils.resolveByClick();
+        //            }
+        //        });
         //是否可以滑动调整
         videoPlayer.setIsTouchWiget(true);
 
@@ -766,6 +751,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             public void onStartPrepared(String s, Object... objects)
             {
                 hideProgressDialog();
+                mPlayButton.setVisibility(View.GONE);
             }
 
             //加载成功，objects[0]是title，object[1]是当前所处播放器（全屏或非全屏）
@@ -900,36 +886,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 errorMsg = s;
                 ToastUtil.show(VideoPlayActivity.this, "该网络暂无法播放，请切换网络重试");
                 mPlayButton.setVisibility(View.VISIBLE);
-                // mChannelLayout.setVisibility(View.VISIBLE);
-                //showChannelPop();
-
                 videoPlayer.showSettingWidget();
-                //                DialogUtils.showChannelDialog(VideoPlayActivity.this, new
-                // MyItemClickListener()
-                //                {
-                //                    @Override
-                //                    public void onItemClick(View view, int position)
-                //                    {
-                //                        switch (position)
-                //                        {
-                //                            case 1:
-                //                                playVideo(mChannelInfo.getYd() + videoUri);
-                //                                break;
-                //                            case 2:
-                //                                playVideo(mChannelInfo.getDx() + videoUri);
-                //                                break;
-                //                            case 3:
-                //                                playVideo(mChannelInfo.getCm() + videoUri);
-                //                                break;
-                //                            case 4:
-                //                                finish();
-                //                                break;
-                //                        }
-                //
-                //
-                //                    }
-                //    });
-
 
             }
 
@@ -1141,8 +1098,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
-        DataRequest.instance().request(VideoPlayActivity.this, Urls.getShareUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new
-                ShareInfoHandler());
+        DataRequest.instance().request(VideoPlayActivity.this, Urls.getShareApiUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new
+                ResultHandler());
     }
 
 
@@ -1253,44 +1210,54 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 ToastUtil.show(VideoPlayActivity.this, "您已评价过了！");
             }
         }
-        //        else if (v == mShareIv)
-        //        {
-        //            showProgressDialog();
-        //            mHandler.sendEmptyMessage(GET_SHARE_CODE);
-        //
-        //        }
-        //        else if (v == mSettingIv)
-        //        {
-        //            showChannelPop();
-        //        }
-        //        else if (v == mReportIv)
-        //        {
-        //            DialogUtils.showReportDialog(this, new MyOnClickListener.OnSubmitListener()
-        //            {
-        //                @Override
-        //                public void onSubmit(String content)
-        //                {
-        //                    switch (Integer.parseInt(content))
-        //                    {
-        //                        case 1:
-        //                            reportMsg("不显示画面,有声音");
-        //                            break;
-        //                        case 2:
-        //                            reportMsg("显示画面,无声音");
-        //                            break;
-        //
-        //                        case 3:
-        //                            reportMsg("画面显示错位");
-        //                            break;
-        //                        case 4:
-        //                            reportMsg(errorMsg);
-        //                            break;
-        //                    }
-        //                }
-        //            });
-        //        }
+        else if (v == tvTangmu)
+        {
+            if (isDMOpened)
+            {
+                tvTangmu.setBackgroundResource(R.drawable.violet_frame_off_45dp);
+                tvTangmu.setTextColor(ContextCompat.getColor(VideoPlayActivity.this, R.color.text_violet_normal));
+                isDMOpened = false;
+                ToastUtil.show(VideoPlayActivity.this, "弹幕已关闭");
+            }
+            else
+            {
+                tvTangmu.setTextColor(ContextCompat.getColor(VideoPlayActivity.this, R.color.white));
+                tvTangmu.setBackgroundResource(R.drawable.violet_frame_on_45dp);
+                isDMOpened = true;
+                ToastUtil.show(VideoPlayActivity.this, "弹幕已开启");
+            }
+        }
+        else if (v == mFullscreenIv)
+        {
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            {
+                setFullscreen(View.GONE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                mFullscreenIv.setImageResource(R.drawable.ic_nofull_screen);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout
+                        .LayoutParams.MATCH_PARENT);
+                videoPlayer.setLayoutParams(layoutParams);
+            }
+            else
+            {
+                setFullscreen(View.VISIBLE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                mFullscreenIv.setImageResource(R.drawable.ic_full_screen);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, sp2px(200));
+                videoPlayer.setLayoutParams(layoutParams);
+            }
+
+        }
+
     }
 
+    private void setFullscreen(int status)
+    {
+        rlBottom.setVisibility(status);
+        rlTop.setVisibility(status);
+        line.setVisibility(status);
+        scrollView.setVisibility(status);
+    }
 
     private void reportMsg(String msg)
     {
@@ -1377,8 +1344,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     {
         super.onDestroy();
         GSYVideoManager.releaseAllVideos();
-        //        if (orientationUtils != null)
-        //            orientationUtils.releaseListener();
+        if (orientationUtils != null) orientationUtils.releaseListener();
 
         endTime = System.currentTimeMillis();
         long duration = (endTime - startTime) / 100;
@@ -1399,16 +1365,40 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     public void onBackPressed()
     {
         //        //先返回正常状态
-        //        if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        //        {
-        //            videoPlayer.getFullscreenButton().performClick();
-        //            return;
-        //        }
-        //释放所有
-        videoPlayer.setVideoAllCallBack(null);
+//        if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+//        {
+//            videoPlayer.getFullscreenButton().performClick();
+//            return;
+//        }
+//        //释放所有
+//        videoPlayer.setVideoAllCallBack(null);
         super.onBackPressed();
     }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
+        {
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            {
+                setFullscreen(View.VISIBLE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                mFullscreenIv.setImageResource(R.drawable.ic_full_screen);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, sp2px(200));
+                videoPlayer.setLayoutParams(layoutParams);
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
+                StatusBarUtil.StatusBarLightMode(VideoPlayActivity.this, false);
+                return false;
+            }
+            return super.onKeyDown(keyCode, event);
+        }
+        else
+        {
+            return super.onKeyDown(keyCode, event);
+        }
 
+    }
     @Override
     public void notify(String action, String resultCode, String resultMsg, Object obj)
     {
@@ -1590,7 +1580,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("DemoActivity", "requestCode=" + requestCode + " resultCode=" + resultCode);
-        if ((int) (Math.random() * 100) <= 80) mHandler.sendEmptyMessage(GET_TASK_SHARE_CODE);
+        if ((int) (Math.random() * 100) <= 20) mHandler.sendEmptyMessage(GET_SHARE_CODE);
 
     }
 
@@ -1604,6 +1594,8 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 finish();
                 break;
             case R.id.iv_share:
+                showProgressDialog();
+                mHandler.sendEmptyMessage(GET_SHARE_CODE);
                 break;
         }
     }
@@ -1669,6 +1661,16 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         }
     }
 
+    int mWSSocketConnectCount = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
     class WsListener extends WebSocketAdapter
     {
         @Override
@@ -1704,7 +1706,20 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
         {
             super.onConnectError(websocket, exception);
             LogUtil.e("onTextMessage", "连接错误：" + exception.getMessage());
-            initWebSocket();
+
+            if (mWSSocketConnectCount < 10)
+            {
+                mWSSocketConnectCount++;
+                mHandler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        initWebSocket();
+                    }
+                }, 30 * 1000);
+            }
+
         }
 
         @Override

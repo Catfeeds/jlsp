@@ -52,7 +52,7 @@
         <com.zb.wyd.widget.MyVideoPlayer
             android:id="@+id/detail_player"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dm_200"
+            android:layout_height="200dp"
             android:layout_below="@+id/rl_top" />
 
 
@@ -63,6 +63,7 @@
     </FrameLayout>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/line"

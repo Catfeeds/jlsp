@@ -43,6 +43,7 @@
                 android:id="@+id/sp_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:layout_toLeftOf="@+id/iv_setting"
                 android:orientation="horizontal">
 
@@ -80,10 +81,18 @@
                 <ImageView
                     android:id="@+id/fullscreen"
                     android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:paddingRight="16dp"
                     android:scaleType="center"
                     android:src="@drawable/video_enlarge" />
+
+                <ImageView
+                    android:id="@+id/iv_fullscreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="16dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_full_screen" />
 
             </LinearLayout>
 

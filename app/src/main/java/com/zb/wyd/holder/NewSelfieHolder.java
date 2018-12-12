@@ -52,7 +52,7 @@ public class NewSelfieHolder extends SelfieBaseHolder
         mRecyclerView = (MaxRecyclerView) rootView.findViewById(R.id.rv_photo);
         itemLayout = (LinearLayout) rootView.findViewById(R.id.ll_item);
         mFavourCountTv = (TextView) rootView.findViewById(R.id.tv_favour_count);
-        mViewCountTv= (TextView) rootView.findViewById(R.id.tv_view_count);
+        mViewCountTv = (TextView) rootView.findViewById(R.id.tv_view_count);
     }
 
 
@@ -62,8 +62,11 @@ public class NewSelfieHolder extends SelfieBaseHolder
         mFavourCountTv.setText(basePhotoInfo.getFavour_count());
         mViewCountTv.setText(basePhotoInfo.getView_count());
         mDescTv.setText(basePhotoInfo.getDesc());
-        mUpdateTimeTv.setText(basePhotoInfo.getAdd_time());
+        mUpdateTimeTv.setText(basePhotoInfo.getAdd_time() + "  " + basePhotoInfo.getScore() + "分");
         UserInfo userInfo = basePhotoInfo.getUserInfo();
+
+        String tags = basePhotoInfo.getTags();
+
         if (null != userInfo)
         {
             mUserNameTv.setText(userInfo.getUnick());
@@ -86,8 +89,6 @@ public class NewSelfieHolder extends SelfieBaseHolder
                 listener.onItemClick(v, p);
             }
         });
-
-
 
 
         List<PhotoInfo> list = new ArrayList<>();

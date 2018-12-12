@@ -2,36 +2,31 @@ package com.zb.wyd.json;
 
 
 import com.zb.wyd.entity.ChannelInfo;
+import com.zb.wyd.entity.HostInfo;
 import com.zb.wyd.entity.LiveInfo;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  */
 public class VideoStreamHandler extends JsonHandler
 {
-    private ChannelInfo channelInfo;
-    private String      uri;
-    private String has_favorite;
-    private Boolean 	stand;
-    public ChannelInfo getChannelInfo()
-    {
-        return channelInfo;
-    }
+    private String uri;
 
     public String getUri()
     {
         return uri;
     }
 
-    public String getHas_favorite()
-    {
-        return has_favorite;
-    }
+    private List<HostInfo> hostInfoList = new ArrayList<>();
 
-    public Boolean getStand()
+    public List<HostInfo> getHostInfoList()
     {
-        return stand;
+        return hostInfoList;
     }
 
     @Override
@@ -45,13 +40,24 @@ public class VideoStreamHandler extends JsonHandler
             if (null != obj)
             {
                 uri = obj.optString("uri");
-                stand= obj.optBoolean("stand");
-                has_favorite = obj.optString("has_favorite");
-                channelInfo = new ChannelInfo(obj.optJSONObject("channel"));
+
+                JSONArray arr = obj.optJSONArray("hosts");
+
+                if(null != arr)
+                {
+                    for (int i = 0; i < arr.length(); i++)
+                    {
+                        HostInfo mHostInfo = new HostInfo(arr.optJSONObject(i));
+                        hostInfoList.add(mHostInfo);
+
+                    }
+                }
+
             }
 
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }

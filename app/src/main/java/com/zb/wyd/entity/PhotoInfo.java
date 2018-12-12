@@ -25,7 +25,7 @@ public class PhotoInfo
     private String free_album;
     private String charge_album;//
     private String favour_count;//0
-
+    private int score;
     private String   view_count;
     private String add_time;//2018-06-22
     private PriceInfo priceInfo;
@@ -49,6 +49,7 @@ public class PhotoInfo
 
     public PhotoInfo(JSONObject obj)
     {
+        this.score = obj.optInt("score");
         this.view_count = obj.optString("view_count");
         this.savename = obj.optString("savename");
         this.savepath = obj.optString("savepath");
@@ -115,6 +116,16 @@ public class PhotoInfo
 
             }
         }
+    }
+
+    public int getScore()
+    {
+        return score;
+    }
+
+    public void setScore(int score)
+    {
+        this.score = score;
     }
 
     public String getUid()

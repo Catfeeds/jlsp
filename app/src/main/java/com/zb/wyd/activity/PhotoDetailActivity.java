@@ -105,6 +105,8 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     @BindView(R.id.tv_set_score)
     TextView tvScore;
 
+    @BindView(R.id.ll_tags)
+    LinearLayout tagsLayout;
 
     private List<String> freePic = new ArrayList<>();
     private List<String> chargePic = new ArrayList<>();
@@ -131,7 +133,6 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
     private static final String GET_PH0TO_DETAIL = "get_photo_detail";
     private static final String GET_COMMENT_LIST = " get_comment_list";
     private final String UN_FAVORITE_LIKE = "un_favorite_like";
-
     private static final String OPAER_SCORE = "opaer_score";
 
 
@@ -202,9 +203,9 @@ public class PhotoDetailActivity extends BaseActivity implements IRequestListene
                                 tvLabel.setTextSize(12);
                                 tvLabel.setTextColor(ContextCompat.getColor(PhotoDetailActivity
                                         .this, R.color.white));
-                                tvLabel.setBackgroundResource(labelBgArr[i]);
+                                tvLabel.setBackgroundResource(labelBgArr[labelBgArr.length/(i+1)-1]);
                                 tvLabel.setLayoutParams(params);
-                                //   llLabel.addView(tvLabel);
+                                tagsLayout.addView(tvLabel);
 
                             }
                         }

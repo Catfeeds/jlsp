@@ -60,9 +60,8 @@
                 android:id="@+id/tv_update_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6天前 9700次浏览"
                 android:textColor="@color/text_violet_normal"
-                android:textSize="@dimen/t14" />
+                android:textSize="@dimen/t12" />
 
         </LinearLayout>
 
@@ -77,7 +76,6 @@
         android:layout_marginTop="@dimen/dm_10"
         android:textColor="#FF5A4462 "
         android:textSize="@dimen/t14" />
-
 
     <com.zb.wyd.widget.MaxRecyclerView
         android:id="@+id/rv_photo"

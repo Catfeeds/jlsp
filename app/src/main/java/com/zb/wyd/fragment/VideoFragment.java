@@ -45,6 +45,7 @@ import com.zb.wyd.utils.ConstantUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
 import com.zb.wyd.widget.CategoryPopupWindow;
+import com.zb.wyd.widget.PhotoSortPopupWindow;
 import com.zb.wyd.widget.VerticalSwipeRefreshLayout;
 import com.zb.wyd.widget.list.refresh.PullToRefreshBase;
 import com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView;
@@ -66,23 +67,30 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
 {
     @BindView(R.id.banner)
     CustomBanner              mBanner;
-    @BindView(R.id.iv_show)
-    ImageView                 ivMore;
-    @BindView(R.id.rv_cata)
-    RecyclerView              rvCata;
-    @BindView(R.id.topView)
-    View                      topView;
-    @BindView(R.id.tv_new)
-    TextView                  tvNew;
-    @BindView(R.id.tv_collection)
-    TextView                  tvCollection;
     @BindView(R.id.pullToRefreshRecyclerView)
     PullToRefreshRecyclerView mPullToRefreshRecyclerView;
     @BindView(R.id.swipeRefresh)
     VerticalSwipeRefreshLayout mSwipeRefreshLayout;
 
+    @BindView(R.id.rl_category)
+    View mCategoryLayout;
+
+    @BindView(R.id.tv_category_name)
+    TextView tvCategoryName;
+    @BindView(R.id.iv_opened)
+    ImageView ivOpened;
+
+
+    @BindView(R.id.rl_sort)
+    View mSortLayout;
+    @BindView(R.id.tv_sort_name)
+    TextView tvSortName;
+    @BindView(R.id.iv_sort_opened)
+    ImageView ivSortOpened;
+
+
+
     private List<CategoryInfo> categoryInfoList = new ArrayList<>();
-    private CategoryAdapter mCategoryAdapter;
     private View rootView = null;
     private Unbinder unbinder;
 
@@ -98,7 +106,6 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
 
     private VideoAdapter mVideoAdapter;
 
-    private boolean isNew  = false;
     private String  mVideoTag = "";
     private String  sort   = "new";
 
@@ -142,12 +149,6 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                     mCataInfo.setId("0");
                     mCataInfo.setName("全部");
                     categoryInfoList.add(0, mCataInfo);
-                    mCategoryAdapter.notifyDataSetChanged();
-
-                    if (!categoryInfoList.isEmpty())
-                    {
-                        mVideoTag = categoryInfoList.get(0).getName();
-                    }
 
                     break;
 
@@ -264,51 +265,15 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
     protected void initEvent()
     {
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        ivMore.setOnClickListener(this);
         mPullToRefreshRecyclerView.setOnRefreshListener(this);
         mPullToRefreshRecyclerView.setPullRefreshEnabled(true);
-        tvNew.setOnClickListener(this);
-        tvCollection.setOnClickListener(this);
+        mCategoryLayout.setOnClickListener(this);
+        mSortLayout.setOnClickListener(this);
     }
 
     @Override
     protected void initViewData()
     {
-        tvNew.setSelected(true);
-        tvCollection.setSelected(false);
-        isNew = true;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvCata.setLayoutManager(linearLayoutManager);
-
-        mCategoryAdapter = new CategoryAdapter(categoryInfoList, getActivity(), new MyItemClickListener()
-        {
-            @Override
-            public void onItemClick(View view, int position)
-            {
-                for (int i = 0; i < categoryInfoList.size(); i++)
-                {
-                    if (i == position)
-                    {
-                        categoryInfoList.get(position).setSelected(true);
-                    }
-                    else
-                    {
-                        categoryInfoList.get(i).setSelected(false);
-                    }
-                }
-                mCategoryAdapter.notifyDataSetChanged();
-
-                mVideoTag = categoryInfoList.get(position).getName();
-                pn = 1;
-                mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
-
-
-            }
-        });
-        rvCata.setAdapter(mCategoryAdapter);
-
-
         mRecyclerView = mPullToRefreshRecyclerView.getRefreshableView();
         mPullToRefreshRecyclerView.setPullLoadEnabled(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
@@ -568,11 +533,11 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
     }
 
     private CategoryPopupWindow mCataPopupWindow;
-
+    private PhotoSortPopupWindow mPhotoSortPopupWindow;
     @Override
     public void onClick(View v)
     {
-        if (v == ivMore)
+        if (v == mCategoryLayout)
         {
 
             mCataPopupWindow = new CategoryPopupWindow(getActivity(), categoryInfoList, new MyItemClickListener()
@@ -591,39 +556,68 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
                             categoryInfoList.get(i).setSelected(false);
                         }
                     }
-                    mCategoryAdapter.notifyDataSetChanged();
                     mVideoTag = categoryInfoList.get(position).getName();
+                    tvCategoryName.setText(mVideoTag);
+                    pn=1;
                     mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
                 }
             });
 
 
-            if (!categoryInfoList.isEmpty())
+            if (!mCataPopupWindow.isShowing())
             {
-                mCataPopupWindow.showAsDropDown(topView);
+
+                mCataPopupWindow.showAsDropDown(mCategoryLayout);
+                ivOpened.setImageResource(R.drawable.ic_arrow_up);
+            }
+            else
+            {
+                mCataPopupWindow.dismiss();
+                ivOpened.setImageResource(R.drawable.ic_arrow_down);
             }
         }
-        else if (v == tvNew)
+        else if (v == mSortLayout)
         {
-            mVideoAdapter.setNew(true);
-            tvNew.setSelected(true);
-            tvCollection.setSelected(false);
-            pn = 1;
-            mRefreshStatus = 0;
-            sort = "new";
-            loadData();
+            if (null == mPhotoSortPopupWindow)
+            {
+                mPhotoSortPopupWindow = new PhotoSortPopupWindow(getActivity(), new MyItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(View view, int position)
+                    {
+                        mPhotoSortPopupWindow.dismiss();
+                        switch (position)
+                        {
+                            case 0:
+                                sort = "new";
+                                tvSortName.setText("最新发布");
+                                break;
+                            case 1:
+                                sort = "fav";
+                                tvSortName.setText("最多收藏");
+                                break;
+                            case 2:
+                                sort = "score";
+                                tvSortName.setText("评分最高");
+                                break;
+                        }
+                        pn=1;
+                        mHandler.sendEmptyMessage(GET_VIDEO_LIST_CODE);
+                    }
+                });
+            }
 
-        }
-        else if (v == tvCollection)
-        {
-            mVideoAdapter.setNew(false);
-            tvNew.setSelected(false);
-            tvCollection.setSelected(true);
-            pn = 1;
-            mRefreshStatus = 0;
-            sort = "fav";
-            loadData();
 
+            if (mPhotoSortPopupWindow.isShowing())
+            {
+                mPhotoSortPopupWindow.dismiss();
+                ivSortOpened.setImageResource(R.drawable.ic_arrow_up);
+            }
+            else
+            {
+                mPhotoSortPopupWindow.showAsDropDown(mSortLayout);
+                ivSortOpened.setImageResource(R.drawable.ic_arrow_up);
+            }
         }
     }
 
