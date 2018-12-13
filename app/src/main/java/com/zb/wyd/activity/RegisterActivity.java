@@ -147,9 +147,10 @@ public class RegisterActivity extends BaseActivity implements IRequestListener
                 return;
             }
 
-            if (!etPwd.equals(pwd1))
+            if (!pwd.equals(pwd1))
             {
                 ToastUtil.show(this, "两次密码输入不一致");
+                return;
             }
             Map<String, String> valuePairs = new HashMap<>();
             valuePairs.put("user_name", account);

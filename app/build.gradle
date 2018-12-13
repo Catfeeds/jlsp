@@ -31,7 +31,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.zb.wyd"
+        applicationId "com.zb.wyd1214"
         minSdkVersion 22
         targetSdkVersion 26
         versionCode 25200
@@ -49,7 +49,11 @@ android {
 //        sourceCompatibility javaVersion
 //        targetCompatibility javaVersion
 //    }
-
+    repositories {
+        flatDir {
+            dirs 'libs'   // aar目录
+        }
+    }
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -85,14 +89,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
     compile 'com.bartoszlipinski.recyclerviewheader:library:1.2.0'
-    compile project(':visitor-20180822')
+//    compile project(':visitor-20180822')
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.umeng.sdk:common:1.5.0'
     compile 'com.umeng.sdk:analytics:7.5.0'
     implementation 'com.github.DingMouRen:LayoutManagerGroup:1e6f4f96eb'
     compile 'com.github.zrunker:ZTextView:v1.0.2'
     compile 'com.dalong:marqueeview:1.0.1'
-    implementation files('libs/websocket.jar')
     compile project(':camera')
     compile project(':video-effect')
     compile project(':video-compressor')
@@ -107,6 +110,6 @@ dependencies {
     compile 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
    // compile project(':danmulibrary')
     //compile 'com.kd.easybarrage:library:0.0.1'
-
     implementation 'com.neovisionaries:nv-websocket-client:2.2'
+    compile(name: 'visitor', ext: 'aar')
 }

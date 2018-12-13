@@ -46,7 +46,7 @@ public class Urls
     //限时免费
     public static String getFreeLive()
     {
-        return ConfigManager.instance().getDomainName() + "/live/free";
+        return ConfigManager.instance().getDomainName() + "/live/index";
     }
 
     //新晋主播

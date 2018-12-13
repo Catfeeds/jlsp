@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="可用积分：1600"
+        android:text="可用积分：0"
         android:textColor="#A56A24"
         android:textSize="@dimen/t16" />
 

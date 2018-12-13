@@ -1357,7 +1357,10 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
             danmakuView.release();
             danmakuView = null;
         }
-        mWebSocket.sendClose();
+       if(null !=mWebSocket)
+        {
+            mWebSocket.sendClose();
+        }
 
     }
 
@@ -1625,7 +1628,6 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
     //****************webscoket
 
 
-    //private MySocketConnection mMySocketConnection;
 
     private WebSocket mWebSocket;
     private Timer timer = new Timer();
@@ -1665,13 +1667,6 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
 
     int mWSSocketConnectCount = 0;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
     class WsListener extends WebSocketAdapter
     {
