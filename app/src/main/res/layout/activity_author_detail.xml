@@ -242,6 +242,34 @@
                     android:background="@color/line" />
 
                 <LinearLayout
+                    android:id="@+id/ll_my_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dm_10">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_yumin" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dm_15"
+                        android:text="我的资产"
+                        android:textColor="@color/text_violet"
+                        android:textSize="@dimen/t14" />
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
                     android:id="@+id/ll_dy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -419,7 +447,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_yumin" />
+                        android:src="@drawable/ic_safe" />
 
                     <TextView
                         android:layout_width="wrap_content"

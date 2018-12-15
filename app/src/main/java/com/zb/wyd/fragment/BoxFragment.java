@@ -28,6 +28,7 @@ import com.zb.wyd.activity.PhotoDetailActivity;
 import com.zb.wyd.activity.PhotoListActivity;
 import com.zb.wyd.activity.VideoPlayActivity;
 import com.zb.wyd.activity.VidoeListActivity;
+import com.zb.wyd.activity.WebViewActivity;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
@@ -53,7 +54,8 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
     private WebView mWebView;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState)
     {
 
         if (rootView == null)
@@ -107,7 +109,8 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
                                       }
 
                                       @Override
-                                      public boolean shouldOverrideUrlLoading(WebView view, String url)
+                                      public boolean shouldOverrideUrlLoading(WebView view,
+                                                                              String url)
                                       {
                                           if (url != null && url.startsWith("appay"))
                                           {
@@ -119,10 +122,14 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
                                           }
                                           //                                          else
                                           //                                          {
-                                          //                                              Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                          //                                              startActivity(intent);
+                                          //                                              Intent
+                                          // intent = new Intent(Intent.ACTION_VIEW, Uri.parse
+                                          // (url));
+                                          //
+                                          // startActivity(intent);
                                           //                                              finish();
-                                          //                                              return true;
+                                          //                                              return
+                                          // true;
                                           //                                          }
                                           return true;
                                       }
@@ -136,7 +143,8 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
                                           }
                                           else
                                           {  //其他的URL则会开启一个Acitity然后去调用原生APP
-                                              Intent in = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                              Intent in = new Intent(Intent.ACTION_VIEW, Uri
+                                                      .parse(url));
                                               startActivity(in);
                                               return null;
                                           }
@@ -171,7 +179,8 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
         mWebView.setDownloadListener(new DownloadListener()
         {
             @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength)
+            public void onDownloadStart(String url, String userAgent, String contentDisposition,
+                                        String mimetype, long contentLength)
             {
                 try
                 {
@@ -194,19 +203,23 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void initViewData()
     {
-        mWebView.loadUrl(Urls.getBoxUrl());
+
     }
 
 
-    public  void updateView()
+    public void updateView()
     {
-        mWebView.loadUrl(Urls.getBoxUrl());
+        if (null != mWebView)
+        {
+            mWebView.loadUrl(Urls.getBoxUrl(getActivity()));
+        }
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
+        mWebView.loadUrl(Urls.getBoxUrl(getActivity()));
     }
 
 
@@ -237,8 +250,19 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
         {
 
         }
-
-
+        @JavascriptInterface
+        public void browser( String url)
+        {
+            Uri uri=Uri.parse(url);
+            Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(intent);
+        }
+        @JavascriptInterface
+        public void login()
+        {
+            Intent intent=new Intent(getActivity(),LoginActivity.class);
+            startActivity(intent);
+        }
         @JavascriptInterface
         public void openOuterWeb(String url)
         {
@@ -251,7 +275,8 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
         public void copy(String text)
         {
             ToastUtil.show(getActivity(), "内容已复制到剪贴板");
-            ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipboardManager cm = (ClipboardManager) getActivity().getSystemService(Context
+                    .CLIPBOARD_SERVICE);
             cm.setText(text);
         }
 
@@ -293,13 +318,15 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
         public void videolist(String cat_id)
         {
             if (!TextUtils.isEmpty(cat_id))
-                startActivity(new Intent(getActivity(), VidoeListActivity.class).putExtra("sort", "new").putExtra("cta_id", cat_id));
+                startActivity(new Intent(getActivity(), VidoeListActivity.class).putExtra("sort",
+                        "new").putExtra("cta_id", cat_id));
         }
 
         @JavascriptInterface
         public void photolist(String cat_id)
         {
-            startActivity(new Intent(getActivity(), PhotoListActivity.class).putExtra("cat_id", cat_id));
+            startActivity(new Intent(getActivity(), PhotoListActivity.class).putExtra("cat_id",
+                    cat_id));
         }
 
         @JavascriptInterface
@@ -307,7 +334,8 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
         {
             if (MyApplication.getInstance().isLogin())
             {
-                startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra("biz_id", photo_id));
+                startActivity(new Intent(getActivity(), PhotoDetailActivity.class).putExtra
+                        ("biz_id", photo_id));
             }
             else
             {
@@ -325,7 +353,15 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
             intent1.setType("text/plain");
             startActivity(Intent.createChooser(intent1, "分享"));
         }
-
+        @JavascriptInterface
+        public void share( String url)
+        {
+            String shareCnontent = url;
+            Intent intent1 = new Intent(Intent.ACTION_SEND);
+            intent1.putExtra(Intent.EXTRA_TEXT, shareCnontent);
+            intent1.setType("text/plain");
+            startActivity(Intent.createChooser(intent1, "分享"));
+        }
         @JavascriptInterface
         public void shareImage(final String cover)
         {

@@ -305,20 +305,19 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
                                 {
                                     //  startActivity(new Intent(VideoPlayActivity.this,
                                     // MemberActivity.class));
-                                    startActivity(new Intent(H5VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
-                                            "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl
-                                            ("vip")));
+                                    startActivity(new Intent(H5VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员")
+                                            .putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip",
+                                                    H5VideoPlayActivity.this)));
                                 }
                                 else//去做任务
                                 {
 
                                     // sendBroadcast(new Intent(MainActivity.TAB_TASK));
                                     //startActivity(new Intent(VideoPlayActivity.this,   TaskActivity.class));
-                                 //   finish();
+                                    //   finish();
 
-                                    startActivity(new Intent(H5VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
-                                            "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl
-                                            ()));
+                                    startActivity(new Intent(H5VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员")
+                                            .putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl()));
                                 }
 
                             }
@@ -503,8 +502,8 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
                     break;
 
                 case GET_DAN_MU_CODE:
-//                    getVideoDanmu();
-//                    mHandler.sendEmptyMessageDelayed(GET_DAN_MU_CODE, 300 * 1000);
+                    //                    getVideoDanmu();
+                    //                    mHandler.sendEmptyMessageDelayed(GET_DAN_MU_CODE, 300 * 1000);
                     break;
 
                 case GET_DAN_MU_SUCCESS:
@@ -987,12 +986,12 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
                 if ("1".equals(content))
                 {
                     startActivity(new Intent(H5VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip",H5VideoPlayActivity.this)));
                 }
                 else
                 {
                     startActivity(new Intent(H5VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("svip")));
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("svip",H5VideoPlayActivity.this)));
                 }
             }
         });
@@ -1008,8 +1007,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         valuePairs.put("co_biz", "video");
         valuePairs.put("timepos", timepos + "");
         valuePairs.put("duration", "300");
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getDanmuUrl(), this, HttpRequest.GET, GET_DAN_MU, valuePairs, new
-                DanmuInfoListHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getDanmuUrl(), this, HttpRequest.GET, GET_DAN_MU, valuePairs, new DanmuInfoListHandler());
         timepos += 300;
     }
 
@@ -1029,8 +1027,8 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("tags", tags);
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getBoxVideoRecommendUrl(), this, HttpRequest.GET, GET_VIDEO_RECOMMEND, valuePairs,
-                new VideoInfoListHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getBoxVideoRecommendUrl(), this, HttpRequest.GET, GET_VIDEO_RECOMMEND, valuePairs, new
+                VideoInfoListHandler());
     }
 
     private void getVideoStream()
@@ -1083,8 +1081,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("finger", finger);
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getBuyLiveUrl(), this, HttpRequest.POST, BUY_VIDEO, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getBuyLiveUrl(), this, HttpRequest.POST, BUY_VIDEO, valuePairs, new ResultHandler());
     }
 
     private void getTaskShareUrl()
@@ -1101,8 +1098,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getShareApiUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getShareApiUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new ResultHandler());
     }
 
 
@@ -1114,8 +1110,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         valuePairs.put("co_biz", "photo");
         valuePairs.put("action", "score");
         valuePairs.put("value", String.valueOf(value * 10));
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, OPAER_SCORE, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, OPAER_SCORE, valuePairs, new ResultHandler());
     }
 
     @Override
@@ -1237,8 +1232,8 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
                 setFullscreen(View.GONE);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 mFullscreenIv.setImageResource(R.drawable.ic_nofull_screen);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout
-                        .LayoutParams.MATCH_PARENT);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams
+                        .MATCH_PARENT);
                 videoPlayer.setLayoutParams(layoutParams);
             }
             else
@@ -1265,14 +1260,13 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
     private void reportMsg(String msg)
     {
         showProgressDialog();
-        String content = "{\"model\":\"" + SystemUtil.getSystemModel() + "\",\"error\":\"" + msg + "\",\"sys\":\"" + SystemUtil.getSystemVersion()
-                + "\",\"video_id\":\"" + biz_id + "\"}";
+        String content = "{\"model\":\"" + SystemUtil.getSystemModel() + "\",\"error\":\"" + msg + "\",\"sys\":\"" + SystemUtil.getSystemVersion() + "\"," +
+                "\"video_id\":\"" + biz_id + "\"}";
         LogUtil.e("TAG", "error-->" + content);
 
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("content", content);
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getMsgReportUrl(), this, HttpRequest.POST, MSG_REPORT, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getMsgReportUrl(), this, HttpRequest.POST, MSG_REPORT, valuePairs, new ResultHandler());
 
     }
 
@@ -1284,8 +1278,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "collect");
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, VIDEO_COLLECTION, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, VIDEO_COLLECTION, valuePairs, new ResultHandler());
     }
 
     private void unCollect()
@@ -1306,8 +1299,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "like");
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, FAVORITE_LIKE, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, FAVORITE_LIKE, valuePairs, new ResultHandler());
     }
 
     private void unFavoriteLike()
@@ -1317,8 +1309,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         valuePairs.put("biz_id", biz_id);
         valuePairs.put("co_biz", "video");
         valuePairs.put("action", "unlike");
-        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, UN_FAVORITE_LIKE, valuePairs, new
-                ResultHandler());
+        DataRequest.instance().request(H5VideoPlayActivity.this, Urls.getOperaUrl(), this, HttpRequest.POST, UN_FAVORITE_LIKE, valuePairs, new ResultHandler());
     }
 
     @Override
@@ -1360,7 +1351,7 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
             danmakuView.release();
             danmakuView = null;
         }
-       if(null !=mWebSocket)
+        if (null != mWebSocket)
         {
             mWebSocket.sendClose();
         }
@@ -1631,7 +1622,6 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
     //****************webscoket
 
 
-
     private WebSocket mWebSocket;
     private Timer timer = new Timer();
     private TimerTask webSocketTask;
@@ -1723,8 +1713,8 @@ public class H5VideoPlayActivity extends BaseActivity implements IRequestListene
         }
 
         @Override
-        public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer)
-                throws Exception
+        public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws
+                Exception
         {
             super.onDisconnected(websocket, serverCloseFrame, clientCloseFrame, closedByServer);
             LogUtil.e("onTextMessage", "断开连接：");

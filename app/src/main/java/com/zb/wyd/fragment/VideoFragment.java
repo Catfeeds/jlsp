@@ -190,7 +190,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
 
                     break;
                 case GET_AD_lIST_CODE:
-                    getAdList();
+                   // getAdList();
                     break;
 
             }

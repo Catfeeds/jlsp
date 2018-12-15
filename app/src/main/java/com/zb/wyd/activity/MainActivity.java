@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity implements IRequestListener
         fragmentList.add(new DouyinFragment());
         fragmentList.add(new VideoFragment());
         fragmentList.add(new SelfieFragment());
-        fragmentList.add(new LiveIndexFragment());
+        fragmentList.add(mBoxFragment);
 
     }
 

@@ -92,10 +92,12 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
     @BindView(R.id.ll_safe)
     LinearLayout llSafe;
     @BindView(R.id.ll_block_three)
-    ImageView mHasMsgIv;
-    @BindView(R.id.iv_has_msg)
-
     LinearLayout llBlockThree;
+
+    @BindView(R.id.iv_has_msg)
+    ImageView mHasMsgIv;
+
+
     private UserInfo userInfo;
 
     private String shareCnontent;
@@ -157,7 +159,7 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                             tvUserName.setText(unick);
                         }
 
-                        if(userInfo.getMsgnum() ==0)
+                        if (userInfo.getMsgnum() == 0)
                         {
                             mHasMsgIv.setVisibility(View.GONE);
                         }
@@ -175,7 +177,7 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                             ivSex.setImageResource(R.drawable.ic_woman);
                         }
                         tvUserLocation.setText(userInfo.getLocation());
-                        tvInvitationCode.setText("@".equals(userInfo.getInvite())?"申请邀请码":userInfo.getInvite());
+                        tvInvitationCode.setText("@".equals(userInfo.getInvite()) ? "申请邀请码" : userInfo.getInvite());
 
                         switch (vip_type)
                         {
@@ -257,8 +259,8 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
             tvLogin.setVisibility(View.GONE);
             tvLogout.setVisibility(View.VISIBLE);
             Map<String, String> valuePairs = new HashMap<>();
-            DataRequest.instance().request(AuthorDetailActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, GET_USER_DETAIL, valuePairs,
-                    new UserInfoHandler());
+            DataRequest.instance().request(AuthorDetailActivity.this, Urls.getUserInfoUrl(), this, HttpRequest.GET, GET_USER_DETAIL, valuePairs, new
+                    UserInfoHandler());
         }
         else
         {
@@ -266,12 +268,14 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
             tvLogin.setVisibility(View.VISIBLE);
         }
     }
+
     private void getShareUrl()
     {
         Map<String, String> valuePairs = new HashMap<>();
         valuePairs.put("co_biz", "app");
         DataRequest.instance().request(AuthorDetailActivity.this, Urls.getShareApiUrl(), this, HttpRequest.GET, GET_SHARE, valuePairs, new ResultHandler());
     }
+
     @Override
     public void notify(String action, String resultCode, String resultMsg, Object obj)
     {
@@ -312,13 +316,19 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
         }
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_edit, R.id.tv_xufei, R.id.tv_vip, R.id.ll_my_works, R.id.ll_dy, R.id.ll_block_one, R.id.ll_my_msg, R.id
-            .ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin, R.id.ll_safe, R.id.tv_login, R.id.tv_logout, R.id
-            .ll_block_three, R.id.ll_code})
+    @OnClick({R.id.ll_my_order, R.id.iv_back, R.id.iv_edit, R.id.tv_xufei, R.id.tv_vip, R.id.ll_my_works, R.id.ll_dy, R.id.ll_block_one, R.id.ll_my_msg, R.id
+            .ll_collection, R.id.ll_share_friend, R.id.ll_block_two, R.id.ll_yumin, R.id.ll_safe, R.id.tv_login, R.id.tv_logout, R.id.ll_block_three, R.id
+            .ll_code})
     public void onViewClicked(View view)
     {
         switch (view.getId())
         {
+            case R.id.ll_my_order:
+                checkLogin();
+                startActivity(new Intent(AuthorDetailActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "我的资产").putExtra
+                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getOrderIndexUrl()));
+                break;
+
             case R.id.ll_code:
 
                 checkLogin();
@@ -326,8 +336,8 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
                 {
                     showProgressDialog();
                     Map<String, String> valuePairs = new HashMap<>();
-                    DataRequest.instance().request(AuthorDetailActivity.this, Urls.getInvitationCodeUrl(), this, HttpRequest.GET,
-                            GET_INVITATION_CODE, valuePairs, new ResultHandler());
+                    DataRequest.instance().request(AuthorDetailActivity.this, Urls.getInvitationCodeUrl(), this, HttpRequest.GET, GET_INVITATION_CODE,
+                            valuePairs, new ResultHandler());
                 }
                 else
                 {
@@ -348,12 +358,12 @@ public class AuthorDetailActivity extends BaseActivity implements IRequestListen
             case R.id.tv_xufei:
                 checkLogin();
                 startActivity(new Intent(AuthorDetailActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
+                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip", AuthorDetailActivity.this)));
                 break;
             case R.id.tv_vip:
                 checkLogin();
                 startActivity(new Intent(AuthorDetailActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
+                        (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip", AuthorDetailActivity.this)));
                 break;
             case R.id.ll_my_works:
                 checkLogin();

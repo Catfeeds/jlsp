@@ -408,16 +408,16 @@ public class Urls
     }
     public static String getBoxVideoRecommendUrl()
     {
-        return ConfigManager.instance().getDomainName() + "/box/vrecommend";
+        return ConfigManager.instance().getDomainName() + "/box/vrecom";
     }
     public static String getDanmuUrl()
     {
         return ConfigManager.instance().getDomainName() + "/data/danmu";
     }
 
-    public static String getBoxUrl()
+    public static String getBoxUrl(Context context)
     {
-        return ConfigManager.instance().getDomainName() + "/box/index";
+        return ConfigManager.instance().getDomainName() + "/box/index?auth="+  ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(context) + "&device=and";
     }
 
     public static String getDataSearchUrl()
@@ -425,9 +425,9 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/data/search";
     }
 
-    public static String getPayUrl(String type)
+    public static String getPayUrl(String type,Context context)
     {
-        return ConfigManager.instance().getDomainName() + "/paypal/index?type=";
+        return ConfigManager.instance().getDomainName() + "/paypal/index?type="+type+"&auth="+  ConfigManager.instance().getUniqueCode() + "&mobile_id=" + APPUtils.getDeviceId(context) + "&device=and";
     }
 
     public static String getMyWorkUrl(Context context)
@@ -488,6 +488,9 @@ public class Urls
     }
 
 
-
+    public static String getOrderIndexUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/order/index";
+    }
 }
 

@@ -71,7 +71,7 @@ public class WebViewActivity extends Activity
     {
 
 
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
+        StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(WebViewActivity.this, false);
         mBackIv = (ImageView) findViewById(R.id.iv_back);
         mSubmitTv = (TextView) findViewById(R.id.tv_submit);
@@ -318,7 +318,7 @@ public class WebViewActivity extends Activity
                 mVideoInfo.setV_name("");
                 Bundle b = new Bundle();
                 b.putSerializable("VideoInfo", mVideoInfo);
-                startActivity(new Intent(WebViewActivity.this, VideoPlayActivity.class).putExtras(b));
+                startActivity(new Intent(WebViewActivity.this, H5VideoPlayActivity.class).putExtras(b));
                 finish();
             }
             else

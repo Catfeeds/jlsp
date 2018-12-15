@@ -60,7 +60,7 @@ public class WelComeActivity extends BaseActivity implements IRequestListener
     private static final int TEST_DOMAINNAME_FAIL    = 0x06;
     private static final int TEST_DOMAINNAME_SUCCESS = 0x07;
 
-    private String[]     parkedDomainArr = {"0816data.com", "hedayishu.com", "dayundao.com"};
+    private String[]     parkedDomainArr = {"zgmlaj.com", "cdrxyy.com", "6upon.com"};
     private List<String> domainNameList  = new ArrayList<>();
 
 
@@ -188,7 +188,7 @@ public class WelComeActivity extends BaseActivity implements IRequestListener
     private void initDomainName()
     {
         boolean test = false;
-        if (true)
+        if (test)
         {
             mDomainName = "https://rzjyzy.com";
             mHandler.sendEmptyMessage(TEST_DOMAINNAME_SUCCESS);

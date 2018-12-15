@@ -88,6 +88,11 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
 
     @BindView(R.id.refreshRecyclerView)
     PullToRefreshRecyclerView mPullToRefreshRecyclerView;
+
+
+    @BindView(R.id.ll_no_data)
+    LinearLayout mNoDataLayout;
+
     private RecyclerView mRecyclerView;
     private int pn = 1;
     private int mRefreshStatus;
@@ -132,6 +137,16 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
                         recommendLiveList.clear();
                     }
                     recommendLiveList.addAll(mLiveInfoListHandler.getLiveInfoList());
+                    if (recommendLiveList.isEmpty())
+                    {
+                        mNoDataLayout.setVisibility(View.VISIBLE);
+                        mPullToRefreshRecyclerView.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        mNoDataLayout.setVisibility(View.GONE);
+                        mPullToRefreshRecyclerView.setVisibility(View.VISIBLE);
+                    }
                     mRecommendAdapter.notifyDataSetChanged();
 
                     break;
@@ -164,7 +179,7 @@ public class LiveIndexFragment extends BaseFragment implements SwipeRefreshLayou
                     break;
 
                 case GET_AD_LIST_CODE:
-                    getAdList();
+//                    getAdList();
                     break;
 
 

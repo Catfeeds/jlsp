@@ -213,7 +213,7 @@ public class SelfieFragment extends BaseFragment implements IRequestListener, Vi
                     break;
 
                 case GET_AD_LIST_CODE:
-                    getAdList();
+//                    getAdList();
                     break;
             }
         }

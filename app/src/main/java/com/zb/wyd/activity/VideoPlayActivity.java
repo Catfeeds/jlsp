@@ -309,7 +309,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                                     // MemberActivity.class));
                                     startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
                                             "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl
-                                            ("vip")));
+                                            ("vip",VideoPlayActivity.this)));
                                 }
                                 else//去做任务
                                 {
@@ -319,7 +319,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                                  //   finish();
 
                                     startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
-                                            "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl
+                                            "任务").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl
                                             ()));
                                 }
 
@@ -989,12 +989,12 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                 if ("1".equals(content))
                 {
                     startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip")));
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("vip",VideoPlayActivity.this)));
                 }
                 else
                 {
                     startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE, "充值会员").putExtra
-                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("svip")));
+                            (WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getPayUrl("svip",VideoPlayActivity.this)));
                 }
             }
         });
