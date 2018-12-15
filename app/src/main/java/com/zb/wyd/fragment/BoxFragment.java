@@ -22,6 +22,7 @@ import android.webkit.WebViewClient;
 
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
+import com.zb.wyd.activity.H5VideoPlayActivity;
 import com.zb.wyd.activity.LoginActivity;
 import com.zb.wyd.activity.PhotoDetailActivity;
 import com.zb.wyd.activity.PhotoListActivity;
@@ -193,15 +194,21 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void initViewData()
     {
+        mWebView.loadUrl(Urls.getBoxUrl());
+    }
 
+
+    public  void updateView()
+    {
+        mWebView.loadUrl(Urls.getBoxUrl());
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        mWebView.loadUrl(Urls.getBoxUrl());
     }
+
 
     @Override
     public void onClick(View v)
@@ -273,7 +280,7 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
                 mVideoInfo.setV_name("");
                 Bundle b = new Bundle();
                 b.putSerializable("VideoInfo", mVideoInfo);
-                startActivity(new Intent(getActivity(), VideoPlayActivity.class).putExtras(b));
+                startActivity(new Intent(getActivity(), H5VideoPlayActivity.class).putExtras(b));
             }
             else
             {

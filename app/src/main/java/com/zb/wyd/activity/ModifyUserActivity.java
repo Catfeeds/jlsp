@@ -121,7 +121,7 @@ public class ModifyUserActivity extends BaseActivity implements IRequestListener
             showProgressDialog();
             Map<String, String> valuePairs = new HashMap<>();
             valuePairs.put("nick", name);
-            DataRequest.instance().request(this, Urls.getTaskprofileUrl(), this, HttpRequest.POST, SAVE_NICK, valuePairs,
+            DataRequest.instance().request(this, Urls.getEditUnickUrl(), this, HttpRequest.POST, SAVE_NICK, valuePairs,
                     new ResultHandler());
 
 

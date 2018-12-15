@@ -172,7 +172,7 @@ public class UserDetailActivity extends BaseActivity implements IRequestListener
     protected void initViews(Bundle savedInstanceState)
     {
         setContentView(R.layout.activity_user_detail);
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
+        StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(UserDetailActivity.this, false);
     }
 

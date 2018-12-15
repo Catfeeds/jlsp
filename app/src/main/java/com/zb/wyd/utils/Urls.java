@@ -182,7 +182,10 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/user/index";
     }
-
+    public static String getInvitationCodeUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/task/ivcreate";
+    }
     public static String getUserSignUrl()
     {
         return ConfigManager.instance().getDomainName() + "/task/sign";
@@ -204,6 +207,15 @@ public class Urls
         return ConfigManager.instance().getDomainName() + "/task/profile";
     }
 
+
+    public static String getEditPwdUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/ user/passwd";
+    }
+    public static String getEditUnickUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/ user/unick";
+    }
     public static String getFortuneDetailUrl()
     {
         return ConfigManager.instance().getDomainName() + "/fortune/order_log";
@@ -386,12 +398,18 @@ public class Urls
     {
         return ConfigManager.instance().getDomainName() + "/video/detail";
     }
-
+    public static String getBoxVideoDetailUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/box/vdetail";
+    }
     public static String getVideoRecommendUrl()
     {
         return ConfigManager.instance().getDomainName() + "/video/recommend";
     }
-
+    public static String getBoxVideoRecommendUrl()
+    {
+        return ConfigManager.instance().getDomainName() + "/box/vrecommend";
+    }
     public static String getDanmuUrl()
     {
         return ConfigManager.instance().getDomainName() + "/data/danmu";

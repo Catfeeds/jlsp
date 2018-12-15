@@ -36,18 +36,18 @@ public class ModifyPwdActivity extends BaseActivity implements IRequestListener
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
-    TextView  tvTitle;
+    TextView tvTitle;
     @BindView(R.id.et_old_pwd)
-    EditText  etOldPwd;
+    EditText etOldPwd;
     @BindView(R.id.et_new_pwd)
-    EditText  etNewPwd;
+    EditText etNewPwd;
     @BindView(R.id.et_aging_pwd)
-    EditText  etAgingPwd;
+    EditText etAgingPwd;
     @BindView(R.id.btn_submit)
-    Button    btnSubmit;
-    private static final String SAVE_PWD        = "save_pwd";
-    private static final int    REQUEST_SUCCESS = 0x01;
-    private static final int    REQUEST_FAIL    = 0x02;
+    Button btnSubmit;
+    private static final String SAVE_PWD = "save_pwd";
+    private static final int REQUEST_SUCCESS = 0x01;
+    private static final int REQUEST_FAIL = 0x02;
 
     @SuppressLint("HandlerLeak")
     private BaseHandler mHandler = new BaseHandler(ModifyPwdActivity.this)
@@ -83,7 +83,7 @@ public class ModifyPwdActivity extends BaseActivity implements IRequestListener
     protected void initViews(Bundle savedInstanceState)
     {
         setContentView(R.layout.activity_modify_pwd);
-        StatusBarUtil.setStatusBarColor(this, getResources().getColor(R.color.yellow));
+        StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(ModifyPwdActivity.this, false);
 
     }
@@ -147,8 +147,7 @@ public class ModifyPwdActivity extends BaseActivity implements IRequestListener
             valuePairs.put("passwd", newPwd);
             valuePairs.put("repasswd", agingPwd);
             valuePairs.put("oldpasswd", oldPwd);
-            DataRequest.instance().request(this, Urls.getTaskprofileUrl(), this, HttpRequest.POST, SAVE_PWD, valuePairs,
-                    new ResultHandler());
+            DataRequest.instance().request(this, Urls.getEditPwdUrl(), this, HttpRequest.POST, SAVE_PWD, valuePairs, new ResultHandler());
         }
     }
 

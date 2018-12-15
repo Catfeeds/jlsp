@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
@@ -48,7 +49,9 @@ import com.zb.wyd.utils.VersionManager;
 import com.zb.wyd.widget.CircleImageView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -69,12 +72,15 @@ public class MainActivity extends BaseActivity implements IRequestListener
     @BindView(R.id.rl_search)
     RelativeLayout rlSearch;
 
-    private String texts[] = {"直播", "抖音", "视频", "自拍", "宝盒"};
+    private BoxFragment mBoxFragment;
+    private String texts[] = {"直播", "抖音", "视频", "自拍", "百宝箱"};
     private int imageButton[] = {R.drawable.ic_live_selector, R.drawable.ic_dy_selector, R.drawable.ic_video_selector, R.drawable
             .ic_photo_selector, R.drawable.ic_box_selector};
 
 
-    private Class fragmentArray[] = {LiveIndexFragment.class, DouyinFragment.class, VideoFragment.class, SelfieFragment.class, BoxFragment.class};
+    private List<Fragment> fragmentList = new ArrayList<>();
+
+
     private static final String USER_SIGN_REQUEST = "user_sign_request";
     private static final int REQUEST_FAIL = 0x02;
     private static final int USER_SIGN_SUCCESS = 0x03;
@@ -129,6 +135,15 @@ public class MainActivity extends BaseActivity implements IRequestListener
         setContentView(R.layout.activity_main);
         StatusBarUtil.setStatusBarBackground(this, R.drawable.main_bg);
         StatusBarUtil.StatusBarLightMode(MainActivity.this, false);
+
+
+        mBoxFragment = new BoxFragment();
+        fragmentList.add(new LiveIndexFragment());
+        fragmentList.add(new DouyinFragment());
+        fragmentList.add(new VideoFragment());
+        fragmentList.add(new SelfieFragment());
+        fragmentList.add(new LiveIndexFragment());
+
     }
 
 
@@ -140,7 +155,10 @@ public class MainActivity extends BaseActivity implements IRequestListener
             @Override
             public void onTabChanged(String tabId)
             {
-
+                if ("百宝箱".equals(tabId))
+                {
+                    mBoxFragment.updateView();
+                }
             }
         });
 
@@ -208,7 +226,7 @@ public class MainActivity extends BaseActivity implements IRequestListener
         {
             TabHost.TabSpec spec = fragmentTabHost.newTabSpec(texts[i]).setIndicator(getView(i));
 
-            fragmentTabHost.addTab(spec, fragmentArray[i], null);
+            fragmentTabHost.addTab(spec, fragmentList.get(i).getClass(), null);
 
             //设置背景(必须在addTab之后，由于需要子节点（底部菜单按钮）否则会出现空指针异常)
             // fragmentTabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable

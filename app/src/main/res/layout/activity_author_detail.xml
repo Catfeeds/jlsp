@@ -177,6 +177,7 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ll_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -201,7 +202,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
-                        android:text="8888888"
                         android:textColor="@color/text_light_red"
                         android:textSize="@dimen/t14" />
 
@@ -303,8 +303,8 @@
                 android:orientation="vertical">
 
 
-                <LinearLayout
-                    android:id="@+id/ll_msg"
+                <RelativeLayout
+                    android:id="@+id/ll_my_msg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -312,11 +312,13 @@
                     android:padding="@dimen/dm_10">
 
                     <ImageView
+                        android:id="@+id/iv_my_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_user_msg" />
 
                     <TextView
+                        android:layout_toRightOf="@+id/iv_my_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dm_15"
@@ -324,8 +326,16 @@
                         android:textColor="@color/text_violet"
                         android:textSize="@dimen/t14" />
 
+                    <ImageView
+                        android:visibility="gone"
+                        android:id="@+id/iv_has_msg"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_point"
+                        android:layout_alignParentRight="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"

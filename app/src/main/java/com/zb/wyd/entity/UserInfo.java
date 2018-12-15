@@ -43,7 +43,7 @@ public class UserInfo implements Serializable
 
     private boolean     valid_vip;
     private FortuneInfo fortuneInfo;
-
+    private int   msgnum;
     private boolean has_sign;
 
     public UserInfo()
@@ -52,6 +52,7 @@ public class UserInfo implements Serializable
 
     public UserInfo(JSONObject obj)
     {
+        this.msgnum = obj.optInt("msgnum");
         this.fans = obj.optInt("fans");
         this.unick = obj.optString("unick");
         this.uname = obj.optString("uname");
@@ -81,6 +82,16 @@ public class UserInfo implements Serializable
         this.has_sign = obj.optBoolean("has_sign");
         this.sex = obj.optString("sex");
         this.location = obj.optString("location");
+    }
+
+    public int getMsgnum()
+    {
+        return msgnum;
+    }
+
+    public void setMsgnum(int msgnum)
+    {
+        this.msgnum = msgnum;
     }
 
     public String getLocation()
