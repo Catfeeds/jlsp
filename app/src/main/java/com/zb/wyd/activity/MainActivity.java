@@ -140,8 +140,10 @@ public class MainActivity extends BaseActivity implements IRequestListener
             @Override
             public void onTabChanged(String tabId)
             {
+
             }
         });
+
 
         tvSignIn.setOnClickListener(this);
         rlSearch.setOnClickListener(this);

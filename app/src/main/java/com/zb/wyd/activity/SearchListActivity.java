@@ -8,39 +8,31 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
 import com.zb.wyd.adapter.SearchAdapter;
-import com.zb.wyd.entity.ChatInfo;
 import com.zb.wyd.entity.SearchInfo;
-import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.entity.VideoInfo;
 import com.zb.wyd.http.DataRequest;
 import com.zb.wyd.http.HttpRequest;
 import com.zb.wyd.http.IRequestListener;
 import com.zb.wyd.json.SearchInfoListHandler;
-import com.zb.wyd.json.VideoInfoListHandler;
 import com.zb.wyd.listener.MyItemClickListener;
-import com.zb.wyd.utils.ConfigManager;
 import com.zb.wyd.utils.ConstantUtil;
-import com.zb.wyd.utils.LogUtil;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
 import com.zb.wyd.widget.list.refresh.PullToRefreshBase;
 import com.zb.wyd.widget.list.refresh.PullToRefreshRecyclerView;
 import com.zb.wyd.widget.statusbar.StatusBarUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +51,8 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
     ImageView ivBack;
     @BindView(R.id.et_content)
     EditText etContent;
+    @BindView(R.id.ll_no_data)
+    LinearLayout llNoData;
     private RecyclerView mRecyclerView; //
     private List<SearchInfo> mSearchInfoList = new ArrayList<>();
 
@@ -94,6 +88,17 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
                     }
                     mSearchInfoList.addAll(mSearchInfoListHandler.getSearchInfoList());
                     mSearchAdapter.notifyDataSetChanged();
+
+                    if (mSearchInfoList.isEmpty())
+                    {
+                        llNoData.setVisibility(View.VISIBLE);
+                        mPullToRefreshRecyclerView.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        llNoData.setVisibility(View.GONE);
+                        mPullToRefreshRecyclerView.setVisibility(View.VISIBLE);
+                    }
                     break;
 
             }
@@ -284,4 +289,11 @@ public class SearchListActivity extends BaseActivity implements IRequestListener
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

@@ -62,7 +62,9 @@ public class NewSelfieHolder extends SelfieBaseHolder
         mFavourCountTv.setText(basePhotoInfo.getFavour_count());
         mViewCountTv.setText(basePhotoInfo.getView_count());
         mDescTv.setText(basePhotoInfo.getDesc());
-        mUpdateTimeTv.setText(basePhotoInfo.getAdd_time() + "  " + basePhotoInfo.getScore() + "分");
+
+        String score = basePhotoInfo.getScore()==0 ? "暂无评分" : basePhotoInfo.getScore() + "分";
+        mUpdateTimeTv.setText(basePhotoInfo.getAdd_time() + "  作品评分:" + score);
         UserInfo userInfo = basePhotoInfo.getUserInfo();
 
         String tags = basePhotoInfo.getTags();

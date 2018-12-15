@@ -317,7 +317,7 @@
         // 如果你有多个module的话也没关系，所有的module只要有一个地方写了这个就行，因为app打包以后所有的AndroidManifest文件将会合并到一起
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.zb.wyd.fileprovider"
+            android:authorities="com.zb.spzb.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

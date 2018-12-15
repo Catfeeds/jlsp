@@ -225,7 +225,7 @@ public class LiveActivity extends BaseActivity implements IRequestListener
 
                     if (null != mLivePriceInfo)
                     {
-                        DialogUtils.showLivePriceDialog(LiveActivity.this, mLivePriceInfo, new View.OnClickListener()
+                        DialogUtils.showVideoPriceDialog1(LiveActivity.this, mLivePriceInfo, new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -253,7 +253,10 @@ public class LiveActivity extends BaseActivity implements IRequestListener
                                 {
 
                                     // sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                                    startActivity(new Intent(LiveActivity.this, TaskActivity.class));
+                                    //                                    startActivity(new Intent(LiveActivity.this, TaskActivity.class));
+                                    startActivity(new Intent(LiveActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
+                                            "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls
+                                            .getTaskIndexUrl()));
                                     finish();
                                 }
                             }
@@ -1068,14 +1071,18 @@ public class LiveActivity extends BaseActivity implements IRequestListener
                                 {
                                     if ("nosay".equals(action))
                                     {
-                                        etSay.setHint("禁止聊天");
+                                        etSay.setHint("SVIP可发言");
                                         etSay.setEnabled(false);
                                     }
+                                    else
+                                    {
+                                        mChatInfoList.add(chatInfo);
+                                        mChatAdapter.notifyItemChanged(mChatInfoList.size());
 
-                                    mChatInfoList.add(chatInfo);
-                                    mChatAdapter.notifyItemChanged(mChatInfoList.size());
+                                        if (null != mChatRecyclerView) mChatRecyclerView.scrollToPosition(mChatInfoList.size() - 1);
+                                    }
 
-                                    if (null != mChatRecyclerView) mChatRecyclerView.scrollToPosition(mChatInfoList.size() - 1);
+
                                 }
 
                             }
@@ -1143,7 +1150,7 @@ public class LiveActivity extends BaseActivity implements IRequestListener
                 if (null != mWebSocket && mWebSocket.isOpen())
                 {
 
-                    mWebSocket.sendText("ping");
+                    mWebSocket.sendPing();
                 }
             }
         };

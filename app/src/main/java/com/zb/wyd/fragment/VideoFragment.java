@@ -318,7 +318,7 @@ public class VideoFragment extends BaseFragment implements IRequestListener, Vie
         mVideoAdapter.setNew(true);
         mRecyclerView.setAdapter(mVideoAdapter);
 
-        mHandler.sendEmptyMessage(GET_AD_lIST_CODE);
+       // mHandler.sendEmptyMessage(GET_AD_lIST_CODE);
         mHandler.sendEmptyMessage(GET_CATA_LIST_CODE);
         loadData();
     }

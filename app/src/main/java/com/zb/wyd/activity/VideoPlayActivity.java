@@ -315,8 +315,12 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                                 {
 
                                     // sendBroadcast(new Intent(MainActivity.TAB_TASK));
-                                    startActivity(new Intent(VideoPlayActivity.this, TaskActivity.class));
-                                    finish();
+                                    //startActivity(new Intent(VideoPlayActivity.this,   TaskActivity.class));
+                                 //   finish();
+
+                                    startActivity(new Intent(VideoPlayActivity.this, WebViewActivity.class).putExtra(WebViewActivity.EXTRA_TITLE,
+                                            "充值会员").putExtra(WebViewActivity.IS_SETTITLE, true).putExtra(WebViewActivity.EXTRA_URL, Urls.getTaskIndexUrl
+                                            ()));
                                 }
 
                             }
@@ -445,6 +449,7 @@ public class VideoPlayActivity extends BaseActivity implements IRequestListener
                         {
                             ImageLoader.getInstance().displayImage(mUserInfo.getUface(), ivUserPic);
                             tvFans.setText(mUserInfo.getFans() + "粉丝");
+                            tvName.setText(mUserInfo.getUnick());
                         }
 
 

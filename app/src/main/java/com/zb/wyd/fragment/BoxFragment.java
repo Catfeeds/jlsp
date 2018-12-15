@@ -1,21 +1,15 @@
 package com.zb.wyd.fragment;
 
 
-import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,47 +19,17 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zb.wyd.MyApplication;
 import com.zb.wyd.R;
-import com.zb.wyd.activity.BaseHandler;
-import com.zb.wyd.activity.BindEmailActivity;
-import com.zb.wyd.activity.DomainNameActivity;
 import com.zb.wyd.activity.LoginActivity;
-import com.zb.wyd.activity.MainActivity;
-import com.zb.wyd.activity.MemberActivity;
-import com.zb.wyd.activity.MessageListActivity;
-import com.zb.wyd.activity.MyCollectionActivity;
 import com.zb.wyd.activity.PhotoDetailActivity;
 import com.zb.wyd.activity.PhotoListActivity;
-import com.zb.wyd.activity.TaskActivity;
-import com.zb.wyd.activity.UserDetailActivity;
 import com.zb.wyd.activity.VideoPlayActivity;
 import com.zb.wyd.activity.VidoeListActivity;
-import com.zb.wyd.activity.WealthListActivity;
-import com.zb.wyd.activity.WebViewActivity;
-import com.zb.wyd.entity.FortuneInfo;
-import com.zb.wyd.entity.SignInfo;
-import com.zb.wyd.entity.UserInfo;
 import com.zb.wyd.entity.VideoInfo;
-import com.zb.wyd.http.DataRequest;
-import com.zb.wyd.http.HttpRequest;
-import com.zb.wyd.http.IRequestListener;
-import com.zb.wyd.json.SignInfoHandler;
-import com.zb.wyd.json.UserInfoHandler;
-import com.zb.wyd.utils.APPUtils;
-import com.zb.wyd.utils.ConfigManager;
-import com.zb.wyd.utils.ConstantUtil;
-import com.zb.wyd.utils.DialogUtils;
-import com.zb.wyd.utils.StringUtils;
 import com.zb.wyd.utils.ToastUtil;
 import com.zb.wyd.utils.Urls;
-import com.zb.wyd.widget.CircleImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,13 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * 描述：一句话简单描述
@@ -128,7 +86,7 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
         mWebView.getSettings().setBuiltInZoomControls(false);
         mWebView.getSettings().setSupportZoom(false);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(new JSService(), "native");
+        mWebView.addJavascriptInterface(new JSService(), "GP");
         mWebView.setWebViewClient(new WebViewClient()
                                   {
                                       @Override
@@ -235,17 +193,15 @@ public class BoxFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected void initViewData()
     {
-        mWebView.loadUrl(Urls.getBoxUrl());
+
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-
+        mWebView.loadUrl(Urls.getBoxUrl());
     }
-
-
 
     @Override
     public void onClick(View v)

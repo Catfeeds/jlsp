@@ -20,8 +20,10 @@ import com.zb.wyd.widget.RoundAngleImageView;
  */
 public class RecommendVideoHolder extends RecyclerView.ViewHolder
 {
+    private TextView            mFavTv;
     private TextView            mNameTv;
     private RoundAngleImageView mImgIv;
+    private RelativeLayout mItemLayout;
     private MyItemClickListener listener;
     private Context             context;
 
@@ -32,11 +34,18 @@ public class RecommendVideoHolder extends RecyclerView.ViewHolder
         this.context = context;
         mNameTv = (TextView) rootView.findViewById(R.id.tv_name);
         mImgIv = (RoundAngleImageView) rootView.findViewById(R.id.iv_user_pic);
+        mFavTv = (TextView) rootView.findViewById(R.id.tv_fav);
+        mItemLayout = (RelativeLayout) rootView.findViewById(R.id.rl_item);
         int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.dm_10) * 3;
         int width = (APPUtils.getScreenWidth(context) - spacingInPixels) / 2;
-        LinearLayout.LayoutParams imgLayoutParams = new LinearLayout.LayoutParams(width, width * 13 / 20);
-        mImgIv.setLayoutParams(imgLayoutParams);
+        RelativeLayout.LayoutParams mParams = new RelativeLayout.LayoutParams(width, width * 4 /5);
+        RelativeLayout.LayoutParams mImgParams = new RelativeLayout.LayoutParams(width, width * 13 /20);
+
+        mImgIv.setLayoutParams(mImgParams);
         mImgIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        mItemLayout.setLayoutParams(mParams);
+
+
     }
 
 
@@ -44,8 +53,8 @@ public class RecommendVideoHolder extends RecyclerView.ViewHolder
     {
 
         ImageLoader.getInstance().displayImage(mVideoInfo.getCover(), mImgIv);
-        mNameTv.setText(mVideoInfo.getV_name());
-
+        mNameTv.setText(mVideoInfo.getIname());
+        mFavTv.setText(mVideoInfo.getFavour_count());
         mImgIv.setOnClickListener(new View.OnClickListener()
         {
             @Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dm_5"
@@ -9,7 +10,7 @@
     <com.zb.wyd.widget.RoundAngleImageView
         android:id="@+id/iv_user_pic"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         android:src="@drawable/icon_photo_default" />
 
@@ -18,9 +19,21 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_user_pic"
         android:layout_marginLeft="@dimen/dm_5"
-        android:maxLines="2"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="宝宝"
         android:textColor="@color/blackB"
         android:textSize="@dimen/t14" />
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_follow"
+        android:gravity="center"
+        android:padding="@dimen/dm_5"
+        android:textColor="@color/white"
+        android:textSize="@dimen/t12" />
+</RelativeLayout>
